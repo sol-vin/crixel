@@ -1,6 +1,9 @@
 require "./crixel/event"
+install_events(Crixel::Event, Crixel::Events)
+
 require "./crixel/state"
 require "./crixel/machine"
+
 
 module Crixel
   VERSION = "0.0.1"
