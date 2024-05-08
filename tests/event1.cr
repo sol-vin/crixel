@@ -1,5 +1,15 @@
-require "../src/crixel/event"
+require "../spec/spec_helper"
+
+success = false
 
 event MyEvent
 
-puts "OK"
+on(MyEvent) { success = true }
+
+emit MyEvent 
+
+if success
+  puts SUCCESS
+else
+  puts FAILURE
+end

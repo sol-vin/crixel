@@ -1,5 +1,15 @@
-require "../src/crixel/event"
+require "../spec/spec_helper"
 
-event MyEvent, x : Int32, y : Float32, z : String
+success = false
 
-puts "OK"
+event MyEvent, x : Int32
+
+on(MyEvent) { |x| success = true if x == 1234 }
+
+emit MyEvent, 1234
+
+if success
+  puts SUCCESS
+else
+  puts FAILURE
+end

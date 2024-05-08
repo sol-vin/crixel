@@ -12,10 +12,10 @@ module Crixel
 
   @@states = [] of State
 
-  event PopState, state : State
-  event PushState, state : State
-  event OpenGame
-  event CloseGame
+  event Game::Pop, state : State
+  event Game::Push, state : State
+  event Game::Open
+  event Game::Close
 
   def self.run(width, height)
     @@width = width

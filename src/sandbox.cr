@@ -1,8 +1,12 @@
-require "./crixel/event"
-
-def a(*args)
-  puts args.class
+module A
+  class_property test = 1234
 end
 
-a("hi")
-a(1,2,3)
+class B
+  include A
+end
+
+puts B.test
+B.test = 4321
+puts B.test
+

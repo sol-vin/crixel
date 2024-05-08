@@ -7,7 +7,15 @@ describe Crixel::Events do
     make_event_test(2)
   end
 
-    it "should create an event inside a class and use self as an argument" do
+  it "should create an event inside a class and use self as an argument" do
     make_event_test(3)
+  end
+
+  it "should use on and emit globally, without arguments" do
+    make_event_test(4)
+  end
+
+  it "should use on and emit globally, with arguments" do
+    make_event_test(5)
   end
 end
