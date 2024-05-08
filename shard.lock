@@ -2,5 +2,5 @@ version: 2.0
 shards:
   minievents:
     git: https://github.com/sol-vin/minievents.git
-    version: 0.1.0+git.commit.674e90189ec840de63a86a89a95e6277319d1be7
+    version: 0.1.0+git.commit.c57e05a4ce747bfa7e54776f82a963b614cd5449
 

@@ -1,4 +1,8 @@
-a = [0,1,2]
-a.reverse_each.with_index do |x, i|
-  puts "#{x} #{(a.size-1) - i}"
+require "./crixel"
+
+class PlayState < Crixel::State
 end
+
+Crixel.run(400, 200, PlayState.new)
+
+Crixel.main_state.destroy
