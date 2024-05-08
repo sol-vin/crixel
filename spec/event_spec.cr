@@ -11,11 +11,11 @@ describe Crixel::Events do
     make_event_test(3)
   end
 
-  it "should use on and emit globally, without arguments" do
+  it "should use attach to attach an event to class" do
     make_event_test(4)
   end
 
-  it "should use on and emit globally, with arguments" do
+  it "should use attach" do
     make_event_test(5)
   end
 end

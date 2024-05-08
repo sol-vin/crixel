@@ -3,9 +3,12 @@ require "../spec/spec_helper"
 my_event1_runs = 0
 my_event2_runs = 0
 
+event MyEvent1
+event MyEvent2
+
 class MyClass
-  attach_event MyEvent1
-  attach_event MyEvent2
+  attach MyEvent1
+  attach MyEvent2
 end
 
 m = MyClass.new
