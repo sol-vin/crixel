@@ -1,5 +1,5 @@
-require "./crixel/event"
-install_events(Crixel::Event, Crixel::Events)
+require "minievents"
+MiniEvents.install(Crixel::Event, Crixel::Events)
 
 require "./crixel/state"
 require "./crixel/machine"
@@ -39,9 +39,29 @@ module Crixel
   end
 
   def self.update
+    states.reverse_each.with_index do |state, count|
+      index = (states.size - 1) - count
+
+      # Check if we are the top state
+      if index == (states.size - 1) 
+        state.update
+      else
+        state.update if state.persist_update
+      end
+    end
   end
 
   def self.draw
+    states.reverse_each.with_index do |state, count|
+      index = (states.size - 1) - count
+
+      # Check if we are the top state
+      if index == (states.size - 1) 
+        state.draw
+      else
+        state.draw if state.persist_draw
+      end
+    end
   end
 
   def self.close

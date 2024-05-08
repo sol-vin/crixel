@@ -8,6 +8,9 @@ targets:
   sandbox:
     main: src/sandbox.cr
 
+dependencies:
+  minievents:
+    github: sol-vin/minievents
 crystal: '>= 1.11.2'
 
 license: MIT
