@@ -1,0 +1,13 @@
+name: crixel
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  sandbox:
+    main: src/sandbox.cr
+
+crystal: '>= 1.11.2'
+
+license: MIT
