@@ -1,7 +1,5 @@
-module Crixel::IState
-  property persistant_update : Bool = false 
-  property persistant_draw : Bool = false 
+class Crixel::State
+  getter members = [] of Crixel::Machine
 
-  
-
+  event DestroyedState, state : self
 end
