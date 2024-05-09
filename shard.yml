@@ -11,6 +11,8 @@ targets:
 dependencies:
   minievents:
     github: sol-vin/minievents
+  raylib-cr:
+    github: sol-vin/raylib-cr
 crystal: '>= 1.11.2'
 
 license: MIT

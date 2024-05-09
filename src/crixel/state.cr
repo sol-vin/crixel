@@ -1,18 +1,38 @@
 class Crixel::State
-  getter members = [] of Crixel::Machine
+  getter children = [] of Machine
   
   property persist_update = false
   property persist_draw = false
   
-  event IsMain, state : self
+  event Changed, state : self
   event Destroyed, state : self
-  
+
+  getter camera : Camera = Camera.new
+
+  def add(machine : Machine)
+    machine.on_destroyed do |machine|
+      @children.delete(machine)
+    end
+
+    @children << machine
+
+    emit Machine::Added, machine
+  end
+
   def update
-    machines.each(&.update)
+    @children.each do |child|
+      child.update if child.active?
+    end
   end
   
   def draw
-    machines.each(&.draw)
+    Raylib.begin_mode_2d(camera.to_raylib)
+    Raylib.clear_background(camera.bg_color)
+
+    @children.each do |child|
+      child.draw if child.draw?
+    end
+    Raylib.end_mode_2d
   end
 
   def destroy
