@@ -3,7 +3,9 @@ MiniEvents.install(::Crixel::Event)
 
 require "raylib-cr"
 
-require "./crixel/basic"
+require "./crixel/icamera"
+require "./crixel/camera"
+
 require "./crixel/state"
 require "./crixel/machine"
 
@@ -18,8 +20,8 @@ module Crixel
 
   @@states = [] of State
 
-  event Game::Pop, state : State
-  event Game::Push, state : State
+  event State::Destroyed, state : State
+  event State::Changed, state : State
   event Game::Open
   event Game::Close
 
@@ -35,7 +37,7 @@ module Crixel
         puts "State destroyed #{state.class}"
         if state == main_state
           old = @@states.pop
-          emit State::Changed, main_state
+          old.destroy
         else
           @@states.delete(state)
         end
@@ -44,6 +46,13 @@ module Crixel
       Raylib.init_window(@@width, @@height, title)
 
       emit Game::Open
+
+      until should_close?
+        update
+        draw
+      end
+
+      close
     else
       raise "Crixel is already running!"
     end
@@ -56,13 +65,12 @@ module Crixel
 
   def self.push(state : State)
     @@states.push state
-    emit Game::Push, state
     emit State::Changed, state
   end
 
   def self.pop
     state = @@states.pop
-    emit Game::Pop, state
+    state.destroy
     emit State::Changed, main_state
   end
 

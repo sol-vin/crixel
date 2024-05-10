@@ -3,11 +3,8 @@ class Crixel::State
   
   property persist_update = false
   property persist_draw = false
-  
-  event Changed, state : self
-  event Destroyed, state : self
 
-  getter camera : Camera = Camera.new
+  getter camera : ICamera = Camera.new
 
   def add(machine : Machine)
     machine.on_destroyed do |machine|
@@ -30,7 +27,7 @@ class Crixel::State
     Raylib.clear_background(camera.bg_color)
 
     @children.each do |child|
-      child.draw if child.draw?
+      child.draw if child.visible?
     end
     Raylib.end_mode_2d
   end

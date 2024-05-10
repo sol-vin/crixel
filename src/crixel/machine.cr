@@ -1,15 +1,13 @@
 class Crixel::Machine
   getter id : Int32 = 0
 
-  getter parent : State
-
   property? active : Bool = true
   property? visible : Bool = true
 
   event Added, machine : self
   event Destroyed, machine : self
 
-  def initialize(@parent : State)
+  def initialize
   end
 
   def destroy
