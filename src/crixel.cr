@@ -7,7 +7,12 @@ require "./crixel/icamera"
 require "./crixel/camera"
 
 require "./crixel/state"
-require "./crixel/gameobject"
+require "./crixel/basic"
+
+require "./crixel/modules/**"
+
+require "./crixel/graphic"
+require "./crixel/sprite"
 
 require "./crixel/assets"
 require "./crixel/assets/bakedfs"
@@ -20,6 +25,8 @@ module Crixel
   class_getter height : Int32 = 0
   class_getter title : String = ""
   class_getter? running = false
+
+  class_getter last_id : UInt32 = 0
 
   @@states = [] of State
 
@@ -64,6 +71,12 @@ module Crixel
     else
       raise "Crixel is already running!"
     end
+  end
+
+  def self.get_id : UInt32
+    old = @@last_id
+    @@last_id += 1
+    old
   end
 
   def self.title=(title)

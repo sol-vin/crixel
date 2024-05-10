@@ -15,7 +15,7 @@ dependencies:
     github: sol-vin/raylib-cr
     branch: master
   baked_file_system:
-    github: schovi/baked_file_system
+    github: sol-vin/baked_file_system
     branch: master
 
 crystal: '>= 1.11.2'

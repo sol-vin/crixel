@@ -19,6 +19,8 @@ module Crixel::Assets
     if SUPPORTED_TEXTURES.any? { |ext| extension.upcase[1..] == ext }
       content = io.gets_to_end
       image = Raylib.load_image_from_memory(extension, content, size)
+      puts path
+      puts Raylib.image_ready?(image)
       texture = Raylib.load_texture_from_image(image)
       @@textures[path] = texture
       true

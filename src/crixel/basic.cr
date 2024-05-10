@@ -1,14 +1,15 @@
-class Crixel::GameObject
-  getter id : Int32 = 0
+class Crixel::Basic
+  getter id : UInt32 = Crixel.get_id
 
   property? active : Bool = true
   property? visible : Bool = true
 
   event Added, object : self
-  event Destroyed, object : self
+  attach Added
 
-  def initialize
-  end
+  event Destroyed, object : self
+  attach Destroyed
+
 
   def destroy
     emit Destroyed, self
