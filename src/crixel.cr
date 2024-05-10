@@ -10,6 +10,7 @@ require "./crixel/state"
 require "./crixel/gameobject"
 
 require "./crixel/assets"
+require "./crixel/assets/bakedfs"
 
 module Crixel
   VERSION       = "0.0.1"
@@ -26,6 +27,9 @@ module Crixel
   event State::Changed, state : State
   event Game::Open
   event Game::Close
+
+  Crixel::Assets::BakedFS.bake(path: "default_rsrc")
+
 
   def self.run(@@width, @@height, state = State.new, @@title = "Crixel")
     if !@@running

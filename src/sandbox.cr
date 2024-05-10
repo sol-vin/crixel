@@ -1,18 +1,17 @@
 require "./crixel"
 require "./crixel/audio"
-require "./crixel/assets/bakedfs"
 
 class PlayState < Crixel::State
   @last = 0.0
   def setup
-    RAudio.play_sound(Crixel::Assets.get_sound("rsrc/song.mp3"))
+    RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
   end
 
   def update
   end
 end
 
-Crixel::Assets::BakedFS.install
+Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 # on Crixel::Assets::Setup do
 #   Crixel::Assets.load_from_path("rsrc/wire.png")
