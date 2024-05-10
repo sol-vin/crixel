@@ -12,7 +12,7 @@ require "./crixel/gameobject"
 require "./crixel/assets"
 
 module Crixel
-  VERSION = "0.0.1"
+  VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
 
   class_getter width : Int32 = 0
@@ -32,7 +32,6 @@ module Crixel
       @@width = width
       @@height = height
 
-      push state
 
       on(State::Destroyed) do |state|
         puts "State destroyed #{state.class}"
@@ -45,12 +44,12 @@ module Crixel
       end
 
       Raylib.init_window(@@width, @@height, title)
-      @@running  = true
+      @@running = true
 
       Assets.setup
+      push state
 
       emit Game::Open
-
 
       until should_close?
         update

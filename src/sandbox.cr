@@ -1,31 +1,29 @@
 require "./crixel"
-
+require "./crixel/audio"
 require "./crixel/assets/bakedfs"
 
-
 class PlayState < Crixel::State
+  @last = 0.0
   def setup
+    RAudio.play_sound(Crixel::Assets.get_sound("rsrc/song.mp3"))
   end
 
-  def draw
-    Raylib.draw_texture_ex(Crixel::Assets.get_texture("rsrc/wire.png"), Raylib::Vector2.zero, 0, 1, Raylib::WHITE)
+  def update
   end
 end
 
 Crixel::Assets::BakedFS.install
 
-on Crixel::Assets::Setup do
-  Crixel::Assets.load_from_path("rsrc/wire.png")
-end
+# on Crixel::Assets::Setup do
+#   Crixel::Assets.load_from_path("rsrc/wire.png")
+# end
 
 Crixel.run(400, 300, PlayState.new)
 
 # require "raylib-cr"
 
-
-
 # Raylib.init_window(400, 200, "test")
- 
+
 # file = File.open("rsrc/test.png")
 # content = file.gets_to_end
 # image = Raylib.load_image_from_memory(".png", content, file.size)

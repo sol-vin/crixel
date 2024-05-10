@@ -1,6 +1,6 @@
 class Crixel::State
   getter children = [] of GameObject
-  
+
   property persist_update = false
   property persist_draw = false
 
@@ -27,7 +27,7 @@ class Crixel::State
       child.update if child.active?
     end
   end
-  
+
   def draw
     Raylib.begin_mode_2d(camera.to_raylib)
     Raylib.clear_background(camera.bg_color)

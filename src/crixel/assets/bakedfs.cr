@@ -1,7 +1,5 @@
 require "baked_file_system"
 
-
-
 module Crixel::Assets::BakedFS
   macro install(path = "rsrc", dir = "./")
     module Crixel::Assets::BakedFS

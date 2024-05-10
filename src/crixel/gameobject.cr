@@ -13,7 +13,7 @@ class Crixel::GameObject
   def destroy
     emit Destroyed, self
   end
-  
+
   def update
   end
 
