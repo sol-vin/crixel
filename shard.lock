@@ -2,7 +2,7 @@ version: 2.0
 shards:
   baked_file_system:
     git: https://github.com/sol-vin/baked_file_system.git
-    version: 0.10.0+git.commit.611b151b85432921575f86029387ac60256ed946
+    version: 0.10.0+git.commit.c1ce474a189ecce70f6410ee87eedd8c43b5dbce
 
   minievents:
     git: https://github.com/sol-vin/minievents.git

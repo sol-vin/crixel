@@ -3,13 +3,13 @@ MiniEvents.install(::Crixel::Event)
 
 require "raylib-cr"
 
-require "./crixel/icamera"
+require "./crixel/modules/**"
+
 require "./crixel/camera"
 
 require "./crixel/state"
 require "./crixel/basic"
 
-require "./crixel/modules/**"
 
 require "./crixel/graphic"
 require "./crixel/sprite"

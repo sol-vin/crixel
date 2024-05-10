@@ -2,7 +2,7 @@ class Crixel::Sprite < Crixel::Basic
   include ISprite
 
 
-  def initialize(@texture = "default_rsrc/logo.png", width : Int32? = nil, height : Int32? = nil)
+  def initialize(@texture = "default_rsrc/logo.png", @x = 0.0_f32, @y = 0.0_f32, width : Int32? = nil, height : Int32? = nil)
     raylib_texture = Crixel::Assets.get_texture(@texture)
 
     if w = width

@@ -6,11 +6,12 @@ class PlayState < Crixel::State
   @texture = Raylib::Texture2D.new
   def setup
     RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
-    add(Crixel::Sprite.new(width: 100, height: 100))
+    add(Crixel::Sprite.new(x: 100, width: 100, height: 100))
+    add(Crixel::Sprite.new("rsrc/logo.png", x: 200, y: 200, width: 100, height: 100))
   end
 end
 
-# Crixel::Assets::BakedFS.bake(path: "rsrc")
+Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 # on Crixel::Assets::Setup do
 #   Crixel::Assets.load_from_path("rsrc/wire.png")

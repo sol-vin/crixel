@@ -14,6 +14,6 @@ module Crixel::ISprite
   end
 
   def draw_sprite
-    Raylib.draw_texture_pro(Crixel::Assets.get_texture(texture), source_rectangle, rectangle, position + origin, rotation, tint)
+    Raylib.draw_texture_pro(Crixel::Assets.get_texture(texture), source_rectangle, rectangle, origin, rotation, tint)
   end
 end
