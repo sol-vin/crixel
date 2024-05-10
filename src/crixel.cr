@@ -9,7 +9,7 @@ require "./crixel/camera"
 require "./crixel/state"
 require "./crixel/gameobject"
 
-require "./crixel/assets/**"
+require "./crixel/assets"
 
 module Crixel
   VERSION = "0.0.1"

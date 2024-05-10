@@ -1,15 +1,20 @@
 require "./crixel"
 
+require "./crixel/assets/bakedfs"
+
 
 class PlayState < Crixel::State
   def setup
   end
 
   def draw
-    Raylib.draw_texture_ex(Crixel::Assets.get_texture("/wire.png"), Raylib::Vector2.zero, 0, 1, Raylib::WHITE)
+    Raylib.draw_texture_ex(Crixel::Assets.get_texture("rsrc/wire.png"), Raylib::Vector2.zero, 0, 1, Raylib::WHITE)
   end
 end
 
+Crixel::Assets::BakedFS.install
+
+# Crixel::Assets.load_from_path("rsrc/wire.png")
 Crixel.run(400, 300, PlayState.new)
 
 # require "raylib-cr"
