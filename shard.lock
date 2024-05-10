@@ -1,5 +1,9 @@
 version: 2.0
 shards:
+  baked_file_system:
+    git: https://github.com/schovi/baked_file_system.git
+    version: 0.10.0+git.commit.ea0b659f43d7ce00bde66e8a87eeb4d5a112621b
+
   minievents:
     git: https://github.com/sol-vin/minievents.git
     version: 0.1.0+git.commit.db253c47f5d6dbb4d94057b7ead10cb68646d3ad

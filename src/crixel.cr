@@ -1,13 +1,16 @@
 require "minievents"
 MiniEvents.install(::Crixel::Event)
 
+require "baked_file_system"
 require "raylib-cr"
 
 require "./crixel/icamera"
 require "./crixel/camera"
 
 require "./crixel/state"
-require "./crixel/machine"
+require "./crixel/gameobject"
+
+require "./crixel/assets/**"
 
 module Crixel
   VERSION = "0.0.1"
@@ -44,8 +47,10 @@ module Crixel
       end
 
       Raylib.init_window(@@width, @@height, title)
+      Assets.setup
 
       emit Game::Open
+
 
       until should_close?
         update
@@ -64,6 +69,7 @@ module Crixel
   end
 
   def self.push(state : State)
+    state.setup
     @@states.push state
     emit State::Changed, state
   end

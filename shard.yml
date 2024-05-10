@@ -13,6 +13,10 @@ dependencies:
     github: sol-vin/minievents
   raylib-cr:
     github: sol-vin/raylib-cr
+  baked_file_system:
+    github: schovi/baked_file_system
+    branch: master
+
 crystal: '>= 1.11.2'
 
 license: MIT

@@ -1,19 +1,25 @@
 class Crixel::State
-  getter children = [] of Machine
+  getter children = [] of GameObject
   
   property persist_update = false
   property persist_draw = false
 
   getter camera : ICamera = Camera.new
 
-  def add(machine : Machine)
-    machine.on_destroyed do |machine|
-      @children.delete(machine)
+  event Setup, state : self
+
+  def add(object : GameObject)
+    object.on_destroyed do |object|
+      @children.delete(object)
     end
 
-    @children << machine
+    @children << object
 
-    emit Machine::Added, machine
+    emit GameObject::Added, object
+  end
+
+  def setup
+    emit Setup, self
   end
 
   def update
