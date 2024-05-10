@@ -31,7 +31,6 @@ module Crixel
     if !@@running
       @@width = width
       @@height = height
-      @@running  = true
 
       push state
 
@@ -46,6 +45,8 @@ module Crixel
       end
 
       Raylib.init_window(@@width, @@height, title)
+      @@running  = true
+
       Assets.setup
 
       emit Game::Open

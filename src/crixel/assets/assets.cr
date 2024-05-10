@@ -12,6 +12,7 @@ module Crixel::Assets
   end
 
   def self.load(path : String, io : IO, size : Int32)
+    raise "Cannot load before window is initialized: Try running asset loading methods from an `on Crixel::Assets::Setup`" unless Crixel.running?
     if SUPPORTED_TEXTURES.any? {|ext| Path.new(path).extension.upcase[1..] == ext}
       content = io.gets_to_end
       image = Raylib.load_image_from_memory(".png", content, size)
@@ -22,11 +23,7 @@ module Crixel::Assets
 
   def self.load_from_path(filename : String)
     File.open(filename) do |file|
-      if SUPPORTED_TEXTURES.any? {|ext| Path.new(filename).extension.upcase[1..] == ext}
-        image = Raylib.load_image_from_memory(".png", file.gets_to_end, file.size)
-        texture = Raylib.load_texture_from_image(image)
-        @@textures[filename] = texture
-      end
+      load(filename, file, file.size.to_i32)
     end
   end
 

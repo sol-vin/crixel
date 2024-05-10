@@ -14,7 +14,10 @@ end
 
 Crixel::Assets::BakedFS.install
 
-# Crixel::Assets.load_from_path("rsrc/wire.png")
+on Crixel::Assets::Setup do
+  Crixel::Assets.load_from_path("rsrc/wire.png")
+end
+
 Crixel.run(400, 300, PlayState.new)
 
 # require "raylib-cr"
