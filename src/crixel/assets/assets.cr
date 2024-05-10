@@ -8,15 +8,6 @@ module Crixel::Assets
   event Setup
 
   def self.setup
-    BakedFS.files.each do |baked_file|
-      if SUPPORTED_TEXTURES.any? {|ext| Path.new(baked_file.path).extension.upcase[1..] == ext}
-        content = baked_file.gets_to_end
-        image = Raylib.load_image_from_memory(".png", content, baked_file.size)
-        texture = Raylib.load_texture_from_image(image)
-        @@textures[baked_file.path] = texture
-      end
-    end
-
     emit Setup
   end
 

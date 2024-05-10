@@ -1,7 +1,6 @@
 require "minievents"
 MiniEvents.install(::Crixel::Event)
 
-require "baked_file_system"
 require "raylib-cr"
 
 require "./crixel/icamera"

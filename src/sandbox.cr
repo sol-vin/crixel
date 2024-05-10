@@ -6,7 +6,7 @@ class PlayState < Crixel::State
   end
 
   def draw
-    Raylib.draw_texture_ex(Crixel::Assets.get_texture("/test.png"), Raylib::Vector2.zero, 0, 0.05, Raylib::WHITE)
+    Raylib.draw_texture_ex(Crixel::Assets.get_texture("/wire.png"), Raylib::Vector2.zero, 0, 1, Raylib::WHITE)
   end
 end
 
