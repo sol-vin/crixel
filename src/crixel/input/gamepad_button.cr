@@ -37,10 +37,13 @@ module Crixel::GamepadButtons
   class_getter all = [] of GamepadButton
 
   def self.setup
+    # Polls input
+    Raylib.poll_input_events
+
     players = [] of Gamepad::Player
 
     Gamepad::Player.each do |player|
-      if Raylib.gamepad_available?(player.to_i)
+      if player.available?
         players << player
       end
     end

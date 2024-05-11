@@ -42,10 +42,8 @@ module Crixel
       Raylib.init_window(@@width, @@height, title)
 
       Keys.setup
-      Raylib.begin_drawing
-      Raylib.end_drawing
-
       GamepadButtons.setup
+      MouseButtons.setup
 
       on(State::Destroyed) do |state|
         puts "State destroyed #{state.class}"

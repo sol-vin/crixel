@@ -37,6 +37,11 @@ class PlayState < Crixel::State
     button.on_released(name: "dpad_right_released") do
       puts "DPAD Right released"
     end
+
+    button = Crixel::MouseButtons.get(Crixel::MouseButton::Code::Left)
+    button.on_released(name: "left_mouse_released") do
+      puts "Left Mouse released"
+    end
   end
 
   def pre_update

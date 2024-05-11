@@ -29,3 +29,14 @@ class Crixel::Input::GamepadButtonPoller < Crixel::Input::Poller
     triggered_buttons
   end
 end
+
+class Crixel::Input::MouseButtonPoller < Crixel::Input::Poller
+  def self.poll : Array(Input::IBase)
+    triggered_buttons = [] of Input::IBase
+    MouseButtons.all.each do |button|
+      button.poll
+      triggered_buttons << button if button.last_state? || button.current_state?
+    end
+    triggered_buttons
+  end
+end
