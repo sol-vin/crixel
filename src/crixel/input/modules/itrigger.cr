@@ -28,6 +28,4 @@ module Crixel::Input::ITrigger
       emit_moved
     end
   end
-
-
 end

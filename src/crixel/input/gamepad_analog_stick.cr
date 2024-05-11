@@ -2,8 +2,8 @@ class Crixel::Gamepad::AnalogStick
   include Input::IAnalogStick
 
   enum Code
-    Left       = 0
-    Right      = 1
+    Left  = 0
+    Right = 1
   end
 
   getter player : Player

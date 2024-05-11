@@ -17,7 +17,7 @@ class Crixel::Gamepad::Trigger
   end
 
   def poll : Nil
-    _update_trigger((Raylib.get_gamepad_axis_movement(@player.to_i, @code.to_i)+1)/2.0_f32.clamp(0, 1.0_f32))
+    _update_trigger((Raylib.get_gamepad_axis_movement(@player.to_i, @code.to_i) + 1)/2.0_f32.clamp(0, 1.0_f32))
   end
 end
 

@@ -67,6 +67,7 @@ module Crixel
       emit Game::Open
 
       until should_close?
+        Mouse.update
         Input::Manager.update
         update
         draw

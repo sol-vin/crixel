@@ -55,7 +55,9 @@ class PlayState < Crixel::State
   end
 
   def pre_update
-    @c.not_nil!.rotation = (Raylib.get_time).to_f32
+    @c.not_nil!.rotation = Raylib.get_time.to_f32
+    camera.rotation = Raylib.get_time.to_f32
+    puts camera.rotation
     # trigger = Crixel::Gamepad::Triggers.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
     # puts trigger.current_value
   end
