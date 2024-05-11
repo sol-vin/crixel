@@ -20,6 +20,7 @@ module Crixel::Assets
       content = io.gets_to_end
       image = Raylib.load_image_from_memory(extension, content, size)
       texture = Raylib.load_texture_from_image(image)
+      raise "Texture invalid" unless Raylib.texture_ready?(texture)
       @@textures[path] = texture
       true
     else
@@ -38,6 +39,7 @@ module Crixel::Assets
     if SUPPORTED_FONTS.any? { |ext| extension.upcase[1..] == ext }
       content = io.gets_to_end
       font = Raylib.load_font_from_memory(extension, content, size, @@default_font_size, Pointer(Int32).null, 0)
+      raise "Font invalid" unless Raylib.font_ready?(font)
       @@fonts[path] = font
       true
     else
@@ -80,6 +82,10 @@ module Crixel::Assets
 
   def self.get_texture(name)
     @@textures[name]
+  end
+
+  def self.get_texture?(name)
+    @@textures[name]?
   end
 
   def self.get_font(name)

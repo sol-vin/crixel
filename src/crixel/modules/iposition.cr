@@ -5,4 +5,8 @@ module Crixel::IPosition
   def position : Raylib::Vector2
     Raylib::Vector2.new(x: x, y: y)
   end
+
+    def position=(v2 : Raylib::Vector2)
+    position = v2
+  end
 end

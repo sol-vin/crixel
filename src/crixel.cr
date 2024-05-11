@@ -14,6 +14,7 @@ require "./crixel/state"
 require "./crixel/basic"
 
 require "./crixel/sprite"
+require "./crixel/text"
 
 require "./crixel/assets/**"
 
@@ -67,10 +68,12 @@ module Crixel
       emit Game::Open
 
       until should_close?
+        Raylib.begin_drawing
         Mouse.update
         Input::Manager.update
         update
         draw
+        Raylib.end_drawing
       end
 
       close
@@ -126,7 +129,6 @@ module Crixel
         state.draw if state.persist_draw
       end
     end
-    Raylib.end_drawing
   end
 
   def self.should_close?

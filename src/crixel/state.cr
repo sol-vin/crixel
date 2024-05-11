@@ -13,14 +13,14 @@ class Crixel::State
   attach Setup
 
   def add(object : Basic)
-    object.on_destroyed do |object|
+    object.on_destroyed do
       @update_order.delete(object)
       @draw_order.delete(object)
     end
     @children_added = true
     @update_order << object
     @draw_order << object
-    emit Basic::Added, object
+    object.emit_added
   end
 
   def setup
@@ -65,6 +65,7 @@ class Crixel::State
       child.draw if child.visible?
     end
     post_draw
+
     Raylib.end_mode_2d
 
     @children_added = false

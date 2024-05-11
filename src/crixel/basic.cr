@@ -7,17 +7,17 @@ class Crixel::Basic
   property draw_layer = 0.0_f32
 
   event Added, object : self
-  attach Added
+  attach_self Added
 
   event Destroyed, object : self
-  attach Destroyed
+  attach_self Destroyed
 
   getter? destroyed = false
 
   def destroy
     unless @destroyed
       @destroyed = true
-      emit Destroyed, self
+      emit_destroyed
     end
   end
 

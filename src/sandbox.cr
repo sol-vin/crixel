@@ -4,7 +4,9 @@ require "./crixel/audio"
 class PlayState < Crixel::State
   @texture = Raylib::Texture2D.new
 
-  @c : Crixel::Sprite? = nil
+  @c : Crixel::Sprite = Crixel::Sprite.new(width: 400, height: 300)
+
+  @texts : Array(Crixel::Text) = [] of Crixel::Text
 
   def setup
     # camera.offset = Raylib::Vector2.new(x: 200, y: 150)
@@ -13,9 +15,8 @@ class PlayState < Crixel::State
     camera.offset.x = 200
     camera.offset.y = 150
 
-    @c = Crixel::Sprite.new(width: 400, height: 300)
-    @c.not_nil!.origin = Raylib::Vector2.new(x: @c.not_nil!.width/2, y: @c.not_nil!.height/2)
-    add(@c.not_nil!)
+    @c.origin = Raylib::Vector2.new(x: @c.width/2, y: @c.height/2)
+    add(@c)
 
     key1 = Crixel::Keys.get(Crixel::Key::Code::Q)
 
@@ -52,14 +53,27 @@ class PlayState < Crixel::State
     stick.on_moved(name: "stick_moved") do
       puts "Stick Moved #{stick.current_value.x}, #{stick.current_value.y}"
     end
+
+    4.times { @texts << Crixel::Text.new }
+    @texts.each {|t| add(t)}
   end
 
   def pre_update
-    @c.not_nil!.rotation = Raylib.get_time.to_f32
-    camera.rotation = Raylib.get_time.to_f32
-    puts camera.rotation
-    # trigger = Crixel::Gamepad::Triggers.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
-    # puts trigger.current_value
+    @c.rotation = Raylib.get_time.to_f32
+    # camera.rotation = Raylib.get_time.to_f32
+
+    ps = @c.points
+    @texts.each_with_index do |t, i|
+      t.x = ps[i].x
+      t.y = ps[i].y
+      t.height = 20
+      t.rotation = Raylib.get_time.to_f32
+      t.origin = Raylib::Vector2.new(
+        x: t.width/2,
+        y: t.height/2
+      )
+      t.text = "#{ps[i].x.to_i}, #{ps[i].y.to_i}"
+    end
   end
 end
 

@@ -9,7 +9,7 @@ module Crixel::ICamera
     Raylib::Camera2D.new(
       target: position,
       offset: offset,
-      rotation: -(rotation/Raylib::DEG2RAD).to_f32,
+      rotation: -(rotation*Raylib::RAD2DEG).to_f32,
       zoom: zoom
     )
   end

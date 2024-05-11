@@ -10,6 +10,7 @@ module Crixel::Assets
       content = io.gets_to_end
       wave = RAudio.load_wave_from_memory(extension, content, size)
       sound = RAudio.load_sound_from_wave(wave)
+      raise "Sound invalid" unless RAudio.sound_ready?(sound)
       @@sounds[path] = sound
       true
     else
