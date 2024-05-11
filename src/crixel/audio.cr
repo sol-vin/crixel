@@ -21,12 +21,11 @@ module Crixel::Assets
     @@sounds[name]
   end
 
-  on(Crixel::Assets::PreSetup) do 
+  on(Crixel::Assets::PreSetup) do
     puts "Audio device turning on!"
     RAudio.init_audio_device
     last = Time.local
     until RAudio.audio_device_ready? || (Time.local - last).seconds < 20
-      
     end
 
     raise "Audio error" unless RAudio.audio_device_ready?
@@ -39,5 +38,3 @@ module Crixel::Assets
     RAudio.close_audio_device
   end
 end
-
-

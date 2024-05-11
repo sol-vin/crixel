@@ -1,8 +1,6 @@
 module Crixel::IRectangle
   include IPosition
-
-  property width : Int32 = 0
-  property height : Int32 = 0
+  include ISize
 
   def rectangle : Raylib::Rectangle
     Raylib::Rectangle.new(

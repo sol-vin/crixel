@@ -4,10 +4,23 @@ require "./crixel/audio"
 class PlayState < Crixel::State
   @last = 0.0
   @texture = Raylib::Texture2D.new
+
+  @c : Crixel::Sprite? = nil
+
   def setup
+    # camera.offset = Raylib::Vector2.new(x: 200, y: 150)
     RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
-    add(Crixel::Sprite.new(x: 100, width: 100, height: 100))
-    add(Crixel::Sprite.new("rsrc/logo.png", x: 200, y: 200, width: 100, height: 100))
+    camera.zoom = 0.7_f32
+    camera.offset.x = 200
+    camera.offset.y = 150
+
+    @c = Crixel::Sprite.new(width: 400, height: 300)
+    @c.not_nil!.origin = Raylib::Vector2.new(x: @c.not_nil!.width/2, y: @c.not_nil!.height/2)
+    add(@c.not_nil!)
+  end
+
+  def pre_update
+    @c.not_nil!.rotation = (Raylib.get_time).to_f32
   end
 end
 
@@ -19,24 +32,4 @@ Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 Crixel.run(400, 300, PlayState.new)
 
-# module A
-#   def a
-#     puts "A.a"
-#   end
-# end
-
-# module B
-#   include A
-#   def b
-#     a
-#     puts "B.b"
-#   end
-# end
-
-# class C
-#   include B
-# end
-
-# c = C.new
-# c.a
-# c.b
+# puts 0.0_f32.zero?

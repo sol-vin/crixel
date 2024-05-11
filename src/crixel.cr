@@ -2,6 +2,7 @@ require "minievents"
 MiniEvents.install(::Crixel::Event)
 
 require "raylib-cr"
+require "raylib-cr/rlgl"
 
 require "./crixel/modules/**"
 
@@ -10,12 +11,9 @@ require "./crixel/camera"
 require "./crixel/state"
 require "./crixel/basic"
 
-
-require "./crixel/graphic"
 require "./crixel/sprite"
 
-require "./crixel/assets"
-require "./crixel/assets/bakedfs"
+require "./crixel/assets/**"
 
 module Crixel
   VERSION       = "0.0.1"
@@ -37,12 +35,10 @@ module Crixel
 
   Crixel::Assets::BakedFS.bake(path: "default_rsrc")
 
-
   def self.run(@@width, @@height, state = State.new, @@title = "Crixel")
     if !@@running
       @@width = width
       @@height = height
-
 
       on(State::Destroyed) do |state|
         puts "State destroyed #{state.class}"

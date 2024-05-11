@@ -56,7 +56,7 @@ module Crixel::Assets
       consumer.call(path, io, size)
     end
   end
-  
+
   event PreSetup
   event Setup
   event PostSetup
