@@ -17,20 +17,25 @@ class PlayState < Crixel::State
     @c.not_nil!.origin = Raylib::Vector2.new(x: @c.not_nil!.width/2, y: @c.not_nil!.height/2)
     add(@c.not_nil!)
 
-    key1 = Crixel::Input::Keys.get(Raylib::KeyboardKey::Q)
+    key1 = Crixel::Keys.get(Crixel::Key::Code::Q)
 
-    key1.on_pressed(name: "q_pressed") do 
+    key1.on_pressed(name: "q_pressed") do
       puts "Q pressed"
     end
 
-    key1.on_released(name: "q_released") do 
+    key1.on_released(name: "q_released") do
       puts "Q released"
     end
 
-    key2 = Crixel::Input::Keys.get(Raylib::KeyboardKey::W)
-    key2.on_released(name: "w_released") do 
+    key2 = Crixel::Keys.get(Crixel::Key::Code::W)
+    key2.on_released(name: "w_released") do
       puts "W released"
       key1.delete_released("q_released")
+    end
+
+    button = Crixel::GamepadButtons.get(Crixel::Gamepad::Player::One, Crixel::GamepadButton::Code::LeftFaceRight)
+    button.on_released(name: "dpad_right_released") do
+      puts "DPAD Right released"
     end
   end
 

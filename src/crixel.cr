@@ -5,6 +5,7 @@ require "raylib-cr"
 require "raylib-cr/rlgl"
 
 require "./crixel/modules/**"
+require "./crixel/input/modules/**"
 require "./crixel/input/**"
 
 require "./crixel/camera"
@@ -38,8 +39,13 @@ module Crixel
 
   def self.run(@@width, @@height, state = State.new, @@title = "Crixel")
     if !@@running
-      @@width = width
-      @@height = height
+      Raylib.init_window(@@width, @@height, title)
+
+      Keys.setup
+      Raylib.begin_drawing
+      Raylib.end_drawing
+
+      GamepadButtons.setup
 
       on(State::Destroyed) do |state|
         puts "State destroyed #{state.class}"
@@ -51,10 +57,10 @@ module Crixel
         end
       end
 
-      Raylib.init_window(@@width, @@height, title)
       @@running = true
 
       Assets.setup
+
       push state
 
       emit Game::Open
@@ -110,7 +116,6 @@ module Crixel
   end
 
   def self.draw
-    Raylib.begin_drawing
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0

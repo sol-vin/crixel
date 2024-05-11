@@ -1,5 +1,3 @@
-
-
 abstract class Crixel::Input::Poller
   def self.poll : Array(Input::IBase)
     [] of Input::IBase
@@ -10,19 +8,7 @@ abstract class Crixel::Input::Poller
   end
 end
 
-module Crixel::Input::Keys
-  class_getter all = [] of Crixel::Input::Key
-
-  Raylib::KeyboardKey.each do |key|
-    @@all << Crixel::Input::Key.new(key)
-  end
-
-  def self.get(key : Raylib::KeyboardKey)
-    @@all.find {|k| k.keycode == key}.not_nil!
-  end
-end
-
-class Crixel::Input::Poller::Button < Crixel::Input::Poller
+class Crixel::Input::KeyPoller < Crixel::Input::Poller
   def self.poll : Array(Input::IBase)
     triggered_keys = [] of Input::IBase
     Keys.all.each do |key|
@@ -30,5 +16,16 @@ class Crixel::Input::Poller::Button < Crixel::Input::Poller
       triggered_keys << key if key.last_state? || key.current_state?
     end
     triggered_keys
+  end
+end
+
+class Crixel::Input::GamepadButtonPoller < Crixel::Input::Poller
+  def self.poll : Array(Input::IBase)
+    triggered_buttons = [] of Input::IBase
+    GamepadButtons.all.each do |button|
+      button.poll
+      triggered_buttons << button if button.last_state? || button.current_state?
+    end
+    triggered_buttons
   end
 end

@@ -32,7 +32,7 @@ module Crixel::ISprite
     top_right = Raylib::Vector2.zero
     bottom_right = Raylib::Vector2.zero
     bottom_left = Raylib::Vector2.zero
-    
+
     dest = dst_rectangle
 
     # Only calculate rotation if needed
