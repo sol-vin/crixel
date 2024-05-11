@@ -1,4 +1,4 @@
-class Crixel::MouseButton
+class Crixel::Mouse::Button
   include Input::IButton
 
   enum Code
@@ -17,20 +17,20 @@ class Crixel::MouseButton
   end
 
   def poll : Nil
-    _update(Raylib.mouse_button_down?(@code.to_i))
+    _update_button(Raylib.mouse_button_down?(@code.to_i))
   end
 end
 
-module Crixel::MouseButtons
-  class_getter all = [] of MouseButton
+module Crixel::Mouse::Buttons
+  class_getter all = [] of Mouse::Button
 
   def self.setup
-    Raylib::MouseButton.each do |button|
-      @@all << MouseButton.new(MouseButton::Code.from_value(button.to_i))
+    Mouse::Button::Code.each do |button|
+      @@all << Mouse::Button.new(Mouse::Button::Code.from_value(button.to_i))
     end
   end
 
-  def self.get(button : MouseButton::Code)
+  def self.get(button : Mouse::Button::Code)
     @@all.find { |b| b.code == button }.not_nil!
   end
 end

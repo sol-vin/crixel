@@ -33,19 +33,26 @@ class PlayState < Crixel::State
       key1.delete_released("q_released")
     end
 
-    button = Crixel::GamepadButtons.get(Crixel::Gamepad::Player::One, Crixel::GamepadButton::Code::LeftFaceRight)
+    button = Crixel::Gamepad::Buttons.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::Button::Code::LeftFaceRight)
     button.on_released(name: "dpad_right_released") do
       puts "DPAD Right released"
     end
 
-    button = Crixel::MouseButtons.get(Crixel::MouseButton::Code::Left)
+    button = Crixel::Mouse::Buttons.get(Crixel::Mouse::Button::Code::Left)
     button.on_released(name: "left_mouse_released") do
       puts "Left Mouse released"
+    end
+
+    trigger = Crixel::Gamepad::Triggers.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
+    trigger.on_pressed(name: "trigger_pressed") do
+      puts "Left Trigger pressed"
     end
   end
 
   def pre_update
     @c.not_nil!.rotation = (Raylib.get_time).to_f32
+    # trigger = Crixel::Gamepad::Triggers.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
+    # puts trigger.current_value
   end
 end
 

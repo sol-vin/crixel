@@ -27,9 +27,10 @@ module Crixel::Input::IButton
     !@last_state && !@current_state
   end
 
-  private def _update(new_state)
+  private def _update_button(new_state)
     @last_state = @current_state
     @current_state = @simulated_press || new_state
+    @simulated_press = false
 
     if pressed?
       emit_pressed

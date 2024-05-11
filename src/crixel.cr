@@ -41,9 +41,11 @@ module Crixel
     if !@@running
       Raylib.init_window(@@width, @@height, title)
 
+      Raylib.poll_input_events
       Keys.setup
-      GamepadButtons.setup
-      MouseButtons.setup
+      Gamepad::Buttons.setup
+      Gamepad::Triggers.setup
+      Mouse::Buttons.setup
 
       on(State::Destroyed) do |state|
         puts "State destroyed #{state.class}"

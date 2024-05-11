@@ -1,4 +1,4 @@
-class Crixel::GamepadButton
+class Crixel::Gamepad::Button
   include Input::IButton
 
   enum Code
@@ -22,42 +22,36 @@ class Crixel::GamepadButton
     RightThumb     = 17
   end
 
-  getter player : Gamepad::Player
+  getter player : Player
   getter code : Code
 
   def initialize(@player, @code)
   end
 
   def poll : Nil
-    _update(Raylib.gamepad_button_down?(@player.to_i, @code.to_i))
+    _update_button(Raylib.gamepad_button_down?(@player.to_i, @code.to_i))
   end
 end
 
-module Crixel::GamepadButtons
-  class_getter all = [] of GamepadButton
+module Crixel::Gamepad::Buttons
+  class_getter all = [] of Button
 
   def self.setup
-    # Polls input
-    Raylib.poll_input_events
+    players = [] of Player
 
-    players = [] of Gamepad::Player
-
-    Gamepad::Player.each do |player|
+    Player.each do |player|
       if player.available?
         players << player
       end
     end
-
-    puts players
-
-    Raylib::GamepadButton.each do |code|
+    Button::Code.each do |code|
       players.each do |player|
-        @@all << GamepadButton.new(player, GamepadButton::Code.from_value(code.to_i))
+        @@all << Button.new(player, Button::Code.from_value(code.to_i))
       end
     end
   end
 
-  def self.get(player : Gamepad::Player, code : GamepadButton::Code)
+  def self.get(player : Player, code : Button::Code)
     button = @@all.find { |b| b.code == code && b.player == player }
     raise "Player #{player} did not exist :(" if button.nil?
     button.not_nil!

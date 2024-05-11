@@ -120,7 +120,7 @@ class Crixel::Key
   end
 
   def poll : Nil
-    _update(Raylib.key_down?(@code.to_i))
+    _update_button(Raylib.key_down?(@code.to_i))
   end
 end
 
@@ -128,7 +128,7 @@ module Crixel::Keys
   class_getter all = [] of Key
 
   def self.setup
-    Raylib::KeyboardKey.each do |key|
+    Key::Code.each do |key|
       @@all << Key.new(Key::Code.from_value(key.to_i))
     end
   end
