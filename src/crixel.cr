@@ -45,6 +45,7 @@ module Crixel
       Keys.setup
       Gamepad::Buttons.setup
       Gamepad::Triggers.setup
+      Gamepad::AnalogSticks.setup
       Mouse::Buttons.setup
 
       on(State::Destroyed) do |state|

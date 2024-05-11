@@ -47,6 +47,11 @@ class PlayState < Crixel::State
     trigger.on_pressed(name: "trigger_pressed") do
       puts "Left Trigger pressed"
     end
+
+    stick = Crixel::Gamepad::AnalogSticks.get(Crixel::Gamepad::Player::One, Crixel::Gamepad::AnalogStick::Code::Left)
+    stick.on_moved(name: "stick_moved") do
+      puts "Stick Moved #{stick.current_value.x}, #{stick.current_value.y}"
+    end
   end
 
   def pre_update
