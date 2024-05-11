@@ -2,7 +2,6 @@ require "./crixel"
 require "./crixel/audio"
 
 class PlayState < Crixel::State
-  @last = 0.0
   @texture = Raylib::Texture2D.new
 
   @c : Crixel::Sprite? = nil
@@ -17,6 +16,22 @@ class PlayState < Crixel::State
     @c = Crixel::Sprite.new(width: 400, height: 300)
     @c.not_nil!.origin = Raylib::Vector2.new(x: @c.not_nil!.width/2, y: @c.not_nil!.height/2)
     add(@c.not_nil!)
+
+    key1 = Crixel::Input::Keys.get(Raylib::KeyboardKey::Q)
+
+    key1.on_pressed(name: "q_pressed") do 
+      puts "Q pressed"
+    end
+
+    key1.on_released(name: "q_released") do 
+      puts "Q released"
+    end
+
+    key2 = Crixel::Input::Keys.get(Raylib::KeyboardKey::W)
+    key2.on_released(name: "w_released") do 
+      puts "W released"
+      key1.delete_released("q_released")
+    end
   end
 
   def pre_update
@@ -32,4 +47,4 @@ Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 Crixel.run(400, 300, PlayState.new)
 
-# puts 0.0_f32.zero?
+# # puts 0.0_f32.zero?

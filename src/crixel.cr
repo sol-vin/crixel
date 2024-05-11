@@ -5,6 +5,7 @@ require "raylib-cr"
 require "raylib-cr/rlgl"
 
 require "./crixel/modules/**"
+require "./crixel/input/**"
 
 require "./crixel/camera"
 
@@ -59,6 +60,7 @@ module Crixel
       emit Game::Open
 
       until should_close?
+        Input::Manager.update
         update
         draw
       end

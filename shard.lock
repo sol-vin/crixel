@@ -6,7 +6,7 @@ shards:
 
   minievents:
     git: https://github.com/sol-vin/minievents.git
-    version: 0.1.0+git.commit.db253c47f5d6dbb4d94057b7ead10cb68646d3ad
+    version: 0.1.0+git.commit.02b6b4791d5aa63e3758d3c20b16dc98a786aee6
 
   raylib-cr:
     git: https://github.com/sol-vin/raylib-cr.git
