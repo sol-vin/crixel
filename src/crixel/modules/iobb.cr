@@ -14,7 +14,12 @@ module Crixel::IOBB
     sin_rotation = Math.sin(rotation)
     cos_rotation = Math.cos(rotation)
 
-    dest = dst_rectangle
+    dest = Rectangle.new(
+      dst_rectangle.x + origin.x,
+      dst_rectangle.y + origin.y,
+      dst_rectangle.width,
+      dst_rectangle.height
+    )
 
     x = dest.x
     y = dest.y
@@ -48,8 +53,8 @@ module Crixel::IOBB
   # Used by sprites to draw to the screen before the rotation and offset takes place
   def dst_rectangle
     Rectangle.new(
-      x: x,
-      y: y,
+      x: x - origin.x,
+      y: y - origin.y,
       width: width,
       height: height
     )

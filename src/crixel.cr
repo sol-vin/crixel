@@ -11,6 +11,7 @@ require "./crixel/input/modules/**"
 require "./crixel/input/**"
 
 require "./crixel/camera"
+require "./crixel/timer"
 
 require "./crixel/state"
 require "./crixel/basic"

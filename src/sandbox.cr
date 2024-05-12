@@ -77,6 +77,12 @@ class PlayState < Crixel::State
       t.text = "#{ps[i].x.to_i}, #{ps[i].y.to_i}"
     end
   end
+
+  def post_draw
+    @c.src_rectangle.draw(Crixel::Color::RGBA.new(r: 255, a: 255))
+    @c.dst_rectangle.draw(Crixel::Color::RGBA.new(b: 255, a: 255))
+    @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))
+  end
 end
 
 Crixel.run(400, 300, PlayState.new)

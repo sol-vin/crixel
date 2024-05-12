@@ -4,9 +4,9 @@ Design:
 
 
 # TODO
-  - Raylib compatable types - Vector2, Color, Rectangle
-  - Timer
-  - Particles
+  <!-- - Raylib compatable types - Vector2, Color, Rectangle -->
+  <!-- - Timer -->
+  - Primitives (Circle, Rectangle, Point, etc)
   - RenderTexture and Image
     - Link RenderTexture to Assets?
     - Image to Assets.
@@ -21,4 +21,5 @@ Design:
     - Scissor 
   - Shaders?
     - see begin_shader_mode and https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_texture_outline.c
+  - Particles
   - 

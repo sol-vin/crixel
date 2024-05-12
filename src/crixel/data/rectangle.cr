@@ -19,4 +19,16 @@ struct Crixel::Rectangle
       height: height
     )
   end
+
+  def draw(tint : Color, fill = false)
+    Rectangle.draw(x, y, width, height, tint, fill)
+  end
+
+  def self.draw(x, y, width, height, tint : Color, fill = false)
+    if fill
+      Raylib.draw_rectangle(x, y, width, height, tint.to_rgba.to_raylib)
+    else
+      Raylib.draw_rectangle_lines(x, y, width, height, tint.to_rgba.to_raylib)
+    end
+  end
 end

@@ -1,0 +1,3 @@
+class Crixel::RenderTexture
+  
+end

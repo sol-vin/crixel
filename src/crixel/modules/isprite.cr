@@ -3,12 +3,23 @@ module Crixel::ISprite
 
   # TODO: Make a new texture class to hold this kind of info
   property texture : String = "default_rsrc/logo.png"
-  setter source_rectangle : Rectangle? = nil
+  setter src_rectangle : Rectangle? = nil
   property tint : Color::RGBA = Color::RGBA.new(r: 0xFF, b: 0xFF, g: 0xFF, a: 0xFF)
 
-  def source_rectangle : Rectangle
+  def src_rectangle : Rectangle
     raylib_texture = Assets.get_texture(texture)
-    @source_rectangle ? @source_rectangle.not_nil! : Rectangle.new(x: 0, y: 0, width: raylib_texture.width, height: raylib_texture.height)
+    @src_rectangle ? @src_rectangle.not_nil! : Rectangle.new(x: 0, y: 0, width: raylib_texture.width, height: raylib_texture.height)
+  end
+
+  # Boubding box around the sprite's drawing area (includes rotation)
+  def draw_area_bounding_box(tint : Color)
+    points = self.points
+    min_x = points.map(&.x).min
+    min_y = points.map(&.y).min
+    max_x = points.map(&.x).max
+    max_y = points.map(&.y).max
+
+    Rectangle.draw(min_x, min_y, max_x-min_x, max_y-min_y, tint, false)
   end
 
   def draw_sprite
@@ -17,7 +28,7 @@ module Crixel::ISprite
 
     flip_x = false
 
-    source = source_rectangle
+    source = src_rectangle
 
     if source.width < 0
       flip_x = true
@@ -33,7 +44,13 @@ module Crixel::ISprite
     bottom_right = Vector2.zero
     bottom_left = Vector2.zero
 
-    dest = dst_rectangle
+    dest = Rectangle.new(
+      dst_rectangle.x + origin.x,
+      dst_rectangle.y + origin.y,
+      dst_rectangle.width,
+      dst_rectangle.height
+    )
+
 
     # Only calculate rotation if needed
     if (rotation.zero?)

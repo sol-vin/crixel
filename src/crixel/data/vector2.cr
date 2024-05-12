@@ -154,4 +154,8 @@ struct Crixel::Vector2
   def to_raylib
     Raylib::Vector2.new(x: x, y: y)
   end
+
+  def draw(tint : Color, radius = 1)
+    Raylib.draw_circle(x, y, radius, tint.to_rgba.to_raylib)
+  end
 end
