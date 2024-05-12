@@ -2,11 +2,11 @@ module Crixel::Asset
 end
 
 struct Raylib::Texture2D
-  include Crixel::Asset 
+  include Crixel::Asset
 end
 
 struct Raylib::Font
-  include Crixel::Asset 
+  include Crixel::Asset
 end
 
 module Crixel::Assets
@@ -21,11 +21,11 @@ module Crixel::Assets
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
 
-  event Unload 
+  event Unload
 
   # Tracks when an asset has been destroyed
   event Destroyed, asset : Asset
-  
+
   def self.add_consumer(&block : ConsumerCallback)
     @@consumers << block
   end

@@ -3,7 +3,7 @@ module Crixel::ICamera
   abstract def offset : Vector2
   abstract def rotation : Float32
   abstract def zoom : Float32
-  abstract def bg_color : Raylib::Color
+  abstract def bg_color : Color::RGBA
 
   def to_raylib : Raylib::Camera2D
     Raylib::Camera2D.new(

@@ -6,9 +6,9 @@ class Crixel::Camera
   property rotation : Float32 = 0.0_f32
   property zoom : Float32 = 1.0_f32
 
-  property bg_color : Raylib::Color = Raylib::Color.new
+  property bg_color : Color::RGBA = Color::RGBA.new
 
-  def initialize(@position = Vector2.zero, @offset = Vector2.zero, @rotation = 0.0_f32, @zoom = 1.0_f32, @bg_color = Raylib::Color.new)
+  def initialize(@position = Vector2.zero, @offset = Vector2.zero, @rotation = 0.0_f32, @zoom = 1.0_f32, @bg_color = Color::RGBA.new)
   end
 
   def follow(x, y, speed)

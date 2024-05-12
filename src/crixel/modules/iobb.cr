@@ -47,7 +47,7 @@ module Crixel::IOBB
 
   # Used by sprites to draw to the screen before the rotation and offset takes place
   def dst_rectangle
-    Raylib::Rectangle.new(
+    Rectangle.new(
       x: x,
       y: y,
       width: width,
@@ -55,7 +55,7 @@ module Crixel::IOBB
     )
   end
 
-  def draw_points(color : Raylib::Color)
+  def draw_points(color : Color::RGBA)
     points.each do |point|
       Raylib.draw_circle_v(point, 4, color)
       Raylib.draw_text("#{point.x.round(1)}, #{point.y.round(1)}", point.x, point.y, 12, Raylib::WHITE)

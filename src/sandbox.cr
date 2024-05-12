@@ -55,21 +55,21 @@ class PlayState < Crixel::State
     end
 
     4.times { @texts << Crixel::Text.new }
-    @texts.each {|t| add(t)}
+    @texts.each { |t| add(t) }
   end
 
   def pre_update
     @c.rotation = Raylib.get_time.to_f32
 
     # Camera has to spin the opposite way
-    camera.rotation = -Raylib.get_time.to_f32
+    # camera.rotation = -Raylib.get_time.to_f32
 
     ps = @c.points
     @texts.each_with_index do |t, i|
       t.x = ps[i].x
       t.y = ps[i].y
       t.height = 20
-      t.rotation = Raylib.get_time.to_f32
+      # t.rotation = Raylib.get_time.to_f32
       t.origin = Crixel::Vector2.new(
         x: t.width/2,
         y: t.height/2

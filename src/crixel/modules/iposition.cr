@@ -6,7 +6,7 @@ module Crixel::IPosition
     Vector2.new(x: x, y: y)
   end
 
-    def position=(v2 : Vector2)
+  def position=(v2 : Vector2)
     position = v2
   end
 end

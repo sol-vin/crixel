@@ -32,7 +32,7 @@ struct Crixel::Vector2
     Vector2.new(x: 1, y: 0)
   end
 
-  def initialize(x : Number = 0.0_f32, y  : Number = 0.0_f32)
+  def initialize(x : Number = 0.0_f32, y : Number = 0.0_f32)
     @x = x.to_f32
     @y = y.to_f32
   end

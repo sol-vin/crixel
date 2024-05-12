@@ -59,7 +59,7 @@ class Crixel::State
   def draw
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     Raylib.begin_mode_2d(camera.to_raylib)
-    Raylib.clear_background(camera.bg_color)
+    Raylib.clear_background(camera.bg_color.to_raylib)
     pre_draw
     @draw_order.each do |child|
       child.draw if child.visible?

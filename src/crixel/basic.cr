@@ -1,7 +1,7 @@
 class Crixel::Basic
   include IUpdate
   include IDraw
-  
+
   getter id : UInt32 = Crixel.get_id
 
   event Added, object : self
