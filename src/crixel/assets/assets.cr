@@ -1,3 +1,14 @@
+module Crixel::Asset
+end
+
+struct Raylib::Texture2D
+  include Crixel::Asset 
+end
+
+struct Raylib::Font
+  include Crixel::Asset 
+end
+
 module Crixel::Assets
   alias ConsumerCallback = Proc(String, IO, Int32, Bool)
   SUPPORTED_TEXTURES = %w[PNG BMP TGA JPG GIF QOI PSD DDS HDR KTX ASTC PKM PVR]
@@ -10,6 +21,11 @@ module Crixel::Assets
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
 
+  event Unload 
+
+  # Tracks when an asset has been destroyed
+  event Destroyed, asset : Asset
+  
   def self.add_consumer(&block : ConsumerCallback)
     @@consumers << block
   end
@@ -90,5 +106,21 @@ module Crixel::Assets
 
   def self.get_font(name)
     @@fonts[name]
+  end
+
+  def self.unload
+    @@textures.values.each do |t|
+      Raylib.unload_texture(t)
+      emit Destroyed, t
+    end
+    @@textures.clear
+
+    @@fonts.values.each do |f|
+      Raylib.unload_font(f)
+      emit Destroyed, f
+    end
+    @@fonts.clear
+
+    emit Unload
   end
 end

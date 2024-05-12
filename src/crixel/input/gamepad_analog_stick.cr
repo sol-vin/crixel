@@ -16,7 +16,7 @@ class Crixel::Gamepad::AnalogStick
     x_axis = (@code == Code::Left) ? Raylib::GamepadAxis::LeftX : Raylib::GamepadAxis::RightX
     y_axis = (@code == Code::Left) ? Raylib::GamepadAxis::LeftY : Raylib::GamepadAxis::RightY
 
-    position = Raylib::Vector2.zero
+    position = Vector2.zero
     position.x = Raylib.get_gamepad_axis_movement(@player.to_i, x_axis)
     position.y = Raylib.get_gamepad_axis_movement(@player.to_i, y_axis)
 

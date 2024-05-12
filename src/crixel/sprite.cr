@@ -9,7 +9,7 @@ class Crixel::Sprite < Crixel::Basic
     @y = 0.0_f32,
     width : Int32? = nil,
     height : Int32? = nil,
-    offset : Raylib::Vector2 = Raylib::Vector2.zero
+    offset : Vector2 = Vector2.zero
   )
     r_texture = Crixel::Assets.get_texture?(@texture)
 

@@ -1,5 +1,9 @@
 require "raylib-cr/audio"
 
+struct RAudio::Sound
+  include Crixel::Asset
+end
+
 module Crixel::Assets
   SUPPORTED_SOUNDS = %w[WAV OGG MP3 FLAC XM MOD QOA]
   @@sounds = {} of String => RAudio::Sound
@@ -22,7 +26,7 @@ module Crixel::Assets
     @@sounds[name]
   end
 
-  on(Crixel::Assets::PreSetup) do
+  on(PreSetup) do
     puts "Audio device turning on!"
     RAudio.init_audio_device
     last = Time.local
@@ -32,10 +36,14 @@ module Crixel::Assets
     raise "Audio error" unless RAudio.audio_device_ready?
     puts "Audio device on!"
   end
-  on(Crixel::Game::Close) do
+
+  on(Unload) do
     @@sounds.values.each do |s|
       RAudio.unload_sound(s)
+      emit Destroyed, s
     end
+    @@sounds.clear
+
     RAudio.close_audio_device
   end
 end

@@ -9,13 +9,13 @@ class PlayState < Crixel::State
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
   def setup
-    # camera.offset = Raylib::Vector2.new(x: 200, y: 150)
+    # camera.offset = Vector2.new(x: 200, y: 150)
     RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
     camera.zoom = 0.7_f32
     camera.offset.x = 200
     camera.offset.y = 150
 
-    @c.origin = Raylib::Vector2.new(x: @c.width/2, y: @c.height/2)
+    @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
     add(@c)
 
     key1 = Crixel::Keys.get(Crixel::Key::Code::Q)
@@ -60,7 +60,9 @@ class PlayState < Crixel::State
 
   def pre_update
     @c.rotation = Raylib.get_time.to_f32
-    # camera.rotation = Raylib.get_time.to_f32
+
+    # Camera has to spin the opposite way
+    camera.rotation = -Raylib.get_time.to_f32
 
     ps = @c.points
     @texts.each_with_index do |t, i|
@@ -68,7 +70,7 @@ class PlayState < Crixel::State
       t.y = ps[i].y
       t.height = 20
       t.rotation = Raylib.get_time.to_f32
-      t.origin = Raylib::Vector2.new(
+      t.origin = Crixel::Vector2.new(
         x: t.width/2,
         y: t.height/2
       )
@@ -77,12 +79,4 @@ class PlayState < Crixel::State
   end
 end
 
-Crixel::Assets::BakedFS.bake(path: "rsrc")
-
-# on Crixel::Assets::Setup do
-#   Crixel::Assets.load_from_path("rsrc/wire.png")
-# end
-
 Crixel.run(400, 300, PlayState.new)
-
-# # puts 0.0_f32.zero?

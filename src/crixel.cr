@@ -4,6 +4,8 @@ MiniEvents.install(::Crixel::Event)
 require "raylib-cr"
 require "raylib-cr/rlgl"
 
+require "./crixel/data/**"
+
 require "./crixel/modules/**"
 require "./crixel/input/modules/**"
 require "./crixel/input/**"
@@ -76,6 +78,7 @@ module Crixel
         Raylib.end_drawing
       end
 
+      Assets.unload
       close
     else
       raise "Crixel is already running!"

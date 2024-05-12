@@ -16,6 +16,6 @@ class Crixel::Text < Crixel::Basic
   end
 
   def draw
-    Raylib.draw_text_pro(Assets.get_font(font), text, position, origin, rotation*Raylib::RAD2DEG, height, spacing, tint)
+    Raylib.draw_text_pro(Assets.get_font(font), text, position.to_raylib, origin.to_raylib, rotation*Raylib::RAD2DEG, height, spacing, tint)
   end
 end

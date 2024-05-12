@@ -28,10 +28,10 @@ module Crixel::ISprite
       source.y -= source.height
     end
 
-    top_left = Raylib::Vector2.zero
-    top_right = Raylib::Vector2.zero
-    bottom_right = Raylib::Vector2.zero
-    bottom_left = Raylib::Vector2.zero
+    top_left = Vector2.zero
+    top_right = Vector2.zero
+    bottom_right = Vector2.zero
+    bottom_left = Vector2.zero
 
     dest = dst_rectangle
 
@@ -39,10 +39,10 @@ module Crixel::ISprite
     if (rotation.zero?)
       x = dest.x - origin.x
       y = dest.y - origin.y
-      top_left = Raylib::Vector2.new(x: x, y: y)
-      top_right = Raylib::Vector2.new(x: x + dest.width, y: y)
-      bottom_left = Raylib::Vector2.new(x: x, y: y + dest.height)
-      bottom_right = Raylib::Vector2.new(x: x + dest.width, y: y + dest.height)
+      top_left = Vector2.new(x: x, y: y)
+      top_right = Vector2.new(x: x + dest.width, y: y)
+      bottom_left = Vector2.new(x: x, y: y + dest.height)
+      bottom_right = Vector2.new(x: x + dest.width, y: y + dest.height)
     else
       points = self.points
       top_left = points[0]

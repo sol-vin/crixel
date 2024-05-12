@@ -7,10 +7,10 @@ module Crixel::IOBB
   include ISize
   include IRotation
 
-  property offset : Raylib::Vector2 = Raylib::Vector2.zero
+  property offset : Vector2 = Vector2.zero
 
-  def points : StaticArray(Raylib::Vector2, 4)
-    points = StaticArray(Raylib::Vector2, 4).new(Raylib::Vector2.zero)
+  def points : StaticArray(Vector2, 4)
+    points = StaticArray(Vector2, 4).new(Vector2.zero)
     sin_rotation = Math.sin(rotation)
     cos_rotation = Math.cos(rotation)
 
@@ -21,10 +21,10 @@ module Crixel::IOBB
     dx = -origin.x
     dy = -origin.y
 
-    top_left = Raylib::Vector2.zero
-    top_right = Raylib::Vector2.zero
-    bottom_right = Raylib::Vector2.zero
-    bottom_left = Raylib::Vector2.zero
+    top_left = Vector2.zero
+    top_right = Vector2.zero
+    bottom_right = Vector2.zero
+    bottom_left = Vector2.zero
 
     top_left.x = x + dx*cos_rotation - dy*sin_rotation
     top_left.y = y + dx*sin_rotation + dy*cos_rotation
