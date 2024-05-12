@@ -45,8 +45,8 @@ module Crixel::IOBB
 
     points[0] = top_left
     points[1] = top_right
-    points[2] = bottom_left
-    points[3] = bottom_right
+    points[2] = bottom_right
+    points[3] = bottom_left
     points
   end
 
@@ -65,5 +65,25 @@ module Crixel::IOBB
       Raylib.draw_circle_v(point, 4, color)
       Raylib.draw_text("#{point.x.round(1)}, #{point.y.round(1)}", point.x, point.y, 12, Raylib::WHITE)
     end
+  end
+
+    # Bounding box around the sprite's drawing area (includes rotation)
+  def draw_area_bounding_box(tint : Color, fill = false)
+    points = self.points
+    min_x = points.map(&.x).min
+    min_y = points.map(&.y).min
+    max_x = points.map(&.x).max
+    max_y = points.map(&.y).max
+
+    Rectangle.draw(min_x, min_y, max_x-min_x, max_y-min_y, tint, fill)
+  end
+
+  def draw_obb(tint : Color)
+    points = self.points
+    color = tint.to_raylib
+    Raylib.draw_line(points[0].x, points[0].y, points[1].x, points[1].y, color)
+    Raylib.draw_line(points[1].x, points[1].y, points[2].x, points[2].y, color)
+    Raylib.draw_line(points[2].x, points[2].y, points[3].x, points[3].y, color)
+    Raylib.draw_line(points[3].x, points[3].y, points[0].x, points[0].y, color)
   end
 end

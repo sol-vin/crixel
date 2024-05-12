@@ -82,6 +82,7 @@ class PlayState < Crixel::State
     @c.src_rectangle.draw(Crixel::Color::RGBA.new(r: 255, a: 255))
     @c.dst_rectangle.draw(Crixel::Color::RGBA.new(b: 255, a: 255))
     @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))
+    @c.draw_obb(Crixel::Color::RGBA.new(r: 255, g: 255, a: 255))
   end
 end
 

@@ -11,17 +11,6 @@ module Crixel::ISprite
     @src_rectangle ? @src_rectangle.not_nil! : Rectangle.new(x: 0, y: 0, width: raylib_texture.width, height: raylib_texture.height)
   end
 
-  # Boubding box around the sprite's drawing area (includes rotation)
-  def draw_area_bounding_box(tint : Color)
-    points = self.points
-    min_x = points.map(&.x).min
-    min_y = points.map(&.y).min
-    max_x = points.map(&.x).max
-    max_y = points.map(&.y).max
-
-    Rectangle.draw(min_x, min_y, max_x-min_x, max_y-min_y, tint, false)
-  end
-
   def draw_sprite
     r_texture = Assets.get_texture(texture)
     raise "Cannot open texture" unless Raylib.texture_ready? r_texture
@@ -64,8 +53,8 @@ module Crixel::ISprite
       points = self.points
       top_left = points[0]
       top_right = points[1]
-      bottom_left = points[2]
-      bottom_right = points[3]
+      bottom_left = points[3]
+      bottom_right = points[2]
     end
 
     RLGL.set_texture(r_texture.id)
