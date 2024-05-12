@@ -9,4 +9,8 @@ module Crixel::IPosition
   def position=(v2 : Vector2)
     position = v2
   end
+
+  def draw_position(tint : Color, radius = 1)
+    Raylib.draw_circle(x, y, radius, tint.to_rgba.to_raylib)
+  end
 end

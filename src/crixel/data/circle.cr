@@ -9,11 +9,15 @@ struct Crixel::Circle
     @radius = radius.to_f32
   end
 
-  def draw(tint : Color, fill = false)
+  def draw(tint : Color = Color::RGBA::WHITE, fill = false)
+    Circle.draw(x, y, radius, tint, fill)
+  end
+
+  def self.draw(x, y, radius, tint : Color = Color::RGBA::WHITE, fill = false)
     if fill
       Raylib.draw_circle(x, y, radius, tint.to_rgba.to_raylib)
     else
-      Raylib.draw_circle_lines(Raylib::Vector2.new(x: x, y: y), radius, tint.to_rgba.to_raylib)
+      Raylib.draw_circle_lines(x, y, radius, tint.to_rgba.to_raylib)
     end
   end
 end

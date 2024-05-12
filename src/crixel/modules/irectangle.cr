@@ -10,4 +10,8 @@ module Crixel::IRectangle
       height: height
     )
   end
+
+  def draw_rectangle(tint : Color, fill = false)
+    Rectangle.draw(x, y, width, height, tint, fill)
+  end
 end

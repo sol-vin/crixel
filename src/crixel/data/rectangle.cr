@@ -20,11 +20,11 @@ struct Crixel::Rectangle
     )
   end
 
-  def draw(tint : Color, fill = false)
+  def draw(tint : Color = Color::RGBA::WHITE, fill = false)
     Rectangle.draw(x, y, width, height, tint, fill)
   end
 
-  def self.draw(x, y, width, height, tint : Color, fill = false)
+  def self.draw(x, y, width, height, tint : Color = Color::RGBA::WHITE, fill = false)
     if fill
       Raylib.draw_rectangle(x, y, width, height, tint.to_rgba.to_raylib)
     else

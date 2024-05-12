@@ -60,10 +60,10 @@ module Crixel::IOBB
     )
   end
 
-  def draw_points(color : Color::RGBA)
+  def draw_points(color : Color, display_text = false)
     points.each do |point|
-      Raylib.draw_circle_v(point, 4, color)
-      Raylib.draw_text("#{point.x.round(1)}, #{point.y.round(1)}", point.x, point.y, 12, Raylib::WHITE)
+      Raylib.draw_circle_v(point, 4, color.to_raylib)
+      Raylib.draw_text("#{point.x.round(1)}, #{point.y.round(1)}", point.x, point.y, 12, Raylib::WHITE) if display_text
     end
   end
 
@@ -85,5 +85,12 @@ module Crixel::IOBB
     Raylib.draw_line(points[1].x, points[1].y, points[2].x, points[2].y, color)
     Raylib.draw_line(points[2].x, points[2].y, points[3].x, points[3].y, color)
     Raylib.draw_line(points[3].x, points[3].y, points[0].x, points[0].y, color)
+  end
+
+  def draw_rotation(scale = 40, tint : Color = Color::RGBA::WHITE)
+    Circle.draw(x, y, 3, tint)
+    line = Vector2.unit_y.rotate(rotation).scale(scale) * -1
+    line += position
+    Raylib.draw_line(x, y, line.x, line.y, tint.to_raylib)
   end
 end
