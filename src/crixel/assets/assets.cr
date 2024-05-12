@@ -24,7 +24,7 @@ module Crixel::Assets
   event Unload
 
   # Tracks when an asset has been destroyed
-  event Destroyed, asset : Asset
+  event Asset::Destroyed, asset : Asset
 
   def self.add_consumer(&block : ConsumerCallback)
     @@consumers << block
@@ -44,12 +44,6 @@ module Crixel::Assets
     end
   end
 
-  on(Game::Close) do
-    @@textures.values.each do |t|
-      Raylib.unload_texture(t)
-    end
-  end
-
   add_consumer do |path, io, size|
     extension = Path.new(path).extension.downcase
     if SUPPORTED_FONTS.any? { |ext| extension.upcase[1..] == ext }
@@ -60,12 +54,6 @@ module Crixel::Assets
       true
     else
       false
-    end
-  end
-
-  on(Game::Close) do
-    @@fonts.values.each do |f|
-      Raylib.unload_font(f)
     end
   end
 
@@ -111,13 +99,13 @@ module Crixel::Assets
   def self.unload
     @@textures.values.each do |t|
       Raylib.unload_texture(t)
-      emit Destroyed, t
+      emit Asset::Destroyed, t
     end
     @@textures.clear
 
     @@fonts.values.each do |f|
       Raylib.unload_font(f)
-      emit Destroyed, f
+      emit Asset::Destroyed, f
     end
     @@fonts.clear
 

@@ -17,8 +17,13 @@ Design:
     - Custom loader
       - Opens raylib during compilation process to make asset entries in Assets.
       - Should include metadata like texture size etc for better responsiveness 
+      - Include a progress bar
+      - Should automatically halt back to compilation process
+    - Proper compression for baked filesystem
+      - Check to make sure compression is working for baked_file_system
+      - If not make sol-vin/baked_file_system the way it should be (full customize)
   - Scissor mode?
-    - Scissor 
+    - Scissor
   - Shaders?
     - see begin_shader_mode and https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_texture_outline.c
   - Particles

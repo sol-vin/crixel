@@ -8,9 +8,29 @@ class Crixel::State
 
   getter camera : ICamera = Camera.new
 
-  event Setup, state : self
+  event Destroyed, state : self
+  attach_self Destroyed
 
-  attach Setup
+  event Changed, state : self
+  attach_self Changed
+
+  event Setup, state : self
+  attach_self Setup
+
+  event PreUpdate, state : self
+  attach_self PreUpdate
+
+  event PostUpdate, state : self
+  attach_self PostUpdate
+
+  event PreDraw, state : self
+  attach_self PreDraw
+
+  event PostDraw, state : self
+  attach_self PostDraw
+
+  def initialize
+  end
 
   def add(object : Basic)
     object.on_destroyed do
@@ -24,7 +44,7 @@ class Crixel::State
   end
 
   def setup
-    emit_setup self
+    emit_setup
   end
 
   def sort_update
@@ -40,9 +60,11 @@ class Crixel::State
   end
 
   def pre_update
+    emit_pre_update
   end
 
   def update
+    Input::Manager.update
     pre_update
     @update_order.each do |child|
       child.update if child.active?
@@ -51,9 +73,11 @@ class Crixel::State
   end
 
   def post_update
+    emit_post_update
   end
 
   def pre_draw
+    emit_pre_draw
   end
 
   def draw
@@ -62,7 +86,9 @@ class Crixel::State
     Raylib.clear_background(camera.bg_color.to_raylib)
     pre_draw
     @draw_order.each do |child|
-      child.draw if child.visible?
+      if child.visible?
+        child.draw
+      end
     end
     post_draw
 
@@ -72,6 +98,7 @@ class Crixel::State
   end
 
   def post_draw
+    emit_post_draw
   end
 
   def destroy

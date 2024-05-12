@@ -40,7 +40,6 @@ module Crixel::ISprite
       dst_rectangle.height
     )
 
-
     # Only calculate rotation if needed
     if (rotation.zero?)
       x = dest.x - origin.x

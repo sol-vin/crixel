@@ -34,25 +34,20 @@ module Crixel
 
   @@states = [] of State
 
-  event State::Destroyed, state : State
-  event State::Changed, state : State
-  event Game::Open
-  event Game::Close
+  class_getter running_state : State = State.new
 
-  Crixel::Assets::BakedFS.bake(path: "default_rsrc")
+  event Open
+  event Close
+
+  macro install_default_assets
+    Crixel::Assets::BakedFS.bake(path: "default_rsrc")
+  end
 
   def self.run(@@width, @@height, state = State.new, @@title = "Crixel")
     if !@@running
       Raylib.init_window(@@width, @@height, title)
 
-      Raylib.poll_input_events
-      Keys.setup
-      Gamepad::Buttons.setup
-      Gamepad::Triggers.setup
-      Gamepad::AnalogSticks.setup
-      Mouse::Buttons.setup
-
-      on(State::Destroyed) do |state|
+      state.on_destroyed do
         puts "State destroyed #{state.class}"
         if state == main_state
           old = @@states.pop
@@ -68,12 +63,11 @@ module Crixel
 
       push state
 
-      emit Game::Open
+      emit Open
 
       until should_close?
         Raylib.begin_drawing
         Mouse.update
-        Input::Manager.update
         update
         draw
         Raylib.end_drawing
@@ -98,15 +92,17 @@ module Crixel
   end
 
   def self.push(state : State)
+    @@running_state = state
     state.setup
+
     @@states.push state
-    emit State::Changed, state
+    state.emit_changed
   end
 
   def self.pop
     state = @@states.pop
     state.destroy
-    emit State::Changed, main_state
+    main_state.emit_changed
   end
 
   def self.main_state
@@ -117,9 +113,13 @@ module Crixel
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
+        @@running_state = state
         state.update
       else
-        state.update if state.persist_update
+        if state.persist_update
+          @@running_state = state
+          state.update
+        end
       end
     end
   end
@@ -128,9 +128,13 @@ module Crixel
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
+        @@running_state = state
         state.draw
       else
-        state.draw if state.persist_draw
+        if state.persist_draw
+          @@running_state = state
+          state.draw
+        end
       end
     end
   end
@@ -141,7 +145,7 @@ module Crixel
 
   def self.close
     @@running = false
-    emit Game::Close
+    emit Close
     Raylib.close_window
   end
 end
