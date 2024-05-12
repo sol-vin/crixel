@@ -75,8 +75,7 @@ end
 class Crixel::State
   getter inputs : Crixel::Inputs = Crixel::Inputs.new
 
-  on(State::Setup) do |state|
-    puts "I WORKED!!!!!!!!!!!!!!!!!!!"
+  on(State::PreSetup) do |state|
     state.inputs.setup
   end
 end

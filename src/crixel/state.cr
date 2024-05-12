@@ -14,8 +14,14 @@ class Crixel::State
   event Changed, state : self
   attach_self Changed
 
+  event PreSetup, state : self
+  attach_self PreSetup
+
   event Setup, state : self
   attach_self Setup
+
+  event PostSetup, state : self
+  attach_self PostSetup
 
   event PreUpdate, state : self
   attach_self PreUpdate
@@ -44,7 +50,9 @@ class Crixel::State
   end
 
   def setup
+    emit_pre_setup
     emit_setup
+    emit_post_setup
   end
 
   def sort_update
@@ -59,46 +67,30 @@ class Crixel::State
     end
   end
 
-  def pre_update
-    emit_pre_update
-  end
-
   def update
     Input::Manager.update
-    pre_update
-    @update_order.each do |child|
+    emit_pre_update
+    @update_order.dup.each do |child|
       child.update if child.active?
     end
-    post_update
-  end
-
-  def post_update
     emit_post_update
-  end
-
-  def pre_draw
-    emit_pre_draw
   end
 
   def draw
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     Raylib.begin_mode_2d(camera.to_raylib)
     Raylib.clear_background(camera.bg_color.to_raylib)
-    pre_draw
-    @draw_order.each do |child|
+    emit_pre_draw
+    @draw_order.dup.each do |child|
       if child.visible?
         child.draw
       end
     end
-    post_draw
+    emit_post_draw
 
     Raylib.end_mode_2d
 
     @children_added = false
-  end
-
-  def post_draw
-    emit_post_draw
   end
 
   def destroy

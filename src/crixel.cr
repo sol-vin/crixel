@@ -29,6 +29,7 @@ module Crixel
   class_getter height : Int32 = 0
   class_getter title : String = ""
   class_getter? running = false
+  class_getter? started = false
 
   class_getter last_id : UInt32 = 0
 
@@ -43,9 +44,16 @@ module Crixel
     Crixel::Assets::BakedFS.bake(path: "default_rsrc")
   end
 
-  def self.run(@@width, @@height, state = State.new, @@title = "Crixel")
-    if !@@running
+  def self.start_window(@@width, @@height)
+    if !@@started
+      @@started = true
       Raylib.init_window(@@width, @@height, title)
+    end
+  end
+
+  def self.run(state = State.new, @@title = "Crixel")
+    if @@started && !@@running
+      @@running = true
 
       state.on_destroyed do
         puts "State destroyed #{state.class}"
@@ -56,8 +64,6 @@ module Crixel
           @@states.delete(state)
         end
       end
-
-      @@running = true
 
       Assets.setup
 
@@ -75,6 +81,9 @@ module Crixel
 
       Assets.unload
       close
+    elsif !@@started
+      @@started = true
+      run(state, @@title)
     else
       raise "Crixel is already running!"
     end

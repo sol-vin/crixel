@@ -84,6 +84,10 @@ module Crixel::Assets
     end
   end
 
+  def self.add_texture(name : String, texture : Raylib::Texture2D)
+    @@textures[name] = texture
+  end
+
   def self.get_texture(name)
     @@textures[name]
   end
@@ -92,8 +96,16 @@ module Crixel::Assets
     @@textures[name]?
   end
 
+  def self.add_font(name : String, font : Raylib::Font)
+    @@fonts[name] = font
+  end
+
   def self.get_font(name)
     @@fonts[name]
+  end
+
+  def self.get_font?(name)
+    @@fonts[name]?
   end
 
   def self.unload

@@ -2,6 +2,9 @@ require "./crixel"
 require "./crixel/audio"
 require "./crixel/input"
 
+Crixel.start_window(400, 300) # This must be done here
+Crixel.install_default_assets
+
 class PlayState < Crixel::State
   @texture = Raylib::Texture2D.new
 
@@ -12,7 +15,7 @@ class PlayState < Crixel::State
   def initialize
     super
 
-    on_setup(after_global: true) do
+    on_setup do
       # camera.offset = Vector2.new(x: 200, y: 150)
       RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
       camera.zoom = 0.7_f32
@@ -97,5 +100,4 @@ class PlayState < Crixel::State
   end
 end
 
-Crixel.install_default_assets
-Crixel.run(400, 300, PlayState.new)
+Crixel.run(PlayState.new)

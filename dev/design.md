@@ -6,7 +6,7 @@ Design:
 # TODO
   <!-- - Raylib compatable types - Vector2, Color, Rectangle -->
   <!-- - Timer -->
-  - Primitives (Circle, Rectangle, Point, etc)
+  <!-- - Primitives (Circle, Rectangle, Point, etc) -->
   - RenderTexture and Image
     - Link RenderTexture to Assets?
     - Image to Assets.

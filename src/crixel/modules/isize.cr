@@ -1,4 +1,4 @@
 module Crixel::ISize
-  property width : Int32 = 0
-  property height : Int32 = 0
+  property width : Float32 = 0.0_f32
+  property height : Float32 = 0.0_f32
 end
