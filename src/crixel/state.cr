@@ -9,21 +9,13 @@ class Crixel::State
   getter camera : ICamera = Camera.new
 
   event Destroyed, state : self
-
   event Changed, state : self
-
   event PreSetup, state : self
-
   event Setup, state : self
-
   event PostSetup, state : self
-
   event PreUpdate, state : self
-
   event PostUpdate, state : self
-
   event PreDraw, state : self
-
   event PostDraw, state : self
 
   def initialize

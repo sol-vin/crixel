@@ -8,7 +8,7 @@ class Crixel::Text < Crixel::Basic
   @height = 12
 
   def width
-    Raylib.measure_text_ex(Assets.get_font(font), text, height, spacing).x
+    Raylib.measure_text_ex(Assets.get_rfont(font), text, height, spacing).x
   end
 
   def width=(w)
@@ -16,6 +16,6 @@ class Crixel::Text < Crixel::Basic
   end
 
   def draw
-    Raylib.draw_text_pro(Assets.get_font(font), text, position.to_raylib, origin.to_raylib, rotation*Raylib::RAD2DEG, height, spacing, tint.to_raylib)
+    Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation*Raylib::RAD2DEG, height, spacing, tint.to_raylib)
   end
 end

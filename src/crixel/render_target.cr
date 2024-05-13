@@ -1,4 +1,4 @@
-class Crixel::RenderTexture < Crixel::Sprite
+class Crixel::RenderTarget < Crixel::Sprite
   @render_texture : Raylib::RenderTexture2D
 
   single_event Draw, rt : self
@@ -7,10 +7,19 @@ class Crixel::RenderTexture < Crixel::Sprite
     asset_name = "@render_texture#{id}/#{texture_name}"
     @render_texture = Raylib.load_render_texture(width, height)
     Assets.add_texture(texture_name, @render_texture.texture)
+
     @render_texture.texture.on_destroyed(once: true) do
       destroy
     end
+
     super(asset_name)
+  end
+
+  def draw
+    Raylib.begin_texture_mode(@render_texture)
+    emit Draw, self
+    Raylib.end_texture_mode(@render_texture)
+    super
   end
 
   def destroy

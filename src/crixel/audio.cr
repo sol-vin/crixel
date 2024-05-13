@@ -1,12 +1,16 @@
 require "raylib-cr/audio"
 
-struct RAudio::Sound
-  include Crixel::Asset
+class Crixel::Assets::Sound < Crixel::Asset
+  getter name : String
+  getter sound : RAudio::Sound
+
+  def initialize(@name, @sound)
+  end
 end
 
 module Crixel::Assets
   SUPPORTED_SOUNDS = %w[WAV OGG MP3 FLAC XM MOD QOA]
-  @@sounds = {} of String => RAudio::Sound
+  @@sounds = {} of String => Sound
 
   add_consumer do |path, io, size|
     extension = Path.new(path).extension.downcase
@@ -15,7 +19,7 @@ module Crixel::Assets
       wave = RAudio.load_wave_from_memory(extension, content, size)
       sound = RAudio.load_sound_from_wave(wave)
       raise "Sound invalid" unless RAudio.sound_ready?(sound)
-      @@sounds[path] = sound
+      @@sounds[path] = Sound.new(path, sound)
       true
     else
       false
@@ -34,6 +38,14 @@ module Crixel::Assets
     @@sounds[name]?
   end
 
+  def self.get_rsound(name)
+    @@sounds[name].sound
+  end
+
+  def self.get_rsound?(name)
+    @@sounds[name]?.try(&.sound)
+  end
+
   on(PreSetup) do
     puts "Audio device turning on!"
     RAudio.init_audio_device
@@ -47,8 +59,8 @@ module Crixel::Assets
 
   on(Unload) do
     @@sounds.values.each do |s|
-      RAudio.unload_sound(s)
-      emit Asset::Destroyed, s.as(Asset)
+      RAudio.unload_sound(s.sound)
+      emit Asset::Destroyed, s
     end
     @@sounds.clear
 

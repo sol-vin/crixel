@@ -7,7 +7,7 @@ class Crixel::Sprite < Crixel::Basic
     @x = 0.0_f32,
     @y = 0.0_f32
   )
-    r_texture = Crixel::Assets.get_texture(@texture)
+    r_texture = Crixel::Assets.get_rtexture(@texture)
     @width = r_texture.width
     @height = r_texture.height
   end

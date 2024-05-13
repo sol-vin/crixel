@@ -7,12 +7,12 @@ module Crixel::ISprite
   property tint : Color::RGBA = Color::RGBA.new(r: 0xFF, b: 0xFF, g: 0xFF, a: 0xFF)
 
   def src_rectangle : Rectangle
-    raylib_texture = Assets.get_texture(texture)
+    raylib_texture = Assets.get_rtexture(texture)
     @src_rectangle ? @src_rectangle.not_nil! : Rectangle.new(x: 0, y: 0, width: raylib_texture.width, height: raylib_texture.height)
   end
 
   def draw_sprite
-    r_texture = Assets.get_texture(texture)
+    r_texture = Assets.get_rtexture(texture)
     raise "Cannot open texture" unless Raylib.texture_ready? r_texture
 
     flip_x = false

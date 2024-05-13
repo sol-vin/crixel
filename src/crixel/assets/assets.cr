@@ -5,12 +5,10 @@ module Crixel::Assets
 
   class_property default_font_size = 12
 
-  @@textures = {} of String => Raylib::Texture2D
-  @@fonts = {} of String => Raylib::Font
+  @@textures = {} of String => Texture
+  @@fonts = {} of String => Font
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
-
-  event ::Crixel::Asset::Destroyed, asset : Crixel::Asset
 
   event Unload
   event PreSetup
@@ -30,7 +28,7 @@ module Crixel::Assets
       image = Raylib.load_image_from_memory(extension, content, size)
       texture = Raylib.load_texture_from_image(image)
       raise "Texture invalid" unless Raylib.texture_ready?(texture)
-      @@textures[path] = texture
+      @@textures[path] = Texture.new(path, texture)
       true
     else
       false
@@ -43,7 +41,7 @@ module Crixel::Assets
       content = io.gets_to_end
       font = Raylib.load_font_from_memory(extension, content, size, @@default_font_size, Pointer(Int32).null, 0)
       raise "Font invalid" unless Raylib.font_ready?(font)
-      @@fonts[path] = font
+      @@fonts[path] = Font.new(path, font)
       true
     else
       false
@@ -97,16 +95,32 @@ module Crixel::Assets
     @@fonts[name]?
   end
 
+  def self.get_rtexture(name)
+    @@textures[name].texture
+  end
+
+  def self.get_rtexture?(name)
+    @@textures[name]?.try(&.texture)
+  end
+
+  def self.get_rfont(name)
+    @@fonts[name].font
+  end
+
+  def self.get_rfont?(name)
+    @@fonts[name]?.try(&.font)
+  end
+
   def self.unload
     @@textures.values.each do |t|
-      Raylib.unload_texture(t)
-      emit Asset::Destroyed, t.as(Asset)
+      Raylib.unload_texture(t.texture)
+      emit Asset::Destroyed, t
     end
     @@textures.clear
 
     @@fonts.values.each do |f|
-      Raylib.unload_font(f)
-      emit Asset::Destroyed, f.as(Asset)
+      Raylib.unload_font(f.font)
+      emit Asset::Destroyed, f
     end
     @@fonts.clear
 
@@ -114,13 +128,6 @@ module Crixel::Assets
   end
 end
 
-module Crixel::Asset
-end
-
-struct Raylib::Texture2D
-  include Crixel::Asset
-end
-
-struct Raylib::Font
-  include Crixel::Asset
+class Crixel::Asset
+  event Destroyed, me : self
 end

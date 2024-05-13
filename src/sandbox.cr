@@ -6,8 +6,8 @@ Crixel.start_window(400, 300) # This must be done here
 Crixel.install_default_assets
 
 class PlayState < Crixel::State
-  ROTATION_SPEED = 100
-  
+  ROTATION_SPEED = 150
+
   @texture = Raylib::Texture2D.new
 
   @c : Crixel::Sprite = Crixel::Sprite.new(width: 400, height: 300)
@@ -19,13 +19,13 @@ class PlayState < Crixel::State
 
     on_setup do
       # camera.offset = Vector2.new(x: 200, y: 150)
-      RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
+      RAudio.play_sound(Crixel::Assets.get_rsound("default_rsrc/flixel.mp3"))
       @c.zoom = 0.7_f32
       @c.bg_color = Crixel::Color::RGBA::BLACK
-      view(@c)
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
       add(@c)
+      view(@c)
 
       key1 = Crixel.get_key(Crixel::Key::Code::Q)
 

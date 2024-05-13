@@ -8,7 +8,7 @@ module Crixel::Input::IAnalogStick
 
   getter simulated_move : Vector2 = Vector2.zero
 
-  getter min_moved = 0.004_f32
+  getter min_moved = 0.02_f32
 
   event Moved, input : self
 
