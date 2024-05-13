@@ -25,10 +25,13 @@ class PlayState < Crixel::State
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
       @c.on_draw do
+        @c.clear_background(Crixel::Color::RGBA::WHITE)
+        Crixel::Line.draw(0, 0, @c.width, @c.height, tint: Crixel::Color::RGBA::GREEN)
+        Crixel::Line.draw(@c.width, 0, 0, @c.height, tint: Crixel::Color::RGBA::GREEN)
         x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE/2
         y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE/2
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 150, Crixel::Color::RGBA::BLUE, fill: true)
-        Crixel::Circle.draw(@c.width/2 + y, @c.height/2 + x, 80, Crixel::Color::RGBA::RED, fill: true)
+        Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 80, Crixel::Color::RGBA::RED, fill: true)
       end
 
       add(@c)
@@ -75,8 +78,6 @@ class PlayState < Crixel::State
     end
 
     on_pre_update do
-      @c.clear_background(Crixel::Color::RGBA::GREEN)
-
       @c.rotation = Raylib.get_time.to_f32
       @c.x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE
       @c.y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE
