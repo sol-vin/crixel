@@ -18,6 +18,7 @@ require "./crixel/basic"
 
 require "./crixel/sprite"
 require "./crixel/text"
+require "./crixel/render_target"
 
 require "./crixel/assets/**"
 

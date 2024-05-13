@@ -3,22 +3,24 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   single_event Draw, rt : self
 
-  def initialize(texture_name : String, width : UInt32, height : UInt32)
-    asset_name = "@render_texture#{id}/#{texture_name}"
+  def initialize(texture_name : String, x = 0, y = 0, width : UInt32 = 0, height : UInt32 = 0)
+    name = "@Crixel::RenderTarget@#{texture_name}"
     @render_texture = Raylib.load_render_texture(width, height)
-    Assets.add_texture(texture_name, @render_texture.texture)
+    texture = Assets::Texture.new(name, @render_texture.texture)
+    Assets.add_texture(name, texture)
 
-    @render_texture.texture.on_destroyed(once: true) do
+    texture.on_destroyed(once: true) do
       destroy
     end
-
-    super(asset_name)
+    super(texture: name, x: x, y: y, width: width, height: height)
   end
 
   def draw
+    Raylib.end_mode_2d
     Raylib.begin_texture_mode(@render_texture)
     emit Draw, self
-    Raylib.end_texture_mode(@render_texture)
+    Raylib.end_texture_mode
+    Raylib.begin_mode_2d(Crixel.running_state.camera.to_rcamera)
     super
   end
 
@@ -26,7 +28,7 @@ class Crixel::RenderTarget < Crixel::Sprite
     if Raylib.texture_ready? @render_texture.texture
       Raylib.unload_render_texture(@render_texture)
     else
-      RLGL.unload_framebuffer(@render_texture, id)
+      RLGL.unload_framebuffer(@render_texture.id)
     end
 
     @render_texture = Raylib::RenderTexture2D.new

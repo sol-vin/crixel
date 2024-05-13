@@ -10,7 +10,7 @@ class PlayState < Crixel::State
 
   @texture = Raylib::Texture2D.new
 
-  @c : Crixel::Sprite = Crixel::Sprite.new(width: 400, height: 300)
+  @c : Crixel::RenderTarget = Crixel::RenderTarget.new("my_render", width: 400, height: 300)
 
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
@@ -24,6 +24,14 @@ class PlayState < Crixel::State
       @c.bg_color = Crixel::Color::RGBA::BLACK
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
+      @c.on_draw do
+        Crixel::Circle.draw(@c.width/2, @c.height/2, 150, Crixel::Color::RGBA::BLUE, fill: true)
+        Crixel::Circle.draw(@c.width/2, @c.height/2, 80, Crixel::Color::RGBA::RED, fill: true)
+      end
+
+      puts @c.width
+      puts @c.height
+
       add(@c)
       view(@c)
 
@@ -72,8 +80,7 @@ class PlayState < Crixel::State
       @c.x = Math.sin(Raylib.get_time).to_f32 * ROTATION_SPEED
       @c.y = Math.cos(Raylib.get_time).to_f32 * ROTATION_SPEED
 
-      # Camera has to spin the opposite way
-      # camera.rotation = -Raylib.get_time.to_f32
+      @c.zoom = 0.4_f32 * Math.sin(Raylib.get_time).to_f32 + 0.7
 
       ps = @c.points
       @texts.each_with_index do |t, i|

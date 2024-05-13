@@ -26,7 +26,7 @@ module Crixel::Assets
     end
   end
 
-  def self.add_sound(name : String, sound : Raylib::Sound)
+  def self.add_sound(name : String, sound : Sound)
     @@sounds[name] = sound
   end
 
