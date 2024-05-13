@@ -38,7 +38,7 @@ class PlayState < Crixel::State
       key2 = Crixel.get_key(Crixel::Key::Code::W)
       key2.on_released(name: "w_released") do
         puts "W released"
-        key1.delete_released("q_released")
+        key1.remove_released("q_released")
       end
 
       button = Crixel.get_button(Crixel::Gamepad::Player::One, Crixel::Gamepad::Button::Code::LeftFaceRight)
