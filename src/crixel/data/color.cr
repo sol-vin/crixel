@@ -5,6 +5,7 @@ end
 struct Crixel::Color::RGBA < Crixel::Color
   RED   = Crixel::Color::RGBA.new(r: 255, a: 255)
   WHITE = Crixel::Color::RGBA.new(r: 255, g: 255, b: 255, a: 255)
+  BLACK = Crixel::Color::RGBA.new(r: 0, g: 0, b: 0, a: 255)
 
   property r : UInt8 = 0_u8
   property g : UInt8 = 0_u8

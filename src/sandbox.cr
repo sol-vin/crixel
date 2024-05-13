@@ -6,9 +6,13 @@ Crixel.start_window(400, 300) # This must be done here
 Crixel.install_default_assets
 
 class PlayState < Crixel::State
+  class TestSprite < Crixel::Sprite
+    include Crixel::ICamera
+  end
+
   @texture = Raylib::Texture2D.new
 
-  @c : Crixel::Sprite = Crixel::Sprite.new(width: 400, height: 300)
+  @c : TestSprite = TestSprite.new(width: 400, height: 300)
 
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
@@ -18,9 +22,9 @@ class PlayState < Crixel::State
     on_setup do
       # camera.offset = Vector2.new(x: 200, y: 150)
       RAudio.play_sound(Crixel::Assets.get_sound("default_rsrc/flixel.mp3"))
-      camera.zoom = 0.7_f32
-      camera.offset.x = 200
-      camera.offset.y = 150
+      @c.zoom = 0.7_f32
+      @c.bg_color = Crixel::Color::RGBA::BLACK
+      view(@c)
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
       add(@c)
@@ -71,8 +75,8 @@ class PlayState < Crixel::State
       @c.x = Math.sin(Raylib.get_time).to_f32 * 100
       @c.y = Math.cos(Raylib.get_time).to_f32 * 100
 
-      camera.position.x = @c.x
-      camera.position.y = @c.y
+      camera.x = @c.x
+      camera.y = @c.y
       # Camera has to spin the opposite way
       # camera.rotation = -Raylib.get_time.to_f32
 

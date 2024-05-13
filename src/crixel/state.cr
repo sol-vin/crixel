@@ -29,6 +29,10 @@ class Crixel::State
   def initialize
   end
 
+  def view(camera : ICamera)
+    @camera = camera
+  end
+
   def add(object : Basic)
     object.on_destroyed do
       @update_order.delete(object)

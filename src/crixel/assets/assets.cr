@@ -1,5 +1,3 @@
-
-
 module Crixel::Assets
   alias ConsumerCallback = Proc(String, IO, Int32, Bool)
   SUPPORTED_TEXTURES = %w[PNG BMP TGA JPG GIF QOI PSD DDS HDR KTX ASTC PKM PVR]
@@ -58,8 +56,6 @@ module Crixel::Assets
     end
   end
 
-
-
   def self.setup
     emit PreSetup
     emit Setup
@@ -99,12 +95,6 @@ module Crixel::Assets
 
   def self.get_font?(name)
     @@fonts[name]?
-  end
-
-  def self.unload_texture(name)
-  end
-
-  def self.delete_texture(name)
   end
 
   def self.unload
