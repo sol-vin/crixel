@@ -6,7 +6,7 @@ Crixel.start_window(400, 300) # This must be done here
 Crixel.install_default_assets
 
 class PlayState < Crixel::State
-  ROTATION_SPEED = 150
+  SIN_DISTANCE = 150
 
   @texture = Raylib::Texture2D.new
 
@@ -25,12 +25,11 @@ class PlayState < Crixel::State
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
       @c.on_draw do
-        Crixel::Circle.draw(@c.width/2, @c.height/2, 150, Crixel::Color::RGBA::BLUE, fill: true)
-        Crixel::Circle.draw(@c.width/2, @c.height/2, 80, Crixel::Color::RGBA::RED, fill: true)
+        x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE/2
+        y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE/2
+        Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 150, Crixel::Color::RGBA::BLUE, fill: true)
+        Crixel::Circle.draw(@c.width/2 + y, @c.height/2 + x, 80, Crixel::Color::RGBA::RED, fill: true)
       end
-
-      puts @c.width
-      puts @c.height
 
       add(@c)
       view(@c)
@@ -76,9 +75,11 @@ class PlayState < Crixel::State
     end
 
     on_pre_update do
+      @c.clear_background(Crixel::Color::RGBA::GREEN)
+
       @c.rotation = Raylib.get_time.to_f32
-      @c.x = Math.sin(Raylib.get_time).to_f32 * ROTATION_SPEED
-      @c.y = Math.cos(Raylib.get_time).to_f32 * ROTATION_SPEED
+      @c.x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE
+      @c.y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE
 
       @c.zoom = 0.4_f32 * Math.sin(Raylib.get_time).to_f32 + 0.7
 
@@ -103,7 +104,7 @@ class PlayState < Crixel::State
       @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))
       @c.draw_obb(Crixel::Color::RGBA.new(r: 255, g: 255, a: 255))
       @c.draw_rotation(tint: Crixel::Color::RGBA.new(r: 255, b: 255, a: 255))
-      Crixel::Circle.draw(@c.x, @c.y, ROTATION_SPEED, Crixel::Color::RGBA::RED)
+      Crixel::Circle.draw(@c.x, @c.y, SIN_DISTANCE, Crixel::Color::RGBA::RED)
     end
   end
 end
