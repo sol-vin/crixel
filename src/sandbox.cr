@@ -6,13 +6,9 @@ Crixel.start_window(400, 300) # This must be done here
 Crixel.install_default_assets
 
 class PlayState < Crixel::State
-  class TestSprite < Crixel::Sprite
-    include Crixel::ICamera
-  end
-
   @texture = Raylib::Texture2D.new
 
-  @c : TestSprite = TestSprite.new(width: 400, height: 300)
+  @c : Crixel::Sprite = Crixel::Sprite.new(width: 400, height: 300)
 
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
@@ -71,12 +67,10 @@ class PlayState < Crixel::State
 
     on_pre_update do
       @c.rotation = Raylib.get_time.to_f32
+      rotation_speed = 100
+      @c.x = Math.sin(Raylib.get_time).to_f32 * rotation_speed
+      @c.y = Math.cos(Raylib.get_time).to_f32 * rotation_speed
 
-      @c.x = Math.sin(Raylib.get_time).to_f32 * 100
-      @c.y = Math.cos(Raylib.get_time).to_f32 * 100
-
-      camera.x = @c.x
-      camera.y = @c.y
       # Camera has to spin the opposite way
       # camera.rotation = -Raylib.get_time.to_f32
 
@@ -90,6 +84,7 @@ class PlayState < Crixel::State
           x: t.width/2,
           y: t.height/2
         )
+        t.rotation = @c.rotation
         t.text = "#{ps[i].x.to_i}, #{ps[i].y.to_i}"
       end
     end
@@ -100,6 +95,7 @@ class PlayState < Crixel::State
       @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))
       @c.draw_obb(Crixel::Color::RGBA.new(r: 255, g: 255, a: 255))
       @c.draw_rotation(tint: Crixel::Color::RGBA.new(r: 255, b: 255, a: 255))
+      Crixel::Circle.draw(@c.x, @c.y, rotation_speed, Crixel::Color::RGBA::RED)
     end
   end
 end

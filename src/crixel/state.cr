@@ -63,7 +63,7 @@ class Crixel::State
 
   def draw
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
-    Raylib.begin_mode_2d(camera.to_raylib)
+    Raylib.begin_mode_2d(camera.to_rcamera)
     Raylib.clear_background(camera.bg_color.to_raylib)
     emit PreDraw, self
     @draw_order.dup.each do |child|

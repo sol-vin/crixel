@@ -1,5 +1,6 @@
 class Crixel::Sprite < Crixel::Basic
   include ISprite
+  include IInvCamera
 
   def initialize(
     @texture = "default_rsrc/logo.png",
