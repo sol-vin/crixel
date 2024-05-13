@@ -48,7 +48,7 @@ module Crixel::Assets
   on(Unload) do
     @@sounds.values.each do |s|
       RAudio.unload_sound(s)
-      emit Asset::Destroyed, s
+      emit Asset::Destroyed, s.as(Asset)
     end
     @@sounds.clear
 

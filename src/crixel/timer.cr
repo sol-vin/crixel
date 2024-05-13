@@ -13,14 +13,6 @@ class Crixel::Timer
   event Paused, timer : self
   event Unpaused, timer : self
 
-  attach_self Ticked
-  attach_self Started
-  attach_self Restarted
-  attach_self Stopped
-  attach_self Triggered
-  attach_self Paused
-  attach_self Unpaused
-
   property? loop : Bool = false
   getter pause_time : Float64? = nil
 
@@ -37,19 +29,19 @@ class Crixel::Timer
 
   def start
     @start_time = R.get_time unless @start_time
-    on_started
+    emit Started, self
   end
 
   def pause
     @pause_time = R.get_time
-    on_paused
+    emit Paused, self
   end
 
   def unpause
     time_elapsed = @pause_time - @start_time
     @start_time = R.get_time - time_elapsed
     @pause_time = nil
-    on_unpaused
+    emit Unpaused, self
   end
 
   def paused?
@@ -58,24 +50,24 @@ class Crixel::Timer
 
   def stop
     @start_time = nil
-    on_stopped
+    emit Stopped, self
   end
 
   def restart
     @start_time = R.get_time
 
     if @start_time
-      on_restarted
+      emit Restarted, self
     else
-      on_started
+      emit Started, self
     end
   end
 
   def tick
     unless paused?
-      on_ticked
+      emit Ticked, self
       if R.get_time - @start_time
-        on_triggered
+        emit Triggered, self
         if loop?
           @start_time = R.get_time
         else

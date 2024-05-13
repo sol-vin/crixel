@@ -11,7 +11,6 @@ module Crixel::Input::ITrigger
   property press_limit = 0.5_f32
 
   event Moved, input : self
-  attach_self Moved
 
   private def _update_trigger(value : Float32)
     @last_value = @current_value
@@ -25,7 +24,7 @@ module Crixel::Input::ITrigger
     end
 
     if @current_value > 0
-      emit_moved
+      emit Moved, self
     end
   end
 end

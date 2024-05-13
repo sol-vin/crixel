@@ -7,6 +7,11 @@ module Crixel::Input::IButton
   getter? current_state : Bool = false
   getter? simulated_press : Bool = false
 
+  event Pressed, input : self
+  event Released, input : self
+  event Down, input : self
+  event Up, input : self
+
   def press
     @simulated_press = true
   end
@@ -33,25 +38,15 @@ module Crixel::Input::IButton
     @simulated_press = false
 
     if pressed?
-      emit_pressed
+      emit Pressed, self
     elsif released?
-      emit_released
+      emit Released, self
     end
 
     if down?
-      emit_down
+      emit Down, self
     else
-      emit_up
+      emit Up, self
     end
   end
-
-  event Pressed, input : self
-  event Released, input : self
-  event Down, input : self
-  event Up, input : self
-
-  attach_self Pressed
-  attach_self Released
-  attach_self Down
-  attach_self Up
 end

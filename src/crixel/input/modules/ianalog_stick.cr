@@ -11,7 +11,6 @@ module Crixel::Input::IAnalogStick
   getter min_moved = 0.004_f32
 
   event Moved, input : self
-  attach_self Moved
 
   private def _update_analog_stick(value : Vector2)
     @last_value = @current_value
@@ -22,7 +21,7 @@ module Crixel::Input::IAnalogStick
     @simulated_move = Vector2.zero
 
     if (@last_value.x - @current_value.x).abs + (@last_value.y - @current_value.y).abs > @min_moved
-      emit_moved
+      emit Moved, self
     end
   end
 end

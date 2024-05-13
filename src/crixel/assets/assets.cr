@@ -1,13 +1,4 @@
-module Crixel::Asset
-end
 
-struct Raylib::Texture2D
-  include Crixel::Asset
-end
-
-struct Raylib::Font
-  include Crixel::Asset
-end
 
 module Crixel::Assets
   alias ConsumerCallback = Proc(String, IO, Int32, Bool)
@@ -21,10 +12,14 @@ module Crixel::Assets
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
 
+  event ::Crixel::Asset::Destroyed, asset : Crixel::Asset
+
   event Unload
+  event PreSetup
+  event Setup
+  event PostSetup
 
   # Tracks when an asset has been destroyed
-  event Asset::Destroyed, asset : Asset
 
   def self.add_consumer(&block : ConsumerCallback)
     @@consumers << block
@@ -63,9 +58,7 @@ module Crixel::Assets
     end
   end
 
-  event PreSetup
-  event Setup
-  event PostSetup
+
 
   def self.setup
     emit PreSetup
@@ -108,19 +101,36 @@ module Crixel::Assets
     @@fonts[name]?
   end
 
+  def self.unload_texture(name)
+  end
+
+  def self.delete_texture(name)
+  end
+
   def self.unload
     @@textures.values.each do |t|
       Raylib.unload_texture(t)
-      emit Asset::Destroyed, t
+      emit Asset::Destroyed, t.as(Asset)
     end
     @@textures.clear
 
     @@fonts.values.each do |f|
       Raylib.unload_font(f)
-      emit Asset::Destroyed, f
+      emit Asset::Destroyed, f.as(Asset)
     end
     @@fonts.clear
 
     emit Unload
   end
+end
+
+module Crixel::Asset
+end
+
+struct Raylib::Texture2D
+  include Crixel::Asset
+end
+
+struct Raylib::Font
+  include Crixel::Asset
 end

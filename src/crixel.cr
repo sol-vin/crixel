@@ -105,13 +105,13 @@ module Crixel
     state.setup
 
     @@states.push state
-    state.emit_changed
+    emit State::Changed, state
   end
 
   def self.pop
     state = @@states.pop
     state.destroy
-    main_state.emit_changed
+    emit State::Changed, main_state
   end
 
   def self.main_state
