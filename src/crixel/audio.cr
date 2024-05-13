@@ -2,9 +2,9 @@ require "raylib-cr/audio"
 
 class Crixel::Assets::Sound < Crixel::Asset
   getter name : String
-  getter sound : RAudio::Sound
+  getter rsound : RAudio::Sound
 
-  def initialize(@name, @sound)
+  def initialize(@name, @rsound)
   end
 end
 
@@ -39,11 +39,11 @@ module Crixel::Assets
   end
 
   def self.get_rsound(name)
-    @@sounds[name].sound
+    @@sounds[name].rsound
   end
 
   def self.get_rsound?(name)
-    @@sounds[name]?.try(&.sound)
+    @@sounds[name]?.try(&.rsound)
   end
 
   on(PreSetup) do
@@ -59,7 +59,7 @@ module Crixel::Assets
 
   on(Unload) do
     @@sounds.values.each do |s|
-      RAudio.unload_sound(s.sound)
+      RAudio.unload_sound(s.rsound)
       emit Asset::Destroyed, s
     end
     @@sounds.clear

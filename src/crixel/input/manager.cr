@@ -7,10 +7,10 @@ module Crixel::Input::Manager
     @@pollers << poller
   end
 
-  def self.update
+  def self.update(state : State)
     @@last_inputs.clear
     @@pollers.each do |poller|
-      inputs = poller.poll
+      inputs = poller.poll(state)
       @@last_inputs.concat inputs
     end
   end

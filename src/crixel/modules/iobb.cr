@@ -9,6 +9,7 @@ module Crixel::IOBB
 
   property offset : Vector2 = Vector2.zero
 
+  # TODO: Make a named tuple?
   def points : StaticArray(Vector2, 4)
     points = StaticArray(Vector2, 4).new(Vector2.zero)
     sin_rotation = Math.sin(rotation)

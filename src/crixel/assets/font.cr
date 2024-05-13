@@ -1,7 +1,7 @@
 class Crixel::Assets::Font < Crixel::Asset
   getter name : String
-  getter font : Raylib::Font
+  getter rfont : Raylib::Font
 
-  def initialize(@name, @font)
+  def initialize(@name, @rfont)
   end
 end

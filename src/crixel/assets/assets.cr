@@ -96,30 +96,30 @@ module Crixel::Assets
   end
 
   def self.get_rtexture(name)
-    @@textures[name].texture
+    @@textures[name].rtexture
   end
 
   def self.get_rtexture?(name)
-    @@textures[name]?.try(&.texture)
+    @@textures[name]?.try(&.rtexture)
   end
 
   def self.get_rfont(name)
-    @@fonts[name].font
+    @@fonts[name].rfont
   end
 
   def self.get_rfont?(name)
-    @@fonts[name]?.try(&.font)
+    @@fonts[name]?.try(&.rfont)
   end
 
   def self.unload
     @@textures.values.each do |t|
-      Raylib.unload_texture(t.texture)
+      Raylib.unload_texture(t.rtexture)
       emit Asset::Destroyed, t
     end
     @@textures.clear
 
     @@fonts.values.each do |f|
-      Raylib.unload_font(f.font)
+      Raylib.unload_font(f.rfont)
       emit Asset::Destroyed, f
     end
     @@fonts.clear

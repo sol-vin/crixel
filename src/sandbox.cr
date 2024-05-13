@@ -31,13 +31,13 @@ class PlayState < Crixel::State
         x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE/2
         y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE/2
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 150, Crixel::Color::RGBA::BLUE, fill: true)
-        Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 80, Crixel::Color::RGBA::RED, fill: true)
+        Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 75, Crixel::Color::RGBA::RED, fill: true)
       end
 
       add(@c)
       view(@c)
 
-      key1 = Crixel.get_key(Crixel::Key::Code::Q)
+      key1 = inputs.get_key(Crixel::Key::Code::Q)
 
       key1.on_pressed(name: "q_pressed") do
         puts "Q pressed"
@@ -45,36 +45,37 @@ class PlayState < Crixel::State
 
       key1.on_released(name: "q_released") do
         puts "Q released"
+        @c.destroy
       end
 
-      key2 = Crixel.get_key(Crixel::Key::Code::W)
+      key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_released(name: "w_released") do
         puts "W released"
         key1.remove_released("q_released")
       end
 
-      button = Crixel.get_button(Crixel::Gamepad::Player::One, Crixel::Gamepad::Button::Code::LeftFaceRight)
+      button = inputs.get_button(Crixel::Gamepad::Player::One, Crixel::Gamepad::Button::Code::LeftFaceRight)
       button.on_released(name: "dpad_right_released") do
         puts "DPAD Right released"
       end
 
-      button = Crixel.get_mouse_button(Crixel::Mouse::Button::Code::Left)
+      button = inputs.get_mouse_button(Crixel::Mouse::Button::Code::Left)
       button.on_released(name: "left_mouse_released") do
         puts "Left Mouse released"
       end
 
-      trigger = Crixel.get_trigger(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
+      trigger = inputs.get_trigger(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
       trigger.on_pressed(name: "trigger_pressed") do
         puts "Left Trigger pressed"
       end
 
-      stick = Crixel.get_analog_stick(Crixel::Gamepad::Player::One, Crixel::Gamepad::AnalogStick::Code::Left)
+      stick = inputs.get_analog_stick(Crixel::Gamepad::Player::One, Crixel::Gamepad::AnalogStick::Code::Left)
       stick.on_moved(name: "stick_moved") do
         puts "Stick Moved #{stick.current_value.x}, #{stick.current_value.y}"
       end
 
       4.times { @texts << Crixel::Text.new }
-      @texts.each { |t| add(t) }
+      @texts.each { |t| t.tint = Crixel::Color::RGBA::GREEN; add(t) }
     end
 
     on_pre_update do

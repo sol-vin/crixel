@@ -3,6 +3,8 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   getter? currently_drawing = false
 
+  getter camera : ICamera? = nil
+
   single_event Draw, rt : self
 
   def initialize(texture_name : String, x = 0, y = 0, width : UInt32 = 0, height : UInt32 = 0)
@@ -23,8 +25,8 @@ class Crixel::RenderTarget < Crixel::Sprite
     else
       # Doing this is safer than trying to mess with the camera modes and hoping it works right
       image = Raylib.gen_image_color(@width.to_i, @height.to_i, color.to_raylib)
-      c_texture = Assets.get_texture(@texture)
-      Raylib.update_texture(c_texture.texture, image.data)
+      r_texture = Assets.get_rtexture(@texture)
+      Raylib.update_texture(r_texture, image.data)
       Raylib.unload_image image
     end
   end
@@ -34,7 +36,13 @@ class Crixel::RenderTarget < Crixel::Sprite
     @currently_drawing = true
 
     Raylib.begin_texture_mode(@render_texture)
+    if camera
+      c = camera.not_nil!
+      Raylib.begin_mode_2d(c.to_rcamera)
+      clear_background(c.bg_color)
+    end
     emit Draw, self
+    Raylib.end_mode_2d if camera
     Raylib.end_texture_mode
     @currently_drawing = false
 

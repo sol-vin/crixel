@@ -1,5 +1,5 @@
 abstract class Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     [] of Input::IBase
   end
 
@@ -9,9 +9,9 @@ abstract class Crixel::Input::Poller
 end
 
 class Crixel::Key::Poller < Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     triggered_keys = [] of Input::IBase
-    Crixel.running_state.inputs.keys.each do |key|
+    state.inputs.keys.each do |key|
       key.poll
       triggered_keys << key if key.last_state? || key.current_state?
     end
@@ -20,9 +20,9 @@ class Crixel::Key::Poller < Crixel::Input::Poller
 end
 
 class Crixel::Gamepad::Button::Poller < Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     triggered_buttons = [] of Input::IBase
-    Crixel.running_state.inputs.buttons.each do |button|
+    state.inputs.buttons.each do |button|
       button.poll
       triggered_buttons << button if button.last_state? || button.current_state?
     end
@@ -31,9 +31,9 @@ class Crixel::Gamepad::Button::Poller < Crixel::Input::Poller
 end
 
 class Crixel::Mouse::Button::Poller < Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     triggered_buttons = [] of Input::IBase
-    Crixel.running_state.inputs.mouse_buttons.each do |button|
+    state.inputs.mouse_buttons.each do |button|
       button.poll
       triggered_buttons << button if button.last_state? || button.current_state?
     end
@@ -42,9 +42,9 @@ class Crixel::Mouse::Button::Poller < Crixel::Input::Poller
 end
 
 class Crixel::Gamepad::Trigger::Poller < Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     triggers = [] of Input::IBase
-    Crixel.running_state.inputs.triggers.each do |trigger|
+    state.inputs.triggers.each do |trigger|
       trigger.poll
       triggers << trigger if trigger.last_value != trigger.current_value
     end
@@ -53,9 +53,9 @@ class Crixel::Gamepad::Trigger::Poller < Crixel::Input::Poller
 end
 
 class Crixel::Gamepad::AnalogStick::Poller < Crixel::Input::Poller
-  def self.poll : Array(Input::IBase)
+  def self.poll(state : State) : Array(Input::IBase)
     sticks = [] of Input::IBase
-    Crixel.running_state.inputs.analog_sticks.each do |stick|
+    state.inputs.analog_sticks.each do |stick|
       stick.poll
       sticks << stick if stick.last_value != stick.current_value
     end

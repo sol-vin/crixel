@@ -80,24 +80,3 @@ class Crixel::State
   end
 end
 
-module Crixel
-  def self.get_key(key : Key::Code)
-    @@running_state.inputs.get_key key
-  end
-
-  def self.get_mouse_button(button : Mouse::Button::Code)
-    @@running_state.inputs.get_mouse_button button
-  end
-
-  def self.get_analog_stick(player : Gamepad::Player, code : Gamepad::AnalogStick::Code)
-    @@running_state.inputs.get_analog_stick player, code
-  end
-
-  def self.get_button(player : Gamepad::Player, code : Gamepad::Button::Code)
-    @@running_state.inputs.get_button player, code
-  end
-
-  def self.get_trigger(player : Gamepad::Player, code : Gamepad::Trigger::Code)
-    @@running_state.inputs.get_trigger player, code
-  end
-end

@@ -32,28 +32,3 @@ class Crixel::Gamepad::Button
     _update_button(Raylib.gamepad_button_down?(@player.to_i, @code.to_i))
   end
 end
-
-module Crixel::Gamepad::Buttons
-  class_getter all = [] of Button
-
-  def self.setup
-    players = [] of Player
-
-    Player.each do |player|
-      if player.available?
-        players << player
-      end
-    end
-    Button::Code.each do |code|
-      players.each do |player|
-        @@all << Button.new(player, Button::Code.from_value(code.to_i))
-      end
-    end
-  end
-
-  def self.get(player : Player, code : Button::Code)
-    button = @@all.find { |b| b.code == code && b.player == player }
-    raise "Player #{player} did not exist :(" if button.nil?
-    button.not_nil!
-  end
-end
