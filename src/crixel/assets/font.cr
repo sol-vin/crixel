@@ -1,6 +1,6 @@
 class Crixel::Assets::Font < Crixel::Asset
   getter name : String
-  getter rfont : Raylib::Font
+  property rfont : Raylib::Font
 
   def initialize(@name, @rfont)
   end
@@ -26,8 +26,12 @@ module Crixel::Assets
   end
 
   def self.add_font(font : Font)
-    emit Asset::Changed, font if @@fonts[font.name]?
-    @@fonts[font.name] = font
+    if @@fonts[font.name]?
+      emit Asset::Changed, @@fonts[font.name], font
+      @@fonts[font.name].rfont = font.rfont
+    else
+      @@fonts[font.name] = font
+    end
   end
 
   def self.get_font(name)

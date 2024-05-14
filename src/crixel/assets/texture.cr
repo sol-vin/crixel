@@ -1,6 +1,6 @@
 class Crixel::Assets::Texture < Crixel::Asset
   getter name : String
-  getter rtexture : Raylib::Texture2D
+  property rtexture : Raylib::Texture2D
 
   def initialize(@name, @rtexture)
   end
@@ -25,8 +25,12 @@ module Crixel::Assets
   end
 
   def self.add_texture(texture : Texture)
-    emit Asset::Changed, texture if @@textures[texture.name]?
-    @@textures[texture.name] = texture
+    if @@textures[texture.name]?
+      emit Asset::Changed, @@textures[texture.name], texture
+      @@textures[texture.name].rtexture = texture.rtexture
+    else
+      @@textures[texture.name] = texture
+    end
   end
 
   def self.get_texture(name)

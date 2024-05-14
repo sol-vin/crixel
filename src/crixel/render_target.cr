@@ -52,8 +52,4 @@ class Crixel::RenderTarget < Crixel::Sprite
     @currently_drawing = false
     super
   end
-
-  def destroy
-    super
-  end
 end

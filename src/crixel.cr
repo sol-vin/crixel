@@ -45,6 +45,7 @@ module Crixel
 
   class_getter running_state : State = State.new
 
+  event Start
   event Open
   event Close
 
@@ -96,6 +97,9 @@ module Crixel
       Raylib.set_trace_log_level(Raylib::TraceLogLevel::Warning)
       @@started = true
       Raylib.init_window(@@width, @@height, title)
+      emit Start
+      Assets.setup
+
     end
   end
 
@@ -114,8 +118,6 @@ module Crixel
           @@states.delete(state)
         end
       end
-
-      Assets.setup
 
       push state
 

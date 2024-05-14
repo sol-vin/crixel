@@ -13,12 +13,14 @@ class PlayState < Crixel::State
 
   @total_time = Time::Span.new
 
+  @startup : Crixel::Sound = Crixel::Sound.new("default_rsrc/flixel.mp3")
+
   def initialize
     super
 
     on_setup do
       # camera.offset = Vector2.new(x: 200, y: 150)
-      RAudio.play_sound(Crixel::Assets.get_rsound("default_rsrc/flixel.mp3"))
+      @startup.play
       @c.zoom = 0.7_f32
       @c.bg_color = Crixel::Color::RGBA::BLACK
 
@@ -45,6 +47,11 @@ class PlayState < Crixel::State
       key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
         @camera.zoom -= 0.001
+      end
+
+      key2 = inputs.get_key(Crixel::Key::Code::E)
+      key2.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
+        @startup.play
       end
 
       4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }
@@ -88,6 +95,7 @@ class PlayState < Crixel::State
   end
 end
 
-Crixel.start_window(400, 300) # This must be done here
 Crixel.install_default_assets
+
+Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)

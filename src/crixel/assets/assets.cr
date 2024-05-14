@@ -27,7 +27,7 @@ module Crixel::Assets
   end
 
   def self.load(path : String, io : IO, size : Int32) : Bool
-    raise "Cannot load before window is initialized: Try running asset loading methods from an `on Crixel::Assets::Setup` callback" unless Crixel.running?
+    raise "Cannot load before window is initialized: Try running asset loading methods from an `on Crixel::Assets::Setup` callback" unless Crixel.started?
     run_consumers(path, io, size)
   end
 
@@ -44,5 +44,5 @@ end
 
 class Crixel::Asset
   event Destroyed, me : self
-  event Changed, me : self
+  event Changed, me : self, to : self
 end

@@ -10,7 +10,7 @@ module ::Crixel::Assets::BakedFS
     end
   end
 
-  on(::Crixel::Assets::Setup) do
+  on(Assets::Setup) do
     load_files
   end
 
