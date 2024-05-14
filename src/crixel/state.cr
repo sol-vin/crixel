@@ -1,4 +1,5 @@
 class Crixel::State
+  # Hold information about if an object should be added or destroyed
   struct QueuedAction
     enum Type
       Add
@@ -12,17 +13,26 @@ class Crixel::State
     end
   end
 
+  # The order objects should be updated
   getter update_order = [] of Basic
+  # The order objects should be drawn
   getter draw_order = [] of Basic
 
+  # Holds the list of actions that need to happen mid-draw.
   @action_queue = [] of QueuedAction
 
+  # Should this state persistently update, even when it is not the main state?
   property persist_update = false
+
+  # Should this state persistently draw, even when it is not the main state?
   property persist_draw = false
 
+  # Is this state currently updating?
   getter? updating = false
+  # Is this state currently drawing?
   getter? drawing = false
 
+  # The main camera for this state.
   getter camera : ICamera = Camera.new
 
   event Destroyed, state : self
@@ -38,6 +48,7 @@ class Crixel::State
   def initialize
   end
 
+  # View a camera on this state
   def view(camera : ICamera)
     @camera = camera
   end
@@ -57,6 +68,7 @@ class Crixel::State
     end
   end
 
+  # Adds an object to this state. If the object is added mid-update/mid-draw add it to the action queue instead.
   def add(object : Basic)
     object.on_destroyed do
       remove(object)
@@ -71,6 +83,7 @@ class Crixel::State
     emit Basic::Added, object
   end
 
+  # Removes an object from this state. If the object is removed mid-update/mid-draw add it to the action queue instead.
   def remove(object : Basic)
     if updating? || drawing?
       @action_queue << QueuedAction.new(QueuedAction::Type::Destroy, object)
@@ -79,12 +92,14 @@ class Crixel::State
     end
   end
 
+  # Run when the state becomes the main state for the first time (pushed via `Crixel.push_state`).
   def setup
     emit PreSetup, self
     emit Setup, self
     emit PostSetup, self
   end
 
+  # Runs the action queue orders. Will add or delete objects from this state.
   private def _run_action_queue(dirty = false)
     @action_queue.each do |action|
       if action.type == QueuedAction::Type::Add
@@ -105,7 +120,6 @@ class Crixel::State
   end
 
   def update(total_time : Time::Span, elapsed_time : Time::Span)
-    Input::Manager.update(self, total_time, elapsed_time)
     _run_action_queue(dirty: true)
     @updating = true
 

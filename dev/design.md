@@ -42,6 +42,8 @@ Design:
     - Proper compression for baked filesystem
       - Check to make sure compression is working for baked_file_system
       - If not make sol-vin/baked_file_system the way it should be (full customize)
+    - Configuration
+      - file.png, _file.png.yml
   - Scissor mode?
     - Scissor
   - Shaders?
@@ -50,3 +52,7 @@ Design:
   - GUI
   - Debugger
     - Flx.watch equivalent (must be a macro probably)
+  - Crixel::Sound
+    - Own data type (non Basic)
+    - use load_sound_alias to prevent changing original source.
+    - hook Crixel::Sound#on_destroyed/on_changed to

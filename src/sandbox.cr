@@ -34,17 +34,17 @@ class PlayState < Crixel::State
       end
 
       add(@c)
-      view(@c)
+      # view(@c)
 
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
       key1.on_down(name: "q_pressed") do |total_time, elapsed_time|
-        @c.zoom += 0.001
+        @camera.zoom += 0.001
       end
 
       key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
-        @c.zoom -= 0.001
+        @camera.zoom -= 0.001
       end
 
       4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }
@@ -58,8 +58,9 @@ class PlayState < Crixel::State
 
       # @c.zoom = 0.4_f32 * Math.sin(total_time.total_seconds).to_f32 + 0.7
 
-      # @camera.x = @c.x
-      # @camera.y = @c.y
+      @camera.origin = Crixel::Vector2.new(Crixel.width/2, Crixel.height/2)
+      @camera.x = @c.x
+      @camera.y = @c.y
 
       ps = @c.points
       @texts.each_with_index do |t, i|

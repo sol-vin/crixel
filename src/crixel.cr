@@ -20,13 +20,16 @@ require "./crixel/sprite"
 require "./crixel/text"
 require "./crixel/render_target"
 
-require "./crixel/assets/**"
+require "./crixel/assets/assets"
+require "./crixel/assets/texture"
+require "./crixel/assets/font"
 
 module Crixel
   VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
 
   macro install_default_assets
+    require "./crixel/assets/bakedfs"
     Crixel::Assets::BakedFS.bake(path: "default_rsrc")
   end
 
@@ -62,7 +65,7 @@ module Crixel
       Raylib.end_mode_2d
       @@camera_stack << camera
     end
-    
+
     Raylib.begin_mode_2d(camera.to_rcamera)
   end
 
@@ -72,7 +75,7 @@ module Crixel
     end
 
     @@camera_stack << camera
-    
+
     Raylib.begin_mode_2d(camera.to_rcamera)
   end
 

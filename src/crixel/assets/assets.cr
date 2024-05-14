@@ -1,12 +1,5 @@
 module Crixel::Assets
   alias ConsumerCallback = Proc(String, IO, Int32, Bool)
-  SUPPORTED_TEXTURES = %w[PNG BMP TGA JPG GIF QOI PSD DDS HDR KTX ASTC PKM PVR]
-  SUPPORTED_FONTS    = %w[TTF OTF]
-
-  class_property default_font_size = 12
-
-  @@textures = {} of String => Texture
-  @@fonts = {} of String => Font
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
 
@@ -19,33 +12,6 @@ module Crixel::Assets
 
   def self.add_consumer(&block : ConsumerCallback)
     @@consumers << block
-  end
-
-  add_consumer do |path, io, size|
-    extension = Path.new(path).extension.downcase
-    if SUPPORTED_TEXTURES.any? { |ext| extension.upcase[1..] == ext }
-      content = io.gets_to_end
-      image = Raylib.load_image_from_memory(extension, content, size)
-      texture = Raylib.load_texture_from_image(image)
-      raise "Texture invalid" unless Raylib.texture_ready?(texture)
-      @@textures[path] = Texture.new(path, texture)
-      true
-    else
-      false
-    end
-  end
-
-  add_consumer do |path, io, size|
-    extension = Path.new(path).extension.downcase
-    if SUPPORTED_FONTS.any? { |ext| extension.upcase[1..] == ext }
-      content = io.gets_to_end
-      font = Raylib.load_font_from_memory(extension, content, size, @@default_font_size, Pointer(Int32).null, 0)
-      raise "Font invalid" unless Raylib.font_ready?(font)
-      @@fonts[path] = Font.new(path, font)
-      true
-    else
-      false
-    end
   end
 
   def self.run_consumers(path : String, io : IO, size : Int)
@@ -71,63 +37,12 @@ module Crixel::Assets
     end
   end
 
-  def self.add_texture(name : String, texture : Texture)
-    @@textures[name] = texture
-  end
-
-  def self.get_texture(name)
-    @@textures[name]
-  end
-
-  def self.get_texture?(name)
-    @@textures[name]?
-  end
-
-  def self.add_font(name : String, font : Font)
-    @@fonts[name] = font
-  end
-
-  def self.get_font(name)
-    @@fonts[name]
-  end
-
-  def self.get_font?(name)
-    @@fonts[name]?
-  end
-
-  def self.get_rtexture(name)
-    @@textures[name].rtexture
-  end
-
-  def self.get_rtexture?(name)
-    @@textures[name]?.try(&.rtexture)
-  end
-
-  def self.get_rfont(name)
-    @@fonts[name].rfont
-  end
-
-  def self.get_rfont?(name)
-    @@fonts[name]?.try(&.rfont)
-  end
-
   def self.unload
-    @@textures.values.each do |t|
-      Raylib.unload_texture(t.rtexture)
-      emit Asset::Destroyed, t
-    end
-    @@textures.clear
-
-    @@fonts.values.each do |f|
-      Raylib.unload_font(f.rfont)
-      emit Asset::Destroyed, f
-    end
-    @@fonts.clear
-
     emit Unload
   end
 end
 
 class Crixel::Asset
   event Destroyed, me : self
+  event Changed, me : self
 end
