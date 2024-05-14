@@ -3,7 +3,7 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   getter? currently_drawing = false
 
-  getter camera : ICamera? = nil
+  getter camera : ICamera = Camera.new
 
   single_event Draw, rt : self, total_time : Time::Span, elapsed_time : Time::Span
 
@@ -15,6 +15,16 @@ class Crixel::RenderTarget < Crixel::Sprite
 
     texture.on_destroyed(once: true) do
       destroy
+    end
+
+    self.on_destroyed do
+      if Raylib.texture_ready? @render_texture.texture
+        Raylib.unload_render_texture(@render_texture)
+      else
+        RLGL.unload_framebuffer(@render_texture.id)
+      end
+
+      @render_texture = Raylib::RenderTexture2D.new
     end
     super(texture: name, x: x, y: y, width: width, height: height)
   end
@@ -32,33 +42,18 @@ class Crixel::RenderTarget < Crixel::Sprite
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    old_camera = Crixel.stop_2d_mode
-    
     @currently_drawing = true
+    Crixel.start_2d_mode(camera)
     Raylib.begin_texture_mode(@render_texture)
-    if camera
-      c = camera.not_nil!
-      Crixel.start_2d_mode(c)
-      clear_background(c.bg_color)
-    end
     emit Draw, self, total_time, elapsed_time
     Raylib.end_texture_mode
-    Crixel.stop_2d_mode if camera
+    Crixel.stop_2d_mode
+
     @currently_drawing = false
-    
-    Crixel.start_2d_mode(old_camera)
     super
   end
 
   def destroy
-    if Raylib.texture_ready? @render_texture.texture
-      Raylib.unload_render_texture(@render_texture)
-    else
-      RLGL.unload_framebuffer(@render_texture.id)
-    end
-
-    @render_texture = Raylib::RenderTexture2D.new
-
     super
   end
 end

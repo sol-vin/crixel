@@ -79,4 +79,3 @@ class Crixel::State
     state.inputs.setup
   end
 end
-

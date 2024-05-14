@@ -48,8 +48,6 @@ class Crixel::Timer
   end
 
   def restart
-    
-
     if @current_time
       @current_time = Time::Span.new(nanoseconds: 0)
       emit Restarted, self
@@ -66,7 +64,7 @@ class Crixel::Timer
       if @current_time > @trigger_time
         emit Triggered, self
         if loop?
-          @current_time -= elapsed_time 
+          @current_time -= elapsed_time
         else
           stop
         end

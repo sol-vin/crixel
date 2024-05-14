@@ -97,9 +97,9 @@ class Crixel::State
         @draw_order.delete(action.item)
       end
     end
-    
+
     if dirty
-      @update_order.sort! { |a, b| a.update_layer <=> b.update_layer } 
+      @update_order.sort! { |a, b| a.update_layer <=> b.update_layer }
       @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     end
   end
@@ -108,7 +108,7 @@ class Crixel::State
     Input::Manager.update(self, total_time, elapsed_time)
     _run_action_queue(dirty: true)
     @updating = true
-    
+
     emit PreUpdate, self, total_time, elapsed_time
     @update_order.each do |child|
       child.update(total_time, elapsed_time) if child.active?
@@ -122,8 +122,8 @@ class Crixel::State
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     @drawing = true
-    Crixel.start_2d_mode(camera)
-    Raylib.clear_background(camera.bg_color.to_raylib)
+    Crixel.start_2d_mode(@camera)
+    Raylib.clear_background(@camera.bg_color.to_raylib)
 
     emit PreDraw, self, total_time, elapsed_time
     @draw_order.each do |child|
@@ -132,7 +132,6 @@ class Crixel::State
       end
     end
     emit PostDraw, self, total_time, elapsed_time
-
     Crixel.stop_2d_mode
     @drawing = false
     _run_action_queue()

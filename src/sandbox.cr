@@ -2,9 +2,6 @@ require "./crixel"
 require "./crixel/audio"
 require "./crixel/input"
 
-Crixel.start_window(400, 300) # This must be done here
-Crixel.install_default_assets
-
 class PlayState < Crixel::State
   SIN_DISTANCE = 150
 
@@ -41,11 +38,16 @@ class PlayState < Crixel::State
 
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
-      key1.on_pressed(name: "q_pressed") do |total_time, elapsed_time|
-        puts "Q pressed"
+      key1.on_down(name: "q_pressed") do |total_time, elapsed_time|
+        @c.zoom += 0.001
       end
 
-      4.times { @texts << Crixel::Text.new }
+      key2 = inputs.get_key(Crixel::Key::Code::W)
+      key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
+        @c.zoom -= 0.001
+      end
+
+      4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }
       @texts.each { |t| t.tint = Crixel::Color::RGBA::GREEN; add(t) }
     end
 
@@ -54,19 +56,23 @@ class PlayState < Crixel::State
       @c.x = Math.sin(total_time.total_seconds).to_f32 * SIN_DISTANCE
       @c.y = Math.cos(total_time.total_seconds).to_f32 * SIN_DISTANCE
 
-      @c.zoom = 0.4_f32 * Math.sin(total_time.total_seconds).to_f32 + 0.7
+      # @c.zoom = 0.4_f32 * Math.sin(total_time.total_seconds).to_f32 + 0.7
+
+      # @camera.x = @c.x
+      # @camera.y = @c.y
 
       ps = @c.points
       @texts.each_with_index do |t, i|
         t.x = ps[i].x
         t.y = ps[i].y
-        t.height = 20
-        t.origin = Crixel::Vector2.new(
-          x: t.width/2,
-          y: t.height/2
-        )
+
         t.rotation = @c.rotation
         t.text = "#{ps[i].x.to_i}, #{ps[i].y.to_i}"
+
+        t.origin = Crixel::Vector2.new(
+          x: t.text_size.x/2,
+          y: t.height/2
+        )
       end
     end
 
@@ -81,4 +87,6 @@ class PlayState < Crixel::State
   end
 end
 
+Crixel.start_window(400, 300) # This must be done here
+Crixel.install_default_assets
 Crixel.run(PlayState.new)

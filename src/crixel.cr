@@ -23,7 +23,6 @@ require "./crixel/render_target"
 require "./crixel/assets/**"
 
 module Crixel
-
   VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
 
@@ -49,16 +48,41 @@ module Crixel
   # Handles what camera should restored when a we begin and end raylib's 2d mode
   @@camera_stack = [] of ICamera
 
-  def self.start_2d_mode(camera : ICamera)
-    @@camera_stack << camera
+  def self.current_camera? : ICamera?
+    @@camera_stack[-1]?
+  end
+
+  def self.enabled_2d_mode?
+    @@camera_stack.size > 0
+  end
+
+  def self.start_2d_mode
+    camera = Camera.new
+    if enabled_2d_mode?
+      Raylib.end_mode_2d
+      @@camera_stack << camera
+    end
+    
     Raylib.begin_mode_2d(camera.to_rcamera)
   end
 
-  def self.stop_2d_mode : ICamera
-    if camera = @@camera_stack.pop?
+  def self.start_2d_mode(camera : ICamera)
+    if enabled_2d_mode?
       Raylib.end_mode_2d
-      Raylib.begin_mode_2d(@@camera_stack.last.to_rcamera) unless @@camera_stack.size == 0
-      return camera
+    end
+
+    @@camera_stack << camera
+    
+    Raylib.begin_mode_2d(camera.to_rcamera)
+  end
+
+  def self.stop_2d_mode
+    if @@camera_stack.pop?
+      Raylib.end_mode_2d
+      if current_camera?
+        Raylib.begin_mode_2d(current_camera?.not_nil!.to_rcamera)
+      else
+      end
     else
       raise "Crixel.stop_2d_mode called but no camera was on the stack...."
     end
@@ -66,6 +90,7 @@ module Crixel
 
   def self.start_window(@@width, @@height)
     if !@@started
+      Raylib.set_trace_log_level(Raylib::TraceLogLevel::Warning)
       @@started = true
       Raylib.init_window(@@width, @@height, title)
     end
@@ -73,13 +98,12 @@ module Crixel
 
   class_getter total_time : Time::Span = Time::Span.new(nanoseconds: 0)
   class_getter elapsed_time : Time::Span = Time::Span.new(nanoseconds: 0)
-  
+
   def self.run(state = State.new, @@title = "Crixel")
     if @@started && !@@running
       @@running = true
 
       state.on_destroyed do
-        puts "State destroyed #{state.class}"
         if state == main_state
           old = @@states.pop
           old.destroy

@@ -6,7 +6,7 @@ class Crixel::Sprite < Crixel::Basic
     src_rectangle : Rectangle? = nil,
     tint : Color = Color::RGBA::WHITE
   )
-    draw(Assets.get_texture(texture_name), x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
+    draw(Assets.get_texture(texture_name).rtexture, x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
   end
 
   def self.draw(
@@ -16,7 +16,7 @@ class Crixel::Sprite < Crixel::Basic
     src_rectangle : Rectangle? = nil,
     tint : Color = Color::RGBA::WHITE
   )
-    draw(texture, x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
+    draw(texture.rtexture, x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
   end
 
   def self.draw(
@@ -28,7 +28,16 @@ class Crixel::Sprite < Crixel::Basic
   )
     r_texture = texture.rtexture
     raise "Cannot open texture" unless Raylib.texture_ready? r_texture
+    draw()
+  end
 
+  def self.draw(
+    r_texture : Raylib::Texture2D,
+    x, y, size : Vector2? = nil,
+    rotation : Number = 0.0_f32, origin : Vector2 = Vector2.zero,
+    src_rectangle : Rectangle? = nil,
+    tint : Color = Color::RGBA::WHITE
+  )
     flip_x = false
 
     source = Rectangle.new

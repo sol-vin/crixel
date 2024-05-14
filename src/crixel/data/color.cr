@@ -3,15 +3,15 @@ abstract struct Crixel::Color
 end
 
 struct Crixel::Color::RGBA < Crixel::Color
-  RED   = Crixel::Color::RGBA.new(r: 255, a: 255)
-  YELLOW   = Crixel::Color::RGBA.new(r: 255, g: 255, a: 255)
-  GREEN = Crixel::Color::RGBA.new(g: 255, a: 255)
-  CYAN   = Crixel::Color::RGBA.new(g: 255, b: 255, a: 255)
-  BLUE  = Crixel::Color::RGBA.new(b: 255, a: 255)
-  MAGENTA   = Crixel::Color::RGBA.new(r: 255, b: 255, a: 255)
-  WHITE = Crixel::Color::RGBA.new(r: 255, g: 255, b: 255, a: 255)
-  BLACK = Crixel::Color::RGBA.new(r: 0, g: 0, b: 0, a: 255)
-  CLEAR = Crixel::Color::RGBA.new(r: 0, g: 0, b: 0, a: 0)
+  RED     = Crixel::Color::RGBA.new(r: 255, a: 255)
+  YELLOW  = Crixel::Color::RGBA.new(r: 255, g: 255, a: 255)
+  GREEN   = Crixel::Color::RGBA.new(g: 255, a: 255)
+  CYAN    = Crixel::Color::RGBA.new(g: 255, b: 255, a: 255)
+  BLUE    = Crixel::Color::RGBA.new(b: 255, a: 255)
+  MAGENTA = Crixel::Color::RGBA.new(r: 255, b: 255, a: 255)
+  WHITE   = Crixel::Color::RGBA.new(r: 255, g: 255, b: 255, a: 255)
+  BLACK   = Crixel::Color::RGBA.new(r: 0, g: 0, b: 0, a: 255)
+  CLEAR   = Crixel::Color::RGBA.new(r: 0, g: 0, b: 0, a: 0)
 
   property r : UInt8 = 0_u8
   property g : UInt8 = 0_u8

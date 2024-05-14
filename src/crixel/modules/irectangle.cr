@@ -11,6 +11,14 @@ module Crixel::IRectangle
     )
   end
 
+  def rectangle_invalid?
+    width <= 0 || height <= 0
+  end
+
+  def rectangle_size_zero?
+    width.abs == 0 || height.abs == 0
+  end
+
   def draw_rectangle(tint : Color, fill = false)
     Rectangle.draw(x, y, width, height, tint, fill)
   end

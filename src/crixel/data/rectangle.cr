@@ -11,7 +11,7 @@ struct Crixel::Rectangle
     @height = height.to_f32
   end
 
-  def to_raylib : Raylib::Color
+  def to_raylib : Raylib::Rectangle
     Raylib::Rectangle.new(
       x: x,
       y: y,
