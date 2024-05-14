@@ -23,8 +23,13 @@ require "./crixel/render_target"
 require "./crixel/assets/**"
 
 module Crixel
+
   VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
+
+  macro install_default_assets
+    Crixel::Assets::BakedFS.bake(path: "default_rsrc")
+  end
 
   class_getter width : Int32 = 0
   class_getter height : Int32 = 0
@@ -41,8 +46,22 @@ module Crixel
   event Open
   event Close
 
-  macro install_default_assets
-    Crixel::Assets::BakedFS.bake(path: "default_rsrc")
+  # Handles what camera should restored when a we begin and end raylib's 2d mode
+  @@camera_stack = [] of ICamera
+
+  def self.start_2d_mode(camera : ICamera)
+    @@camera_stack << camera
+    Raylib.begin_mode_2d(camera.to_rcamera)
+  end
+
+  def self.stop_2d_mode : ICamera
+    if camera = @@camera_stack.pop?
+      Raylib.end_mode_2d
+      Raylib.begin_mode_2d(@@camera_stack.last.to_rcamera) unless @@camera_stack.size == 0
+      return camera
+    else
+      raise "Crixel.stop_2d_mode called but no camera was on the stack...."
+    end
   end
 
   def self.start_window(@@width, @@height)
@@ -52,6 +71,9 @@ module Crixel
     end
   end
 
+  class_getter total_time : Time::Span = Time::Span.new(nanoseconds: 0)
+  class_getter elapsed_time : Time::Span = Time::Span.new(nanoseconds: 0)
+  
   def self.run(state = State.new, @@title = "Crixel")
     if @@started && !@@running
       @@running = true
@@ -73,11 +95,15 @@ module Crixel
       emit Open
 
       until should_close?
-        Raylib.begin_drawing
-        Mouse.update
-        update
-        draw
-        Raylib.end_drawing
+        @@elapsed_time = Time.measure do
+          Raylib.begin_drawing
+          Mouse.update
+          update(@@elapsed_time)
+          draw(@@elapsed_time)
+          Raylib.end_drawing
+        end
+
+        @@total_time += elapsed_time
       end
 
       Assets.unload
@@ -119,31 +145,31 @@ module Crixel
     @@states.last
   end
 
-  def self.update
+  def self.update(elapsed_time : Time::Span)
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
         @@running_state = state
-        state.update
+        state.update(elapsed_time)
       else
         if state.persist_update
           @@running_state = state
-          state.update
+          state.update(elapsed_time)
         end
       end
     end
   end
 
-  def self.draw
+  def self.draw(elapsed_time : Time::Span)
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
         @@running_state = state
-        state.draw
+        state.draw(elapsed_time)
       else
         if state.persist_draw
           @@running_state = state
-          state.draw
+          state.draw(elapsed_time)
         end
       end
     end

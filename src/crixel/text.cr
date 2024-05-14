@@ -15,7 +15,7 @@ class Crixel::Text < Crixel::Basic
     raise "Cannot set the width of a Crixel::Text"
   end
 
-  def draw
+  def draw(elapsed_time : Time::Span)
     Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation*Raylib::RAD2DEG, height, spacing, tint.to_raylib)
   end
 end

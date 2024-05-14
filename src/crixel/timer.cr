@@ -1,9 +1,9 @@
 class Crixel::Timer
   # When the timer started
-  getter start_time : Float64? = nil
+  getter current_time : Time::Span? = nil
 
   # When the timer should go off
-  property total_time : Float64 = 0.0_f64
+  property trigger_time : Time::Span = Time::Span.new(nanoseconds: 0)
 
   event Ticked, timer : self
   event Started, timer : self
@@ -14,62 +14,59 @@ class Crixel::Timer
   event Unpaused, timer : self
 
   property? loop : Bool = false
-  getter pause_time : Float64? = nil
+  getter? paused : Bool = false
 
   def initialize(@total_time)
   end
 
   def started?
-    !start_time.nil?
+    !current_time.nil?
   end
 
   def ended?
-    start_time.nil?
+    current_time.nil?
   end
 
   def start
-    @start_time = R.get_time unless @start_time
+    @current_time = Time::Span.new(nanoseconds: 0) unless @current_time
     emit Started, self
   end
 
   def pause
-    @pause_time = R.get_time
+    @paused = true
     emit Paused, self
   end
 
   def unpause
-    time_elapsed = @pause_time - @start_time
-    @start_time = R.get_time - time_elapsed
-    @pause_time = nil
+    @paused = false
     emit Unpaused, self
   end
 
-  def paused?
-    !!@pause_time
-  end
-
   def stop
-    @start_time = nil
+    @current_time = nil
     emit Stopped, self
   end
 
   def restart
-    @start_time = R.get_time
+    
 
-    if @start_time
+    if @current_time
+      @current_time = Time::Span.new(nanoseconds: 0)
       emit Restarted, self
     else
+      @current_time = Time::Span.new(nanoseconds: 0)
       emit Started, self
     end
   end
 
-  def tick
+  def tick(elapsed_time : Time::Span)
     unless paused?
+      @current_time += elapsed_time
       emit Ticked, self
-      if R.get_time - @start_time
+      if @current_time > @trigger_time
         emit Triggered, self
         if loop?
-          @start_time = R.get_time
+          @current_time -= elapsed_time 
         else
           stop
         end

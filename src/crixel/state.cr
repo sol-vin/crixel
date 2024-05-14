@@ -30,10 +30,10 @@ class Crixel::State
   event PreSetup, state : self
   event Setup, state : self
   event PostSetup, state : self
-  event PreUpdate, state : self
-  event PostUpdate, state : self
-  event PreDraw, state : self
-  event PostDraw, state : self
+  event PreUpdate, state : self, elapsed_time : Time::Span
+  event PostUpdate, state : self, elapsed_time : Time::Span
+  event PreDraw, state : self, elapsed_time : Time::Span
+  event PostDraw, state : self, elapsed_time : Time::Span
 
   def initialize
   end
@@ -72,7 +72,7 @@ class Crixel::State
   end
 
   def remove(object : Basic)
-        if updating? || drawing?
+    if updating? || drawing?
       @action_queue << QueuedAction.new(QueuedAction::Type::Destroy, object)
     else
       _remove(object)
@@ -104,35 +104,36 @@ class Crixel::State
     end
   end
 
-  def update
+  def update(elapsed_time : Time::Span)
     Input::Manager.update(self)
     _run_action_queue(dirty: true)
     @updating = true
     
-    emit PreUpdate, self
+    emit PreUpdate, self, elapsed_time
     @update_order.each do |child|
-      child.update if child.active?
+      child.update(elapsed_time) if child.active?
     end
-    emit PostUpdate, self
+    emit PostUpdate, self, elapsed_time
 
     @updating = false
     _run_action_queue()
   end
 
-  def draw
+  def draw(elapsed_time : Time::Span)
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     @drawing = true
-    Raylib.begin_mode_2d(camera.to_rcamera)
+    Crixel.start_2d_mode(camera)
     Raylib.clear_background(camera.bg_color.to_raylib)
-    emit PreDraw, self
+
+    emit PreDraw, self, elapsed_time
     @draw_order.each do |child|
       if child.visible?
-        child.draw
+        child.draw(elapsed_time)
       end
     end
-    emit PostDraw, self
+    emit PostDraw, self, elapsed_time
 
-    Raylib.end_mode_2d
+    Crixel.stop_2d_mode
     @drawing = false
     _run_action_queue()
   end

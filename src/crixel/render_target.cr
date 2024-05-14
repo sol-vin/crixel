@@ -5,7 +5,7 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   getter camera : ICamera? = nil
 
-  single_event Draw, rt : self
+  single_event Draw, rt : self, elapsed_time : Time::Span
 
   def initialize(texture_name : String, x = 0, y = 0, width : UInt32 = 0, height : UInt32 = 0)
     name = "@Crixel::RenderTarget@#{texture_name}"
@@ -31,22 +31,22 @@ class Crixel::RenderTarget < Crixel::Sprite
     end
   end
 
-  def draw
-    Raylib.end_mode_2d
+  def draw(elapsed_time : Time::Span)
+    old_camera = Crixel.stop_2d_mode
+    
     @currently_drawing = true
-
     Raylib.begin_texture_mode(@render_texture)
     if camera
       c = camera.not_nil!
-      Raylib.begin_mode_2d(c.to_rcamera)
+      Crixel.start_2d_mode(c)
       clear_background(c.bg_color)
     end
-    emit Draw, self
-    Raylib.end_mode_2d if camera
+    emit Draw, self, elapsed_time
     Raylib.end_texture_mode
+    Crixel.stop_2d_mode if camera
     @currently_drawing = false
-
-    Raylib.begin_mode_2d(Crixel.running_state.camera.to_rcamera)
+    
+    Crixel.start_2d_mode(old_camera)
     super
   end
 

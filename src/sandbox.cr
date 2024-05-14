@@ -14,6 +14,8 @@ class PlayState < Crixel::State
 
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
+  @total_time = Time::Span.new
+
   def initialize
     super
 
@@ -24,12 +26,13 @@ class PlayState < Crixel::State
       @c.bg_color = Crixel::Color::RGBA::BLACK
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
-      @c.on_draw do
+      @c.on_draw do |elapsed_time|
+        @total_time += elapsed_time
         @c.clear_background(Crixel::Color::RGBA::WHITE)
         Crixel::Line.draw(0, 0, @c.width, @c.height, tint: Crixel::Color::RGBA::GREEN)
         Crixel::Line.draw(@c.width, 0, 0, @c.height, tint: Crixel::Color::RGBA::GREEN)
-        x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE/2
-        y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE/2
+        x = Math.sin(@total_time.total_seconds).to_f32 * SIN_DISTANCE/2
+        y = Math.cos(@total_time.total_seconds).to_f32 * SIN_DISTANCE/2
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 150, Crixel::Color::RGBA::BLUE, fill: true)
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 75, Crixel::Color::RGBA::RED, fill: true)
       end
@@ -43,54 +46,22 @@ class PlayState < Crixel::State
         puts "Q pressed"
       end
 
-      key1.on_released(name: "q_released") do
-        puts "Q released"
-        @c.destroy
-      end
-
-      key2 = inputs.get_key(Crixel::Key::Code::W)
-      key2.on_released(name: "w_released") do
-        puts "W released"
-        key1.remove_released("q_released")
-      end
-
-      button = inputs.get_button(Crixel::Gamepad::Player::One, Crixel::Gamepad::Button::Code::LeftFaceRight)
-      button.on_released(name: "dpad_right_released") do
-        puts "DPAD Right released"
-      end
-
-      button = inputs.get_mouse_button(Crixel::Mouse::Button::Code::Left)
-      button.on_released(name: "left_mouse_released") do
-        puts "Left Mouse released"
-      end
-
-      trigger = inputs.get_trigger(Crixel::Gamepad::Player::One, Crixel::Gamepad::Trigger::Code::Left)
-      trigger.on_pressed(name: "trigger_pressed") do
-        puts "Left Trigger pressed"
-      end
-
-      stick = inputs.get_analog_stick(Crixel::Gamepad::Player::One, Crixel::Gamepad::AnalogStick::Code::Left)
-      stick.on_moved(name: "stick_moved") do
-        puts "Stick Moved #{stick.current_value.x}, #{stick.current_value.y}"
-      end
-
       4.times { @texts << Crixel::Text.new }
       @texts.each { |t| t.tint = Crixel::Color::RGBA::GREEN; add(t) }
     end
 
-    on_pre_update do
-      @c.rotation = Raylib.get_time.to_f32
-      @c.x = Math.sin(Raylib.get_time).to_f32 * SIN_DISTANCE
-      @c.y = Math.cos(Raylib.get_time).to_f32 * SIN_DISTANCE
+    on_pre_update do |elapsed_time|
+      @c.rotation = Crixel.total_time.total_seconds.to_f32
+      @c.x = Math.sin(Crixel.total_time.total_seconds).to_f32 * SIN_DISTANCE
+      @c.y = Math.cos(Crixel.total_time.total_seconds).to_f32 * SIN_DISTANCE
 
-      @c.zoom = 0.4_f32 * Math.sin(Raylib.get_time).to_f32 + 0.7
+      @c.zoom = 0.4_f32 * Math.sin(Crixel.total_time.total_seconds).to_f32 + 0.7
 
       ps = @c.points
       @texts.each_with_index do |t, i|
         t.x = ps[i].x
         t.y = ps[i].y
         t.height = 20
-        # t.rotation = Raylib.get_time.to_f32
         t.origin = Crixel::Vector2.new(
           x: t.width/2,
           y: t.height/2
@@ -100,7 +71,7 @@ class PlayState < Crixel::State
       end
     end
 
-    on_post_draw do
+    on_post_draw do |elapsed_time|
       @c.src_rectangle.draw(Crixel::Color::RGBA.new(r: 255, a: 255))
       @c.dst_rectangle.draw(Crixel::Color::RGBA.new(b: 255, a: 255))
       @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))
