@@ -49,9 +49,14 @@ class PlayState < Crixel::State
         @camera.zoom -= 0.001
       end
 
-      key2 = inputs.get_key(Crixel::Key::Code::E)
-      key2.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
+      key3 = inputs.get_key(Crixel::Key::Code::E)
+      key3.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
         @startup.play
+      end
+
+      key4 = inputs.get_key(Crixel::Key::Code::R)
+      key4.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
+        @startup.replay
       end
 
       4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }

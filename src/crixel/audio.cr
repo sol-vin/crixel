@@ -19,6 +19,15 @@ class Crixel::Sound
   end
 
   def play
+    if RAudio.sound_ready?(@sound_alias) && !playing?
+      RAudio.play_sound(@sound_alias)
+    elsif RAudio.sound_ready?(@sound_alias) && playing?
+    else
+      raise "Cannot play sound that isnt loaded :("
+    end
+  end
+
+  def replay
     if RAudio.sound_ready?(@sound_alias)
       RAudio.play_sound(@sound_alias)
     else
@@ -54,7 +63,7 @@ class Crixel::Sound
     if RAudio.sound_ready?(@sound_alias)
       RAudio.sound_playing?(@sound_alias)
     else
-      raise "Cannot play sound that isnt loaded :("
+      false
     end
   end
 

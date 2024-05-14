@@ -99,7 +99,6 @@ module Crixel
       Raylib.init_window(@@width, @@height, title)
       emit Start
       Assets.setup
-
     end
   end
 
@@ -110,10 +109,10 @@ module Crixel
     if @@started && !@@running
       @@running = true
 
+      # If the state is deleted, pop if is the main_state, or delete it out of states
       state.on_destroyed do
         if state == main_state
-          old = @@states.pop
-          old.destroy
+          state = @@states.pop
         else
           @@states.delete(state)
         end
@@ -138,8 +137,7 @@ module Crixel
       Assets.unload
       close
     elsif !@@started
-      @@started = true
-      run(state, @@title)
+      raise "Use Crixel.start_window first"
     else
       raise "Crixel is already running!"
     end
@@ -211,6 +209,7 @@ module Crixel
   def self.close
     @@running = false
     emit Close
+    puts "Closing"
     Raylib.close_window
   end
 end
