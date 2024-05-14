@@ -98,8 +98,8 @@ module Crixel
         @@elapsed_time = Time.measure do
           Raylib.begin_drawing
           Mouse.update
-          update(@@elapsed_time)
-          draw(@@elapsed_time)
+          update(@@total_time, @@elapsed_time)
+          draw(@@total_time, @@elapsed_time)
           Raylib.end_drawing
         end
 
@@ -145,31 +145,31 @@ module Crixel
     @@states.last
   end
 
-  def self.update(elapsed_time : Time::Span)
+  def self.update(total_time : Time::Span, elapsed_time : Time::Span)
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
         @@running_state = state
-        state.update(elapsed_time)
+        state.update(total_time, elapsed_time)
       else
         if state.persist_update
           @@running_state = state
-          state.update(elapsed_time)
+          state.update(total_time, elapsed_time)
         end
       end
     end
   end
 
-  def self.draw(elapsed_time : Time::Span)
+  def self.draw(total_time : Time::Span, elapsed_time : Time::Span)
     @@states.reverse_each.with_index do |state, index|
       # Check if we are the top state
       if index == 0
         @@running_state = state
-        state.draw(elapsed_time)
+        state.draw(total_time, elapsed_time)
       else
         if state.persist_draw
           @@running_state = state
-          state.draw(elapsed_time)
+          state.draw(total_time, elapsed_time)
         end
       end
     end

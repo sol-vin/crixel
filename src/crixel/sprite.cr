@@ -151,7 +151,7 @@ class Crixel::Sprite < Crixel::Basic
     @height = (height || r_texture.height).to_f32
   end
 
-  def draw(elapsed_time : Time::Span)
+  def draw(total_time : Time::Span, elapsed_time : Time::Span)
     draw_sprite
   end
 end

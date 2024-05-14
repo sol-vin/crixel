@@ -30,10 +30,10 @@ class Crixel::State
   event PreSetup, state : self
   event Setup, state : self
   event PostSetup, state : self
-  event PreUpdate, state : self, elapsed_time : Time::Span
-  event PostUpdate, state : self, elapsed_time : Time::Span
-  event PreDraw, state : self, elapsed_time : Time::Span
-  event PostDraw, state : self, elapsed_time : Time::Span
+  event PreUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  event PostUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  event PreDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
 
   def initialize
   end
@@ -104,34 +104,34 @@ class Crixel::State
     end
   end
 
-  def update(elapsed_time : Time::Span)
+  def update(total_time : Time::Span, elapsed_time : Time::Span)
     Input::Manager.update(self)
     _run_action_queue(dirty: true)
     @updating = true
     
-    emit PreUpdate, self, elapsed_time
+    emit PreUpdate, self, total_time, elapsed_time
     @update_order.each do |child|
-      child.update(elapsed_time) if child.active?
+      child.update(total_time, elapsed_time) if child.active?
     end
-    emit PostUpdate, self, elapsed_time
+    emit PostUpdate, self, total_time, elapsed_time
 
     @updating = false
     _run_action_queue()
   end
 
-  def draw(elapsed_time : Time::Span)
+  def draw(total_time : Time::Span, elapsed_time : Time::Span)
     @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     @drawing = true
     Crixel.start_2d_mode(camera)
     Raylib.clear_background(camera.bg_color.to_raylib)
 
-    emit PreDraw, self, elapsed_time
+    emit PreDraw, self, total_time, elapsed_time
     @draw_order.each do |child|
       if child.visible?
-        child.draw(elapsed_time)
+        child.draw(total_time, elapsed_time)
       end
     end
-    emit PostDraw, self, elapsed_time
+    emit PostDraw, self, total_time, elapsed_time
 
     Crixel.stop_2d_mode
     @drawing = false

@@ -26,13 +26,12 @@ class PlayState < Crixel::State
       @c.bg_color = Crixel::Color::RGBA::BLACK
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
-      @c.on_draw do |elapsed_time|
-        @total_time += elapsed_time
+      @c.on_draw do |total_time, elapsed_time|
         @c.clear_background(Crixel::Color::RGBA::WHITE)
         Crixel::Line.draw(0, 0, @c.width, @c.height, tint: Crixel::Color::RGBA::GREEN)
         Crixel::Line.draw(@c.width, 0, 0, @c.height, tint: Crixel::Color::RGBA::GREEN)
-        x = Math.sin(@total_time.total_seconds).to_f32 * SIN_DISTANCE/2
-        y = Math.cos(@total_time.total_seconds).to_f32 * SIN_DISTANCE/2
+        x = Math.sin(total_time.total_seconds).to_f32 * SIN_DISTANCE/2
+        y = Math.cos(total_time.total_seconds).to_f32 * SIN_DISTANCE/2
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 150, Crixel::Color::RGBA::BLUE, fill: true)
         Crixel::Circle.draw(@c.width/2 + x, @c.height/2 + y, 75, Crixel::Color::RGBA::RED, fill: true)
       end
@@ -50,12 +49,12 @@ class PlayState < Crixel::State
       @texts.each { |t| t.tint = Crixel::Color::RGBA::GREEN; add(t) }
     end
 
-    on_pre_update do |elapsed_time|
-      @c.rotation = Crixel.total_time.total_seconds.to_f32
-      @c.x = Math.sin(Crixel.total_time.total_seconds).to_f32 * SIN_DISTANCE
-      @c.y = Math.cos(Crixel.total_time.total_seconds).to_f32 * SIN_DISTANCE
+    on_pre_update do |total_time, elapsed_time|
+      @c.rotation = total_time.total_seconds.to_f32
+      @c.x = Math.sin(total_time.total_seconds).to_f32 * SIN_DISTANCE
+      @c.y = Math.cos(total_time.total_seconds).to_f32 * SIN_DISTANCE
 
-      @c.zoom = 0.4_f32 * Math.sin(Crixel.total_time.total_seconds).to_f32 + 0.7
+      @c.zoom = 0.4_f32 * Math.sin(total_time.total_seconds).to_f32 + 0.7
 
       ps = @c.points
       @texts.each_with_index do |t, i|
