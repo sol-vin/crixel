@@ -18,15 +18,16 @@ module Crixel::Assets
       content = io.gets_to_end
       font = Raylib.load_font_from_memory(extension, content, size, DEFAULT_FONT_SIZE, Pointer(Int32).null, 0)
       raise "Font invalid" unless Raylib.font_ready?(font)
-      @@fonts[path] = Font.new(path, font)
+      add_font Font.new(path, font)
       true
     else
       false
     end
   end
 
-  def self.add_font(name : String, font : Font)
-    @@fonts[name] = font
+  def self.add_font(font : Font)
+    emit Asset::Changed, font if @@fonts[font.name]?
+    @@fonts[font.name] = font
   end
 
   def self.get_font(name)

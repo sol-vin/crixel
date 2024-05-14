@@ -81,6 +81,6 @@ class Crixel::State
 
   def update(total_time : Time::Span, elapsed_time : Time::Span)
     Input::Manager.update(self, total_time, elapsed_time)
-    previous_def
+    previous_def # TODO: This MAY cause problems in the future?
   end
 end

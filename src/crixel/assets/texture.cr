@@ -17,15 +17,16 @@ module Crixel::Assets
       image = Raylib.load_image_from_memory(extension, content, size)
       texture = Raylib.load_texture_from_image(image)
       raise "Texture invalid" unless Raylib.texture_ready?(texture)
-      @@textures[path] = Texture.new(path, texture)
+      add_texture Texture.new(path, texture)
       true
     else
       false
     end
   end
 
-  def self.add_texture(name : String, texture : Texture)
-    @@textures[name] = texture
+  def self.add_texture(texture : Texture)
+    emit Asset::Changed, texture if @@textures[texture.name]?
+    @@textures[texture.name] = texture
   end
 
   def self.get_texture(name)

@@ -11,7 +11,7 @@ class Crixel::RenderTarget < Crixel::Sprite
     name = "@Crixel::RenderTarget@#{texture_name}"
     @render_texture = Raylib.load_render_texture(width, height)
     texture = Assets::Texture.new(name, @render_texture.texture)
-    Assets.add_texture(name, texture)
+    Assets.add_texture texture
 
     texture.on_destroyed(once: true) do
       destroy

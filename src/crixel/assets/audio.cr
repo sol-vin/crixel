@@ -19,15 +19,16 @@ module Crixel::Assets
       wave = RAudio.load_wave_from_memory(extension, content, size)
       sound = RAudio.load_sound_from_wave(wave)
       raise "Sound invalid" unless RAudio.sound_ready?(sound)
-      @@sounds[path] = Sound.new(path, sound)
+      add_sound Sound.new(path, sound)
       true
     else
       false
     end
   end
 
-  def self.add_sound(name : String, sound : Sound)
-    @@sounds[name] = sound
+  def self.add_sound(sound : Sound)
+    emit Asset::Changed, sound if @@sounds[sound.name]?
+    @@sounds[sound.name] = sound
   end
 
   def self.get_sound(name)

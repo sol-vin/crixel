@@ -14,7 +14,7 @@ module Crixel::Assets
     @@consumers << block
   end
 
-  def self.run_consumers(path : String, io : IO, size : Int)
+  def self.run_consumers(path : String, io : IO, size : Int) : Bool
     @@consumers.any? do |consumer|
       consumer.call(path, io, size)
     end
@@ -26,7 +26,7 @@ module Crixel::Assets
     emit PostSetup
   end
 
-  def self.load(path : String, io : IO, size : Int32)
+  def self.load(path : String, io : IO, size : Int32) : Bool
     raise "Cannot load before window is initialized: Try running asset loading methods from an `on Crixel::Assets::Setup` callback" unless Crixel.running?
     run_consumers(path, io, size)
   end
