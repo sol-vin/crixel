@@ -41,7 +41,7 @@ class PlayState < Crixel::State
 
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
-      key1.on_pressed(name: "q_pressed") do
+      key1.on_pressed(name: "q_pressed") do |total_time, elapsed_time|
         puts "Q pressed"
       end
 
@@ -70,7 +70,7 @@ class PlayState < Crixel::State
       end
     end
 
-    on_post_draw do |elapsed_time|
+    on_post_draw do |total_time, elapsed_time|
       @c.src_rectangle.draw(Crixel::Color::RGBA.new(r: 255, a: 255))
       @c.dst_rectangle.draw(Crixel::Color::RGBA.new(b: 255, a: 255))
       @c.draw_area_bounding_box(Crixel::Color::RGBA.new(g: 255, a: 255))

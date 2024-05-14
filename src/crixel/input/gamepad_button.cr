@@ -28,7 +28,7 @@ class Crixel::Gamepad::Button
   def initialize(@player, @code)
   end
 
-  def poll : Nil
-    _update_button(Raylib.gamepad_button_down?(@player.to_i, @code.to_i))
+  def poll(total_time : Time::Span, elapsed_time : Time::Span) : Nil
+    _update_button(Raylib.gamepad_button_down?(@player.to_i, @code.to_i), total_time, elapsed_time)
   end
 end

@@ -12,7 +12,7 @@ class Crixel::Gamepad::AnalogStick
   def initialize(@player, @code)
   end
 
-  def poll : Nil
+  def poll(total_time : Time::Span, elapsed_time : Time::Span) : Nil
     x_axis = (@code == Code::Left) ? Raylib::GamepadAxis::LeftX : Raylib::GamepadAxis::RightX
     y_axis = (@code == Code::Left) ? Raylib::GamepadAxis::LeftY : Raylib::GamepadAxis::RightY
 
@@ -20,6 +20,6 @@ class Crixel::Gamepad::AnalogStick
     position.x = Raylib.get_gamepad_axis_movement(@player.to_i, x_axis)
     position.y = Raylib.get_gamepad_axis_movement(@player.to_i, y_axis)
 
-    _update_analog_stick(position)
+    _update_analog_stick(position, total_time, elapsed_time)
   end
 end

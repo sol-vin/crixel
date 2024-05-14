@@ -7,10 +7,10 @@ module Crixel::Input::IButton
   getter? current_state : Bool = false
   getter? simulated_press : Bool = false
 
-  event Pressed, input : self
-  event Released, input : self
-  event Down, input : self
-  event Up, input : self
+  event Pressed, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  event Released, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  event Down, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  event Up, input : self, total_time : Time::Span, elapsed_time : Time::Span
 
   def press
     @simulated_press = true
@@ -32,21 +32,21 @@ module Crixel::Input::IButton
     !@last_state && !@current_state
   end
 
-  private def _update_button(new_state)
+  private def _update_button(new_state, total_time : Time::Span, elapsed_time : Time::Span)
     @last_state = @current_state
     @current_state = @simulated_press || new_state
     @simulated_press = false
 
     if pressed?
-      emit Pressed, self
+      emit Pressed, self, total_time, elapsed_time
     elsif released?
-      emit Released, self
+      emit Released, self, total_time, elapsed_time
     end
 
     if down?
-      emit Down, self
+      emit Down, self, total_time, elapsed_time
     else
-      emit Up, self
+      emit Up, self, total_time, elapsed_time
     end
   end
 end

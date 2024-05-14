@@ -16,7 +16,7 @@ class Crixel::Mouse::Button
   def initialize(@code)
   end
 
-  def poll : Nil
-    _update_button(Raylib.mouse_button_down?(@code.to_i))
+  def poll(total_time : Time::Span, elapsed_time : Time::Span) : Nil
+    _update_button(Raylib.mouse_button_down?(@code.to_i), total_time, elapsed_time)
   end
 end

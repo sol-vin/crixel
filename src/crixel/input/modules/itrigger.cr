@@ -10,21 +10,21 @@ module Crixel::Input::ITrigger
 
   property press_limit = 0.5_f32
 
-  event Moved, input : self
+  event Moved, input : self, total_time : Time::Span, elapsed_time : Time::Span
 
-  private def _update_trigger(value : Float32)
+  private def _update_trigger(value : Float32, total_time : Time::Span, elapsed_time : Time::Span)
     @last_value = @current_value
     @current_value = (@simulated_press ? 1.0_f32 : (@simulated_move > 0) ? @simulated_move : value)
     @simulated_move = 0.0_f32
 
     if @current_value > press_limit
-      _update_button(true)
+      _update_button(true, total_time, elapsed_time)
     else
-      _update_button(false)
+      _update_button(false, total_time, elapsed_time)
     end
 
     if @current_value > 0
-      emit Moved, self
+      emit Moved, self, total_time, elapsed_time
     end
   end
 end

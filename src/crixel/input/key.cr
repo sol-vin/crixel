@@ -119,7 +119,7 @@ class Crixel::Key
   def initialize(@code)
   end
 
-  def poll : Nil
-    _update_button(Raylib.key_down?(@code.to_i))
+  def poll(total_time : Time::Span, elapsed_time : Time::Span) : Nil
+    _update_button(Raylib.key_down?(@code.to_i), total_time, elapsed_time)
   end
 end

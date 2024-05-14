@@ -105,7 +105,7 @@ class Crixel::State
   end
 
   def update(total_time : Time::Span, elapsed_time : Time::Span)
-    Input::Manager.update(self)
+    Input::Manager.update(self, total_time, elapsed_time)
     _run_action_queue(dirty: true)
     @updating = true
     
