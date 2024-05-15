@@ -4,15 +4,15 @@ class Crixel::Text < Crixel::Basic
   end
 
   def self.draw(
-    text : String, 
-    position : Vector2 = Vector2.zero, 
-    origin  : Vector2 = Vector2.zero,
+    text : String,
+    position : Vector2 = Vector2.zero,
+    origin : Vector2 = Vector2.zero,
     rotation : Float32 = 0.0_f32,
     text_size = 12,
     spacing : Float32 = 0.0_f32,
     tint : Color = Color::RGBA::WHITE,
     font : String = "default_rsrc/font.ttf"
-    )
+  )
     Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation, text_size, spacing, tint.to_raylib)
   end
 

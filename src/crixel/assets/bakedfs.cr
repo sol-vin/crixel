@@ -18,10 +18,10 @@ module ::Crixel::Assets::BakedFS
     module ::Crixel::Assets::BakedFS
       bake_folder {{path}}, dir: {{dir}}, allow_empty: true
       
-      begin
-        Dir.mkdir "#{{{dir}}}#{{{path}}}"
-      rescue File::AlreadyExistsError
-      end
+      # begin
+      #   Dir.mkdir "#{{{dir}}}#{{{path}}}"
+      # rescue File::AlreadyExistsError
+      # end
     end
   end
 end

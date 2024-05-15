@@ -6,6 +6,7 @@ module Crixel::ICamera
   include IRotation
   property zoom : Float32 = 1.0_f32
   property bg_color : Color::RGBA = Color::RGBA::CLEAR
+  property offset : Vector2 = Vector2.zero
 
   def follow(x, y, speed = 1.0_f32)
     distance = Vector2.new((x - @x), (y - @y))
@@ -23,7 +24,7 @@ module Crixel::ICamera
 
   def to_rcamera : Raylib::Camera2D
     Raylib::Camera2D.new(
-      target: position.to_raylib,
+      target: position.to_raylib + offset.to_raylib,
       offset: origin.to_raylib,
       rotation: (rotation).to_f32,
       zoom: zoom

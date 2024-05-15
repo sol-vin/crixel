@@ -13,9 +13,11 @@ targets:
     main: src/custom_state.cr
   custom_state_adv:
     main: src/custom_state_adv.cr
+
 dependencies:
   crixel:
     path: ../../
+
 
 crystal: '>= 1.11.2'
 

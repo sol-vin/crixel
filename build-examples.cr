@@ -1,5 +1,5 @@
 require "file_utils"
-
+require "yaml"
 
 
 FileUtils.cd("examples") do
@@ -8,7 +8,7 @@ FileUtils.cd("examples") do
     FileUtils.rm_r("_build")
   rescue
   end
-  
+
   FileUtils.mkdir_p("_build")
 
   # FileUtils.mkdir_p("_build/rsrc")
@@ -19,12 +19,21 @@ FileUtils.cd("examples") do
     puts " - BUILDING EXAMPLE #{path.basename}"
 
     FileUtils.cd(path) do
+      FileUtils.rm_r("bin")
       FileUtils.cp_r("../../default_rsrc", "./")
 
       `shards install`
+      shard_yml = YAML.parse("")
+      File.open("shard.yml") do |file|
+        shard_yml = YAML.parse(file.gets_to_end)
+      end
 
-      output = `shards build --release -s -p -t`
+      shard_yml["targets"].as_h.each do |target, _|
+        puts "  - building target: #{target}"
+        output = `shards build #{target.as_s} --release -s -p -t`
 
+        puts output.lines[0..20].join("\n")
+      end
       {% if flag?(:win32) %}
         FileUtils.cp(Dir.glob("./bin/*.exe"), "../_build/")
 

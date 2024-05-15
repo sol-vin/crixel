@@ -4,6 +4,7 @@ require "crixel/default_rsrc"
 class PlayState < Crixel::State
   DISTANCE = 50
   @text = Crixel::Text.new(text: "Hello World", text_size: 40)
+
   def initialize
     # Assign events here such as "on_setup", "on_pre_draw", etc
 

@@ -3,6 +3,7 @@ require "./crixel/audio"
 require "./crixel/input"
 
 require "./crixel/default_rsrc"
+Crixel.install_default_rsrc
 
 class PlayState < Crixel::State
   SIN_DISTANCE = 150
@@ -106,7 +107,6 @@ class PlayState < Crixel::State
     end
   end
 end
-
 
 Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)

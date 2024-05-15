@@ -11,6 +11,7 @@ targets:
 dependencies:
   minievents:
     github: sol-vin/minievents
+    branch: master
   raylib-cr:
     github: sol-vin/raylib-cr
     branch: master

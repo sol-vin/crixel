@@ -17,11 +17,14 @@ class PlayState < Crixel::State
 
   @startup : Crixel::Sound = Crixel::Sound.new("default_rsrc/flixel.mp3")
 
+  @backup_camera : Crixel::Camera = Crixel::Camera.new
+
   def initialize
     super
 
     on_setup do
-      # camera.offset = Vector2.new(x: 200, y: 150)
+      @backup_camera.origin = Crixel::Vector2.new(Crixel.width/2, Crixel.height/2)
+      
       @startup.play
       @c.zoom = 0.7_f32
       @c.bg_color = Crixel::Color::RGBA::BLACK
@@ -38,27 +41,63 @@ class PlayState < Crixel::State
       end
 
       add(@c)
-      # view(@c)
-
+      view(@backup_camera)
+      
+      # Zoom in with Q
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
       key1.on_down(name: "q_pressed") do |total_time, elapsed_time|
         @camera.zoom += 0.001
       end
 
+      # ZOom out with W
       key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
         @camera.zoom -= 0.001
       end
 
+      # Play the sound
       key3 = inputs.get_key(Crixel::Key::Code::E)
       key3.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
         @startup.play
       end
 
+      # Replay the sound (multiple times)
       key4 = inputs.get_key(Crixel::Key::Code::R)
-      key4.on_pressed(name: "e_pressed") do |total_time, elapsed_time|
+      key4.on_pressed(name: "r_pressed") do |total_time, elapsed_time|
         @startup.replay
+      end
+
+      # Follow object with A down, back to original camera with A up
+      key5 = inputs.get_key(Crixel::Key::Code::A)
+      key5.on_pressed(name: "a_pressed") do |total_time, elapsed_time|
+        view(@c)
+      end
+
+      key5.on_released(name: "a_released") do |total_time, elapsed_time|
+        view(@backup_camera)
+      end
+
+
+      up = inputs.get_key(Crixel::Key::Code::Up)
+      down = inputs.get_key(Crixel::Key::Code::Down)
+      left = inputs.get_key(Crixel::Key::Code::Left)
+      right = inputs.get_key(Crixel::Key::Code::Right)
+
+      up.on_down do |total_time, elapsed_time|
+        @backup_camera.offset = @backup_camera.offset - Crixel::Vector2.unit_y
+      end
+
+      down.on_down do |total_time, elapsed_time|
+        @backup_camera.offset = @backup_camera.offset + Crixel::Vector2.unit_y
+      end
+
+      left.on_down do |total_time, elapsed_time|
+        @backup_camera.offset = @backup_camera.offset - Crixel::Vector2.unit_x
+      end
+
+      right.on_down do |total_time, elapsed_time|
+        @backup_camera.offset = @backup_camera.offset + Crixel::Vector2.unit_x
       end
 
       4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }
@@ -73,9 +112,8 @@ class PlayState < Crixel::State
 
       # @c.zoom = 0.4_f32 * Math.sin(total_time.total_seconds).to_f32 + 0.7
 
-      @camera.origin = Crixel::Vector2.new(Crixel.width/2, Crixel.height/2)
-      @camera.x = @c.x
-      @camera.y = @c.y
+      @backup_camera.x = @c.x
+      @backup_camera.y = @c.y
 
       ps = @c.points
       @texts.each_with_index do |t, i|
@@ -106,7 +144,6 @@ class PlayState < Crixel::State
     end
   end
 end
-
 
 Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)
