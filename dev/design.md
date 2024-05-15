@@ -32,6 +32,11 @@ Design:
        -  Holds texture info and src/dst/offset etc frame info
   -  Importer
      -  Aseprite
+        -  Detect if imported item (ex: file.png and _file.png.json)
+           -  Is a json?
+           -  Has ["meta"]["app"] == "https://www.aseprite.org/"
+           -  Crixel::Asset now needs a `config = {} of String => String`
+              -  File Extension => Assets Path
   - Crixel::Config
     - Config for run
   - Baked File System Enhancements

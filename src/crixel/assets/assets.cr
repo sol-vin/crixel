@@ -40,6 +40,16 @@ module Crixel::Assets
     end
   end
 
+  def self.load_folder(dir)
+    Dir.glob("**").each do |name|
+      if File.directory? name
+        load_folder(Path.new(dir, name).to_s)
+      else
+        load_from_path(Path.new(dir, name).to_s)
+      end
+    end
+  end
+
   def self.unload
     emit Unload
   end
