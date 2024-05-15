@@ -10,7 +10,7 @@ module Crixel::Assets
   SUPPORTED_FONTS = %w[TTF OTF]
   @@fonts = {} of String => Font
 
-  DEFAULT_FONT_SIZE = 20
+  DEFAULT_FONT_SIZE = 40
 
   add_consumer do |path, io, size|
     extension = Path.new(path).extension.downcase

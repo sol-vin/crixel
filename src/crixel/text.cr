@@ -3,6 +3,19 @@ class Crixel::Text < Crixel::Basic
     Raylib.measure_text_ex(Assets.get_rfont(font), text, height, spacing)
   end
 
+  def self.draw(
+    text : String, 
+    position : Vector2 = Vector2.zero, 
+    origin  : Vector2 = Vector2.zero,
+    rotation : Float32 = 0.0_f32,
+    text_size = 12,
+    spacing : Float32 = 0.0_f32,
+    tint : Color = Color::RGBA::WHITE,
+    font : String = "default_rsrc/font.ttf"
+    )
+    Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation, text_size, spacing, tint.to_raylib)
+  end
+
   include IOBB
 
   property font : String = "default_rsrc/font.ttf"
@@ -14,7 +27,7 @@ class Crixel::Text < Crixel::Basic
 
   @render_texture = Raylib::RenderTexture2D.new
 
-  def initialize(@text = "", text_size = 12, @font = "default_rsrc/font.ttf", width_limit = nil, @tint = Color::RGBA::WHITE)
+  def initialize(text = "", text_size = 12, @font = "default_rsrc/font.ttf", width_limit = nil, @tint = Color::RGBA::WHITE)
     @height = text_size
     if width_limit
       @width = width_limit.to_f32
@@ -36,7 +49,7 @@ class Crixel::Text < Crixel::Basic
 
     Crixel.start_2d_mode
     Raylib.begin_texture_mode(@render_texture)
-    Raylib.clear_background(Color::RGBA::CLEAR.to_raylib)
+    # Raylib.clear_background(Color::RGBA::CLEAR.to_raylib)
 
     Raylib.draw_text_pro(Assets.get_rfont(font), text, Raylib::Vector2.zero, Raylib::Vector2.zero, 0, height, spacing, tint.to_raylib)
     Raylib.end_texture_mode

@@ -1,0 +1,18 @@
+version: 2.0
+shards:
+  baked_file_system:
+    git: https://github.com/sol-vin/baked_file_system.git
+    version: 0.10.0+git.commit.c1ce474a189ecce70f6410ee87eedd8c43b5dbce
+
+  crixel:
+    path: ../../
+    version: 0.1.0
+
+  minievents:
+    git: https://github.com/sol-vin/minievents.git
+    version: 0.1.0+git.commit.e24b0a608c7b9ea86539c0ca20597afba7adb074
+
+  raylib-cr:
+    git: https://github.com/sol-vin/raylib-cr.git
+    version: 5.0+git.commit.a5a87e985ba7776c3384f4c9fb50e2b0c1a8cba4
+

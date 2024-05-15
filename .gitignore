@@ -3,3 +3,9 @@
 /bin/
 /.shards/
 *.dwarf
+
+/examples/*/bin/
+/examples/*/lib/
+/examples/*/.shards/
+/examples/*/default_rsrc/
+/examples/_build/

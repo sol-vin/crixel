@@ -46,9 +46,6 @@ class Crixel::State
   single_event DrawHUD, state : self, total_time : Time::Span, elapsed_time : Time::Span
   event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
 
-  def initialize
-  end
-
   # View a camera on this state
   def view(camera : ICamera)
     @camera = camera
