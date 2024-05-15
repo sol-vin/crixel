@@ -9,12 +9,12 @@ class Crixel::Text < Crixel::Basic
   getter text : String = ""
   getter? dirty = false
   property spacing : Float32 = 0.0_f32
-  property tint : Color::RGBA = Color::RGBA.new(r: 0xFF, b: 0xFF, g: 0xFF, a: 0xFF)
+  property tint : Color::RGBA = Color::RGBA::WHITE
   @height = 12
 
   @render_texture = Raylib::RenderTexture2D.new
 
-  def initialize(text_size = 12, @text = "", @font = "default_rsrc/font.ttf", width_limit = nil)
+  def initialize(@text = "", text_size = 12, @font = "default_rsrc/font.ttf", width_limit = nil, @tint = Color::RGBA::WHITE)
     @height = text_size
     if width_limit
       @width = width_limit.to_f32
@@ -66,19 +66,21 @@ class Crixel::Text < Crixel::Basic
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    _remake_texture if dirty?
-    size = Vector2.zero
-    src = Rectangle.new
+    if visible?
+      _remake_texture if dirty?
+      size = Vector2.zero
+      src = Rectangle.new
 
-    if limit_width?
-      text_height = self.text_size.y
-      size = Vector2.new(@width, text_height)
-      src = Rectangle.new(0, 0, @width, -text_height)
-    else
-      size = self.text_size
-      src = Rectangle.new(0, 0, size.x, -size.y)
+      if limit_width?
+        text_height = self.text_size.y
+        size = Vector2.new(@width, text_height)
+        src = Rectangle.new(0, 0, @width, -text_height)
+      else
+        size = self.text_size
+        src = Rectangle.new(0, 0, size.x, -size.y)
+      end
+
+      Sprite.draw(@render_texture.texture, x, y, size, rotation, origin, src, tint)
     end
-
-    Sprite.draw(@render_texture.texture, x, y, size, rotation, origin, src, tint)
   end
 end

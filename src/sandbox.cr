@@ -2,6 +2,8 @@ require "./crixel"
 require "./crixel/audio"
 require "./crixel/input"
 
+require "./crixel/default_rsrc"
+
 class PlayState < Crixel::State
   SIN_DISTANCE = 150
 
@@ -11,7 +13,7 @@ class PlayState < Crixel::State
 
   @texts : Array(Crixel::Text) = [] of Crixel::Text
 
-  @total_time = Time::Span.new
+  @total_time_text = Crixel::Text.new(text_size: 20, tint: Crixel::Color::RGBA::CYAN)
 
   @startup : Crixel::Sound = Crixel::Sound.new("default_rsrc/flixel.mp3")
 
@@ -64,6 +66,7 @@ class PlayState < Crixel::State
     end
 
     on_pre_update do |total_time, elapsed_time|
+      @total_time_text.text = total_time.total_seconds.to_s
       @c.rotation = total_time.total_seconds.to_f32
       @c.x = Math.sin(total_time.total_seconds).to_f32 * SIN_DISTANCE
       @c.y = Math.cos(total_time.total_seconds).to_f32 * SIN_DISTANCE
@@ -89,6 +92,10 @@ class PlayState < Crixel::State
       end
     end
 
+    on_draw_hud do |total_time, elapsed_time|
+      @total_time_text.draw(total_time, elapsed_time)
+    end
+
     on_post_draw do |total_time, elapsed_time|
       @c.src_rectangle.draw(Crixel::Color::RGBA.new(r: 255, a: 255))
       @c.dst_rectangle.draw(Crixel::Color::RGBA.new(b: 255, a: 255))
@@ -100,7 +107,6 @@ class PlayState < Crixel::State
   end
 end
 
-Crixel.install_default_assets
 
 Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)

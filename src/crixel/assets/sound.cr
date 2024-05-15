@@ -68,6 +68,6 @@ module Crixel::Assets
     end
     @@sounds.clear
 
-    RAudio.close_audio_device
+    RAudio.close_audio_device if RAudio.audio_device_ready?
   end
 end

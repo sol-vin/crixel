@@ -161,6 +161,6 @@ class Crixel::Sprite < Crixel::Basic
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    draw_sprite
+    draw_sprite if visible?
   end
 end

@@ -5,7 +5,7 @@ module ::Crixel::Assets::BakedFS
 
   def self.load_files
     files.each do |baked_file|
-      puts "Loading #{baked_file.original_path}#{baked_file.path}"
+      # puts "Loading #{baked_file.original_path}#{baked_file.path}"
       ::Crixel::Assets.load("#{baked_file.original_path}#{baked_file.path}", baked_file, baked_file.size)
     end
   end

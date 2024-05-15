@@ -43,6 +43,7 @@ class Crixel::State
   event PreUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
   event PostUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
   event PreDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event DrawHUD, state : self, total_time : Time::Span, elapsed_time : Time::Span
   event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
 
   def initialize
@@ -130,7 +131,7 @@ class Crixel::State
     emit PostUpdate, self, total_time, elapsed_time
 
     @updating = false
-    _run_action_queue()
+    _run_action_queue
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
@@ -147,8 +148,13 @@ class Crixel::State
     end
     emit PostDraw, self, total_time, elapsed_time
     Crixel.stop_2d_mode
+    draw_hud(total_time, elapsed_time)
     @drawing = false
-    _run_action_queue()
+    _run_action_queue
+  end
+
+  def draw_hud(total_time : Time::Span, elapsed_time : Time::Span)
+    emit DrawHUD, self, total_time, elapsed_time
   end
 
   def destroy

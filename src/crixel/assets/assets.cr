@@ -8,6 +8,9 @@ module Crixel::Assets
   event Setup
   event PostSetup
 
+  on(Crixel::Started) { setup }
+  on(Crixel::Close) { unload }
+
   # Tracks when an asset has been destroyed
 
   def self.add_consumer(&block : ConsumerCallback)

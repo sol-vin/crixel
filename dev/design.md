@@ -23,6 +23,7 @@ Design:
         - `self.to_palette : Crixel::Palette`
   - Image
     - Needs it own special drawing functions.
+    - To Asset
     - 
   - Tilemap
   - Collision Manager

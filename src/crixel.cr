@@ -28,16 +28,12 @@ module Crixel
   VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
 
-  macro install_default_assets
-    require "./crixel/assets/bakedfs"
-    Crixel::Assets::BakedFS.bake(path: "default_rsrc")
-  end
-
   class_getter width : Int32 = 0
   class_getter height : Int32 = 0
   class_getter title : String = ""
   class_getter? running = false
   class_getter? started = false
+  class_getter? closing = false
 
   class_getter last_id : UInt32 = 0
 
@@ -46,8 +42,11 @@ module Crixel
   class_getter running_state : State = State.new
 
   event Start
+  event Started
   event Open
+  event FrameProcessed, total_time : Time::Span, elapsed_time : Time::Span
   event Close
+  event Closed
 
   # Handles what camera should restored when a we begin and end raylib's 2d mode
   @@camera_stack = [] of ICamera
@@ -64,8 +63,9 @@ module Crixel
     camera = Camera.new
     if enabled_2d_mode?
       Raylib.end_mode_2d
-      @@camera_stack << camera
     end
+
+    @@camera_stack << camera
 
     Raylib.begin_mode_2d(camera.to_rcamera)
   end
@@ -98,7 +98,7 @@ module Crixel
       @@started = true
       Raylib.init_window(@@width, @@height, title)
       emit Start
-      Assets.setup
+      emit Started
     end
   end
 
@@ -118,9 +118,9 @@ module Crixel
         end
       end
 
-      push state
-
       emit Open
+
+      push state
 
       until should_close?
         @@elapsed_time = Time.measure do
@@ -132,10 +132,12 @@ module Crixel
         end
 
         @@total_time += elapsed_time
+        emit FrameProcessed, @@total_time, @@elapsed_time
       end
 
       Assets.unload
-      close
+      @@closing = true
+      _close
     elsif !@@started
       raise "Use Crixel.start_window first"
     else
@@ -203,13 +205,20 @@ module Crixel
   end
 
   def self.should_close?
-    Raylib.close_window?
+    Raylib.close_window? || closing?
+  end
+
+  private def self._close
+    @@running = false
+    emit Close
+    @@states.each(&.destroy)
+    @@states.clear
+    Raylib.close_window
+    emit Closed
+    @@started = false
   end
 
   def self.close
-    @@running = false
-    emit Close
-    puts "Closing"
-    Raylib.close_window
+    @@closing = true
   end
 end

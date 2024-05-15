@@ -1,9 +1,10 @@
 require "spec"
-require "../src/crixel"
 
-macro make_event_test(x)
-  ({{ run("../tests/event#{x}.cr").stringify }} =~ /OK/).should_not be_nil
+SUCCESS = "OKOKOKOKOKOKOKOKOKOKOK"
+FAILURE = "FAILFAILFAILFAILFAILFAIL"
+
+macro make_test(name)
+  output = {{ (run "../tests/#{name.id}.cr", SUCCESS, FAILURE).stringify }}
+  puts output if output.nil?
+  (output =~ /#{SUCCESS}/).should_not be_nil
 end
-
-SUCCESS = "!!!!!!!OK!!!!!!!"
-FAILURE = "!!!!!!!FAIL!!!!!!!"
