@@ -32,6 +32,9 @@ class Crixel::State
   # Is this state currently drawing?
   getter? drawing = false
 
+  getter? update_layer_order_dirty = false
+  getter? draw_layer_order_dirty = false
+
   # The main camera for this state.
   getter camera : ICamera = Camera.new
 
@@ -52,8 +55,21 @@ class Crixel::State
   end
 
   private def _add(object : Basic)
+    object.on_destroyed(once: true) do
+      remove(object)
+    end
+
+    object.on_update_layer_changed do
+      @update_layer_order_dirty = true
+    end
+
+    object.on_draw_layer_changed do
+      @draw_layer_order_dirty = true
+    end
+
     @update_order << object
     @draw_order << object
+    emit Basic::Added, object, self
   end
 
   private def _remove(object : Basic)
@@ -68,17 +84,12 @@ class Crixel::State
 
   # Adds an object to this state. If the object is added mid-update/mid-draw add it to the action queue instead.
   def add(object : Basic)
-    object.on_destroyed do
-      remove(object)
-    end
 
     if updating? || drawing?
       @action_queue << QueuedAction.new(QueuedAction::Type::Add, object)
     else
       _add(object)
     end
-
-    emit Basic::Added, object
   end
 
   # Removes an object from this state. If the object is removed mid-update/mid-draw add it to the action queue instead.
@@ -98,27 +109,29 @@ class Crixel::State
   end
 
   # Runs the action queue orders. Will add or delete objects from this state.
-  private def _run_action_queue(dirty = false)
+  private def _run_action_queue
+    dirty = false
     @action_queue.each do |action|
       if action.type == QueuedAction::Type::Add
-        @update_order << action.item
-        @draw_order << action.item
+        _add(action.item)
 
         dirty = true
       elsif action.type == QueuedAction::Type::Destroy
-        @update_order.delete(action.item)
-        @draw_order.delete(action.item)
+        _remove(action.item)
       end
     end
 
-    if dirty
+    if dirty || update_layer_order_dirty?
       @update_order.sort! { |a, b| a.update_layer <=> b.update_layer }
+    end
+
+    if dirty || draw_layer_order_dirty?
       @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     end
   end
 
   def update(total_time : Time::Span, elapsed_time : Time::Span)
-    _run_action_queue(dirty: true)
+    _run_action_queue
     @updating = true
 
     emit PreUpdate, self, total_time, elapsed_time
@@ -132,7 +145,6 @@ class Crixel::State
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    @draw_order.sort! { |a, b| a.draw_layer <=> b.draw_layer }
     @drawing = true
     Crixel.start_2d_mode(@camera)
     Raylib.clear_background(@camera.bg_color.to_raylib)
@@ -147,7 +159,6 @@ class Crixel::State
     Crixel.stop_2d_mode
     draw_hud(total_time, elapsed_time)
     @drawing = false
-    _run_action_queue
   end
 
   def draw_hud(total_time : Time::Span, elapsed_time : Time::Span)
