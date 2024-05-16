@@ -8,10 +8,10 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   single_event Draw, rt : self, total_time : Time::Span, elapsed_time : Time::Span
 
-  def initialize(texture_name : String, x = 0, y = 0, width : UInt32 = 0, height : UInt32 = 0)
-    name = "@Crixel::RenderTarget@#{texture_name}"
+  def initialize(texture_name : String = "", x = 0, y = 0, width : UInt32 = 0, height : UInt32 = 0, unload_on_destroy = true)
+    texture_name = "@RenderTarget#{id}@" if texture_name.empty?
     @render_texture = Raylib.load_render_texture(width, height)
-    texture = Assets::Texture.new(name, @render_texture.texture)
+    texture = Assets::Texture.new(texture_name, @render_texture.texture)
     Assets.add_texture texture
 
     texture.on_destroyed(once: true) do
@@ -19,15 +19,18 @@ class Crixel::RenderTarget < Crixel::Sprite
     end
 
     self.on_destroyed do
-      if Raylib.texture_ready? @render_texture.texture
+      if Raylib.texture_ready?(@render_texture.texture) && unload_on_destroy
         Raylib.unload_render_texture(@render_texture)
+        Assets.remove_texture(name, unload: false)
+      elsif unload_on_destroy
+        Assets.remove_texture(name, unload: true)
       else
         RLGL.unload_framebuffer(@render_texture.id)
       end
 
       @render_texture = Raylib::RenderTexture2D.new
     end
-    super(texture: name, x: x, y: y, width: width, height: height)
+    super(texture: texture_name, x: x, y: y, width: width, height: height)
   end
 
   def clear_background(color : Color::RGBA)

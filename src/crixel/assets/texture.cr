@@ -49,11 +49,21 @@ module Crixel::Assets
     @@textures[name]?.try(&.rtexture)
   end
 
-  on(Unload) do
-    @@fonts.values.each do |f|
-      Raylib.unload_font(f.rfont)
-      emit Asset::Destroyed, f
+  def self.remove_texture(name, unload = true)
+    if t = @@textures[name]?
+      @@textures.delete(name)
+      if unload
+        Raylib.unload_texture(t.rtexture)
+        emit Asset::Destroyed, t
+      end
     end
-    @@fonts.clear
+  end
+
+  on(Unload) do
+    @@textures.values.each do |t|
+      Raylib.unload_texture(t.rtexture)
+      emit Asset::Destroyed, t
+    end
+    @@textures.clear
   end
 end
