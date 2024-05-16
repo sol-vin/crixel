@@ -27,6 +27,14 @@ Design:
     - 
   - Tilemap
   - Collision Manager
+    - Quadtree
+      - NodeObject
+        - body : Rectangle
+        - object : Crixel::Basic
+    - Add similarly to input system
+      - Add to Crixel::State via monkey patch
+      - Include callback for on(Basic::Added)
+      - Use `Set` for collision mask since `#includes?` has an O(1) time
   - Animation
     -  Frame (ISprite?)
        -  Holds texture info and src/dst/offset etc frame info

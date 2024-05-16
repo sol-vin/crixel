@@ -28,7 +28,7 @@ class Crixel::Sprite < Crixel::Basic
   )
     r_texture = texture.rtexture
     raise "Cannot open texture" unless Raylib.texture_ready? r_texture
-    draw()
+    draw(r_texture, x, y, size.x, size.y, rotation, origin, src_rectangle, tint)
   end
 
   def self.draw(

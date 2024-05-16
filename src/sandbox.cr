@@ -1,6 +1,8 @@
 require "./crixel"
 require "./crixel/audio"
 require "./crixel/input"
+require "./crixel/text"
+require "./crixel/texture"
 
 require "./crixel/default_rsrc"
 

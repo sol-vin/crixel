@@ -16,13 +16,7 @@ require "./crixel/timer"
 require "./crixel/state"
 require "./crixel/basic"
 
-require "./crixel/sprite"
-require "./crixel/text"
-require "./crixel/render_target"
-
 require "./crixel/assets/assets"
-require "./crixel/assets/texture"
-require "./crixel/assets/font"
 
 module Crixel
   VERSION       = "0.0.1"

@@ -1,7 +1,6 @@
 module Crixel::ISprite
   include IOBB
 
-  # TODO: Make a new texture class to hold this kind of info
   property texture : String = "default_rsrc/logo.png"
   setter src_rectangle : Rectangle? = nil
   property tint : Color::RGBA = Color::RGBA.new(r: 0xFF, b: 0xFF, g: 0xFF, a: 0xFF)
