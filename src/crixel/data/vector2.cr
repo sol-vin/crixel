@@ -155,8 +155,8 @@ struct Crixel::Vector2
     Raylib::Vector2.new(x: x, y: y)
   end
 
-  def draw(radius = 1, tint : Color = Color::RGBA::WHITE, fill = false)
-    Circle.draw(x, y, radius, tint, fill)
+  def draw(radius : Number = 1, tint : Color = Color::RGBA::WHITE, fill = false)
+    Circle.draw(x, y, radius.to_f, tint, fill)
   end
 
   def self.draw(x, y, radius = 1, tint : Color = Color::RGBA::WHITE, fill = false)

@@ -41,29 +41,16 @@ class Crixel::Character < Crixel::Basic
       sin_rotation = Math.sin(self.rotation)
       cos_rotation = Math.cos(self.rotation)
 
+      rot = f.position.rotate(self.rotation) + self.position + f.origin
       dest = Rectangle.new(
-        x + f.x + origin.x,
-        y + f.y + origin.y,
-        f.width * scale.x,
-        f.height * scale.y
-      )
-
-      x = dest.x
-      y = dest.y
-      dx = -origin.x
-      dy = -origin.y
-
-      rot_x = x + dx*cos_rotation - dy*sin_rotation
-      rot_y = y + dx*sin_rotation + dy*cos_rotation
-
-      dest = Rectangle.new(
-        x: rot_x,
-        y: rot_y,
+        x: rot.x,
+        y: rot.y,
         width: f.src_rectangle.width * scale.x,
         height: f.src_rectangle.height * scale.y
       )
 
       Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation + self.rotation, f.origin, tint)
+      rot.draw(tint: Color::RGBA::YELLOW)
     end
   end
 end
