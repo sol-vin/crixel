@@ -1,8 +1,7 @@
+require "../modules/ibody"
+
 struct Crixel::Rectangle
-  property x : Float32 = 0.0_f32
-  property y : Float32 = 0.0_f32
-  property width : Float32 = 0.0_f32
-  property height : Float32 = 0.0_f32
+  include IBody
 
   def initialize(x : Number = 0.0_f32, y : Number = 0.0_f32, width : Number = 0.0_f32, height : Number = 0.0_f32)
     @x = x.to_f32
@@ -21,7 +20,7 @@ struct Crixel::Rectangle
   end
 
   def draw(tint : Color = Color::RGBA::WHITE, fill = false)
-    Rectangle.draw(x, y, width, height, tint, fill)
+    draw_body(tint, fill)
   end
 
   def self.draw(x, y, width, height, tint : Color = Color::RGBA::WHITE, fill = false)

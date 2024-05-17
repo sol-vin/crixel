@@ -77,8 +77,6 @@ class Crixel::Animation
     @current_time += elapsed_time
     emit TimeAdvanced, self, @current_time
     while @current_time > current_frame.duration
-      pp current_frame.src_rectangle
-      puts "Frame advanced #{@frame_index}"
       @current_time -= current_frame.duration
       @frame_index += 1
       emit FrameAdvanced, self

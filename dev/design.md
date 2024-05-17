@@ -44,6 +44,10 @@ Design:
         - `COLOR1 = Color::RGBA.new()`
         - `COLORS = [] of Color::RGBA`
         - `self.to_palette : Crixel::Palette`
+    - Color functions
+      - HSV to RGBA etc etc
+      - LAB and other colors
+      - to_rgba for each
   - Image
     - Needs it own special drawing functions.
     - To Asset

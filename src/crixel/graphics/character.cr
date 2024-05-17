@@ -13,6 +13,11 @@ class Crixel::Character < Crixel::Basic
     @animations[@current_animation.not_nil!]
   end
 
+  def current_frame_rect
+    cf = current_animation.current_frame
+    Rectangle.new(x + cf.x , y + cf.y, cf.width, cf.height)
+  end
+
   def add_animation(name : Symbol, anim : Animation)
     @animations[name] = anim
     @current_animation = name if @current_animation.nil?
@@ -36,8 +41,20 @@ class Crixel::Character < Crixel::Basic
       sin_rotation = Math.sin(self.rotation)
       cos_rotation = Math.cos(self.rotation)
 
-      rot_x = f.x + self.x + origin.x*cos_rotation - origin.y*sin_rotation
-      rot_y = f.y + self.y + origin.x*sin_rotation + origin.y*cos_rotation
+      dest = Rectangle.new(
+        x + f.x + origin.x,
+        y + f.y + origin.y,
+        f.width * scale.x,
+        f.height * scale.y
+      )
+
+      x = dest.x
+      y = dest.y
+      dx = -origin.x
+      dy = -origin.y
+
+      rot_x = x + dx*cos_rotation - dy*sin_rotation
+      rot_y = y + dx*sin_rotation + dy*cos_rotation
 
       dest = Rectangle.new(
         x: rot_x,
@@ -46,7 +63,7 @@ class Crixel::Character < Crixel::Basic
         height: f.src_rectangle.height * scale.y
       )
 
-      Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation + self.rotation, f.origin, Color::RGBA::WHITE)
+      Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation + self.rotation, f.origin, tint)
     end
   end
 end

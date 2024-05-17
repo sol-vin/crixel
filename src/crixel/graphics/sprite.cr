@@ -126,8 +126,4 @@ class Crixel::Sprite < Crixel::Basic
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     draw_sprite if visible?
   end
-
-  def draw_sprite
-    # Sprite.draw(Assets.get_texture(texture), x + offset.x, y + offset.y, width, height, rotation, origin, src_rectangle, tint)
-  end
 end

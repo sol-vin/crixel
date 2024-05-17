@@ -61,7 +61,7 @@ class Crixel::Text < Crixel::Basic
     @text = t
   end
 
-  # Alias of IRectangle#width
+  # Alias of IBody#width
   def limit_width(w)
     @width = w
   end

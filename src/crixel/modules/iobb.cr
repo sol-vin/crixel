@@ -3,8 +3,7 @@ require "./isize"
 require "./irotation"
 
 module Crixel::IOBB
-  include IPosition
-  include ISize
+  include IBody
   include IRotation
 
   def points : StaticArray(Vector2, 4)
