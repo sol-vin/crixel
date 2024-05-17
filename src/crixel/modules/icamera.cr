@@ -4,6 +4,8 @@ require "./irotation"
 module Crixel::ICamera
   include IPosition
   include IRotation
+  # TODO: Check if IOBB would be a better fit?
+  #  - IOBB would allow one to transport a cameras vision area to the world easier?
   property zoom : Float32 = 1.0_f32
   property bg_color : Color::RGBA = Color::RGBA::CLEAR
   property offset : Vector2 = Vector2.zero

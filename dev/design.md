@@ -4,13 +4,27 @@ Design:
 
 
 # TODO
+  - Animation
+    -  Frame
+       -  Holds texture info and src/dst/offset etc frame info
+  - Baked File System Enhancements
+    - Custom loader
+      - Opens raylib during compilation process to make asset entries in Assets.
+      - Should include metadata like texture size etc for better responsiveness 
+      - Include a progress bar
+      - Should automatically halt back to compilation process
+    - Proper compression for baked filesystem
+      - Check to make sure compression is working for baked_file_system
+      - If not make sol-vin/baked_file_system the way it should be (full customize)
+    - Configuration
+      - file.png, _file.png.yml
   <!-- - Raylib compatable types - Vector2, Color, Rectangle -->
   <!-- - Timer -->
   <!-- - Primitives (Circle, Rectangle, Point, etc) -->
   - RenderTexture
     <!-- - Render texture camera -->
-    - Render texture objects( rt as a state/in a state)?
-      - RenderTexture addon for State?
+    <!-- - Render texture objects( rt as a state/in a state)?
+      - RenderTexture addon for State? -->
     - Render texture for Crixel.run to allow scaling
   <!-- - Update and Draw layer ordering
     - Create "delete/add" queue to be run between updates and draws to prevent .dup or looping errors -->
@@ -24,7 +38,7 @@ Design:
   - Image
     - Needs it own special drawing functions.
     - To Asset
-    - 
+    - NEeds to be finished
   - Tilemap
   - Collision Manager
     - Quadtree
@@ -35,9 +49,6 @@ Design:
       - Add to Crixel::State via monkey patch
       - Include callback for on(Basic::Added)
       - Use `Set` for collision mask since `#includes?` has an O(1) time
-  - Animation
-    -  Frame (ISprite?)
-       -  Holds texture info and src/dst/offset etc frame info
   -  Importer
      -  Aseprite
         -  Detect if imported item (ex: file.png and _file.png.json)
@@ -47,17 +58,6 @@ Design:
               -  File Extension => Assets Path
   - Crixel::Config
     - Config for run
-  - Baked File System Enhancements
-    - Custom loader
-      - Opens raylib during compilation process to make asset entries in Assets.
-      - Should include metadata like texture size etc for better responsiveness 
-      - Include a progress bar
-      - Should automatically halt back to compilation process
-    - Proper compression for baked filesystem
-      - Check to make sure compression is working for baked_file_system
-      - If not make sol-vin/baked_file_system the way it should be (full customize)
-    - Configuration
-      - file.png, _file.png.yml
   - Scissor mode?
     - Scissor
   - Shaders?
@@ -66,7 +66,7 @@ Design:
   - GUI
   - Debugger
     - Flx.watch equivalent (must be a macro probably)
-  - Crixel::Sound
+  <!-- - Crixel::Sound
     - Own data type (non Basic)
     - use load_sound_alias to prevent changing original source.
-    - hook Crixel::Sound#on_destroyed/on_changed to
+    - hook Crixel::Sound#on_destroyed/on_changed to -->

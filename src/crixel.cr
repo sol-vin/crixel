@@ -5,13 +5,13 @@ require "raylib-cr"
 require "raylib-cr/rlgl"
 
 require "./crixel/data/**"
+require "./crixel/timer"
 
 require "./crixel/modules/**"
 require "./crixel/input/modules/**"
 require "./crixel/input/**"
 
 require "./crixel/camera"
-require "./crixel/timer"
 
 require "./crixel/state"
 require "./crixel/basic"

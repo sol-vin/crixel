@@ -16,7 +16,7 @@ class Crixel::Timer
   property? loop : Bool = false
   getter? paused : Bool = false
 
-  def initialize(@total_time)
+  def initialize(@trigger_time)
   end
 
   def started?

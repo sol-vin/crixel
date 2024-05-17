@@ -153,14 +153,26 @@ class Crixel::Sprite < Crixel::Basic
     x = 0.0_f32,
     y = 0.0_f32,
     width = nil,
-    height = nil
+    height = nil,
+    src_rectangle : Rectangle? = nil
   )
     r_texture = Crixel::Assets.get_rtexture(@texture)
     @width = (width || r_texture.width).to_f32
     @height = (height || r_texture.height).to_f32
+    if src = src_rectangle
+      self.src_rectangle = src
+    else
+      self.src_rectangle = Rectangle.new(width: r_texture.width, height: r_texture.height)
+    end
   end
+
+  property texture : String = "default_rsrc/logo.png"
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     draw_sprite if visible?
+  end
+
+  def draw_sprite
+    Sprite.draw(Assets.get_texture(texture), x + offset.x, y + offset.y, width, height, rotation, origin, src_rectangle, tint)
   end
 end

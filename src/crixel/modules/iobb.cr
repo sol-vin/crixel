@@ -7,8 +7,6 @@ module Crixel::IOBB
   include ISize
   include IRotation
 
-  property offset : Vector2 = Vector2.zero
-
   def points : StaticArray(Vector2, 4)
     points = StaticArray(Vector2, 4).new(Vector2.zero)
     sin_rotation = Math.sin(rotation)
@@ -50,7 +48,6 @@ module Crixel::IOBB
     points
   end
 
-  # Used by sprites to draw to the screen before the rotation and offset takes place
   def dst_rectangle
     Rectangle.new(
       x: x - origin.x,
