@@ -3,14 +3,18 @@ class Crixel::Animation
     r_texture = Assets.get_rtexture(texture_name)
     animation = self.new
     y_frames.times do |y|
-      x_frames.times do |y|
+      x_frames.times do |x|
         frame = Frame.new
         src = Rectangle.new
-        src.x = (r_texture.width * (r_texture.width/x_frames)).to_f32
-        src.y = (r_texture.height * (r_texture.height/y_frames)).to_f32
+        src.x = (x * (r_texture.width/x_frames)).to_f32
+        src.y = (y * (r_texture.height/y_frames)).to_f32
         src.width = (r_texture.width/x_frames).to_f32
         src.height = (r_texture.height/y_frames).to_f32
+
+        frame.width = src.width
+        frame.height = src.height
         frame.src_rectangle = src
+        frame.texture = texture_name
         animation.frames << frame
       end
     end
@@ -71,9 +75,13 @@ class Crixel::Animation
   def advance_time(elapsed_time : Time::Span)
     return unless playing?
     @current_time += elapsed_time
+    emit TimeAdvanced, self, @current_time
     while @current_time > current_frame.duration
+      pp current_frame.src_rectangle
+      puts "Frame advanced #{@frame_index}"
       @current_time -= current_frame.duration
       @frame_index += 1
+      emit FrameAdvanced, self
       frame_oob = @frame_index >= @frames.size
 
       if frame_oob && looping?

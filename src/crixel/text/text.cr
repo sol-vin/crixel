@@ -93,7 +93,7 @@ class Crixel::Text < Crixel::Basic
         src = Rectangle.new(0, 0, size.x, -size.y)
       end
 
-      Sprite.draw(@render_texture.texture, x, y, size, rotation, origin, src, tint)
+      # Sprite.draw(@render_texture.texture, x, y, size, rotation, origin, src, tint)
     end
   end
 end

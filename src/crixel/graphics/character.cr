@@ -1,9 +1,12 @@
 class Crixel::Character < Crixel::Basic
-  include IOBB
+  include IPosition
+  include IRotation
   include IInvCamera
 
   @animations = {} of Symbol => Animation
   @current_animation : Symbol? = nil
+
+  property scale : Vector2 = Vector2.one
   property tint : Color = Color::RGBA::WHITE
 
   def current_animation
@@ -35,7 +38,15 @@ class Crixel::Character < Crixel::Basic
 
       rot_x = f.x + self.x + origin.x*cos_rotation - origin.y*sin_rotation
       rot_y = f.y + self.y + origin.x*sin_rotation + origin.y*cos_rotation
-      Sprite.draw(Assets.get_texture(f.texture), rot_x, rot_y, f.src_rectangle.width, f.src_rectangle.height, f.rotation + self.rotation, f.origin, f.src_rectangle, tint)
+
+      dest = Rectangle.new(
+        x: rot_x,
+        y: rot_y,
+        width: f.src_rectangle.width * scale.x,
+        height: f.src_rectangle.height * scale.y
+      )
+
+      Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation + self.rotation, f.origin, Color::RGBA::WHITE)
     end
   end
 end

@@ -1,148 +1,105 @@
 class Crixel::Sprite < Crixel::Basic
   def self.draw(
     texture_name : String,
-    x, y, width, height,
-    rotation : Number = 0.0_f32, origin : Vector2 = Vector2.zero,
-    src_rectangle : Rectangle? = nil,
+    src_rectangle : Rectangle,
+    dest_rectangle : Rectangle,
+    rotation : Number = 0.0_f32, 
+    origin : Vector2 = Vector2.zero,
     tint : Color = Color::RGBA::WHITE
   )
-    draw(Assets.get_texture(texture_name).rtexture, x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
-  end
+    r_texture = Assets.get_rtexture texture_name
+    # flip_x = false
 
-  def self.draw(
-    texture : Assets::Texture,
-    x, y, width, height,
-    rotation : Number = 0.0_f32, origin : Vector2 = Vector2.zero,
-    src_rectangle : Rectangle? = nil,
-    tint : Color = Color::RGBA::WHITE
-  )
-    draw(texture.rtexture, x, y, Vector2.new(width, height), rotation, origin, src_rectangle, tint)
-  end
+    # if src_rectangle.width < 0
+    #   flip_x = true
+    #   src_rectangle.width *= -1
+    # end
 
-  def self.draw(
-    texture : Assets::Texture,
-    x, y, size : Vector2? = nil,
-    rotation : Number = 0.0_f32, origin : Vector2 = Vector2.zero,
-    src_rectangle : Rectangle? = nil,
-    tint : Color = Color::RGBA::WHITE
-  )
-    r_texture = texture.rtexture
-    raise "Cannot open texture" unless Raylib.texture_ready? r_texture
-    draw(r_texture, x, y, size.x, size.y, rotation, origin, src_rectangle, tint)
-  end
+    # if src_rectangle.height < 0
+    #   src_rectangle.y -= src_rectangle.height
+    # end
 
-  def self.draw(
-    r_texture : Raylib::Texture2D,
-    x, y, size : Vector2? = nil,
-    rotation : Number = 0.0_f32, origin : Vector2 = Vector2.zero,
-    src_rectangle : Rectangle? = nil,
-    tint : Color = Color::RGBA::WHITE
-  )
-    flip_x = false
+    # top_left = Vector2.zero
+    # top_right = Vector2.zero
+    # bottom_right = Vector2.zero
+    # bottom_left = Vector2.zero
 
-    source = Rectangle.new
-    if src_rectangle
-      source = src_rectangle
-    else
-      source = Rectangle.new(0, 0, r_texture.width, r_texture.height)
-    end
+    # # Only calculate rotation if needed
+    # if (rotation.zero?)
+    #   x = dest_rectangle.x - origin.x
+    #   y = dest_rectangle.y - origin.y
+    #   top_left = Vector2.new(x: x, y: y)
+    #   top_right = Vector2.new(x: x + dest_rectangle.width, y: y)
+    #   bottom_left = Vector2.new(x: x, y: y + dest_rectangle.height)
+    #   bottom_right = Vector2.new(x: x + dest_rectangle.width, y: y + dest_rectangle.height)
+    # else
+    #   sin_rotation = Math.sin(rotation)
+    #   cos_rotation = Math.cos(rotation)
 
-    if source.width < 0
-      flip_x = true
-      source.width *= -1
-    end
+    #   x = dest_rectangle.x
+    #   y = dest_rectangle.y
+    #   dx = -origin.x
+    #   dy = -origin.y
 
-    if source.height < 0
-      source.y -= source.height
-    end
+    #   top_left = Vector2.zero
+    #   top_right = Vector2.zero
+    #   bottom_right = Vector2.zero
+    #   bottom_left = Vector2.zero
 
-    top_left = Vector2.zero
-    top_right = Vector2.zero
-    bottom_right = Vector2.zero
-    bottom_left = Vector2.zero
+    #   top_left.x = x + dx*cos_rotation - dy*sin_rotation
+    #   top_left.y = y + dx*sin_rotation + dy*cos_rotation
 
-    dest = Rectangle.new(
-      x,
-      y,
-      (size ? size.not_nil!.x : r_texture.width),
-      (size ? size.not_nil!.y : r_texture.height),
-    )
+    #   top_right.x = x + (dx + dest_rectangle.width)*cos_rotation - dy*sin_rotation
+    #   top_right.y = y + (dx + dest_rectangle.width)*sin_rotation + dy*cos_rotation
 
-    # Only calculate rotation if needed
-    if (rotation.zero?)
-      x = dest.x - origin.x
-      y = dest.y - origin.y
-      top_left = Vector2.new(x: x, y: y)
-      top_right = Vector2.new(x: x + dest.width, y: y)
-      bottom_left = Vector2.new(x: x, y: y + dest.height)
-      bottom_right = Vector2.new(x: x + dest.width, y: y + dest.height)
-    else
-      sin_rotation = Math.sin(rotation)
-      cos_rotation = Math.cos(rotation)
+    #   bottom_left.x = x + dx*cos_rotation - (dy + dest_rectangle.height)*sin_rotation
+    #   bottom_left.y = y + dx*sin_rotation + (dy + dest_rectangle.height)*cos_rotation
 
-      x = dest.x
-      y = dest.y
-      dx = -origin.x
-      dy = -origin.y
+    #   bottom_right.x = x + (dx + dest_rectangle.width)*cos_rotation - (dy + dest_rectangle.height)*sin_rotation
+    #   bottom_right.y = y + (dx + dest_rectangle.width)*sin_rotation + (dy + dest_rectangle.height)*cos_rotation
+    # end
 
-      top_left = Vector2.zero
-      top_right = Vector2.zero
-      bottom_right = Vector2.zero
-      bottom_left = Vector2.zero
+    # RLGL.set_texture(r_texture.id)
+    # RLGL.begin(RLGL::QUADS)
 
-      top_left.x = x + dx*cos_rotation - dy*sin_rotation
-      top_left.y = y + dx*sin_rotation + dy*cos_rotation
+    # RLGL.color_4ub(tint.r, tint.g, tint.b, tint.a)
+    # RLGL.normal_3f(0.0_f32, 0.0_f32, 1.0_f32) # Normal vector pointing towards viewer
 
-      top_right.x = x + (dx + dest.width)*cos_rotation - dy*sin_rotation
-      top_right.y = y + (dx + dest.width)*sin_rotation + dy*cos_rotation
+    # # Top-left corner for texture and quad
+    # if flip_x
+    #   RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, src_rectangle.y/r_texture.height)
+    # else
+    #   RLGL.texcoord_2f(src_rectangle.x/r_texture.width, src_rectangle.y/r_texture.height)
+    # end
+    # RLGL.vertex_2f(top_left.x, top_left.y)
 
-      bottom_left.x = x + dx*cos_rotation - (dy + dest.height)*sin_rotation
-      bottom_left.y = y + dx*sin_rotation + (dy + dest.height)*cos_rotation
+    # # Bottom-left corner for texture and quad
+    # if flip_x
+    #   RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+    # else
+    #   RLGL.texcoord_2f(src_rectangle.x/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+    # end
+    # RLGL.vertex_2f(bottom_left.x, bottom_left.y)
 
-      bottom_right.x = x + (dx + dest.width)*cos_rotation - (dy + dest.height)*sin_rotation
-      bottom_right.y = y + (dx + dest.width)*sin_rotation + (dy + dest.height)*cos_rotation
-    end
+    # # Bottom-right corner for texture and quad
+    # if flip_x
+    #   RLGL.texcoord_2f(src_rectangle.x/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+    # else
+    #   RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+    # end
+    # RLGL.vertex_2f(bottom_right.x, bottom_right.y)
 
-    RLGL.set_texture(r_texture.id)
-    RLGL.begin(RLGL::QUADS)
+    # # Top-right corner for texture and quad
+    # if flip_x
+    #   RLGL.texcoord_2f(src_rectangle.x/r_texture.width, src_rectangle.y/r_texture.height)
+    # else
+    #   RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, src_rectangle.y/r_texture.height)
+    # end
+    # RLGL.vertex_2f(top_right.x, top_right.y)
 
-    RLGL.color_4ub(tint.r, tint.g, tint.b, tint.a)
-    RLGL.normal_3f(0.0_f32, 0.0_f32, 1.0_f32) # Normal vector pointing towards viewer
-
-    # Top-left corner for texture and quad
-    if flip_x
-      RLGL.texcoord_2f((source.x + source.width)/r_texture.width, source.y/r_texture.height)
-    else
-      RLGL.texcoord_2f(source.x/r_texture.width, source.y/r_texture.height)
-    end
-    RLGL.vertex_2f(top_left.x, top_left.y)
-
-    # Bottom-left corner for texture and quad
-    if flip_x
-      RLGL.texcoord_2f((source.x + source.width)/r_texture.width, (source.y + source.height)/r_texture.height)
-    else
-      RLGL.texcoord_2f(source.x/r_texture.width, (source.y + source.height)/r_texture.height)
-    end
-    RLGL.vertex_2f(bottom_left.x, bottom_left.y)
-
-    # Bottom-right corner for texture and quad
-    if flip_x
-      RLGL.texcoord_2f(source.x/r_texture.width, (source.y + source.height)/r_texture.height)
-    else
-      RLGL.texcoord_2f((source.x + source.width)/r_texture.width, (source.y + source.height)/r_texture.height)
-    end
-    RLGL.vertex_2f(bottom_right.x, bottom_right.y)
-
-    # Top-right corner for texture and quad
-    if flip_x
-      RLGL.texcoord_2f(source.x/r_texture.width, source.y/r_texture.height)
-    else
-      RLGL.texcoord_2f((source.x + source.width)/r_texture.width, source.y/r_texture.height)
-    end
-    RLGL.vertex_2f(top_right.x, top_right.y)
-
-    RLGL.end
-    RLGL.set_texture(0)
+    # RLGL.end
+    # RLGL.set_texture(0)
+    Raylib.draw_texture_pro(r_texture, src_rectangle.to_raylib, dest_rectangle.to_raylib, origin.to_raylib, rotation, tint.to_raylib)
   end
 
   include ISprite
@@ -171,6 +128,6 @@ class Crixel::Sprite < Crixel::Basic
   end
 
   def draw_sprite
-    Sprite.draw(Assets.get_texture(texture), x + offset.x, y + offset.y, width, height, rotation, origin, src_rectangle, tint)
+    # Sprite.draw(Assets.get_texture(texture), x + offset.x, y + offset.y, width, height, rotation, origin, src_rectangle, tint)
   end
 end
