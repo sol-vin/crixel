@@ -166,8 +166,6 @@ class Crixel::Sprite < Crixel::Basic
     end
   end
 
-  property texture : String = "default_rsrc/logo.png"
-
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     draw_sprite if visible?
   end

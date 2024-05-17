@@ -1,17 +1,15 @@
 class Crixel::Animation
-  include IOBB
-
-  def self.from_texture_atlas(texture_name : String, x_frames, y_frames)
+  def self.from_spritesheet(texture_name : String, x_frames : UInt32, y_frames : UInt32)
     r_texture = Assets.get_rtexture(texture_name)
     animation = self.new
     y_frames.times do |y|
       x_frames.times do |y|
         frame = Frame.new
         src = Rectangle.new
-        src.x = r_texture.width * (r_texture.width/x_frames)
-        src.y = r_texture.height * (r_texture.height/y_frames)
-        src.width = r_texture.width/x_frames
-        src.height = r_texture.height/y_frames
+        src.x = (r_texture.width * (r_texture.width/x_frames)).to_f32
+        src.y = (r_texture.height * (r_texture.height/y_frames)).to_f32
+        src.width = (r_texture.width/x_frames).to_f32
+        src.height = (r_texture.height/y_frames).to_f32
         frame.src_rectangle = src
         animation.frames << frame
       end
@@ -20,16 +18,54 @@ class Crixel::Animation
   end
 
   property frames = [] of Frame
-  property frame_index = 0
+  getter frame_index = 0
 
   getter? playing = true
   property? looping = true
 
-  @total_time : Time::Span = Time::Span.new
   @current_time : Time::Span = Time::Span.new
+
+  event TimeAdvanced, me : self, current_time : Time::Span
+  event FrameAdvanced, me : self
+  event Played, me : self
+  event Replayed, me : self
+  event Stopped, me : self
+  event Paused, me : self
+  event Unpaused, me : self
 
   def play
     @playing = true
+    if paused?
+      emit Unpaused, self
+    else
+      emit Played, self
+    end 
+  end
+
+  def stop
+    @playing = false
+    reset
+    emit Stopped, self
+  end
+
+  def pause
+    @playing = false
+    emit Paused, self
+  end
+
+  def paused?
+    !playing? && (@current_time.total_seconds > 0)
+  end
+
+  def reset
+    @current_time = Time::Span.new
+    @frame_index = 0
+  end
+
+  def replay
+    @playing = true
+    reset
+    emit Replayed, self
   end
 
   def advance_time(elapsed_time : Time::Span)
@@ -51,10 +87,5 @@ class Crixel::Animation
 
   def current_frame
     frames[frame_index]
-  end
-
-  def reset
-    @current_time = Time::Span.new
-    @frame_index = 0
   end
 end

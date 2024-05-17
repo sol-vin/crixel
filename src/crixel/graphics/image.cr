@@ -51,7 +51,7 @@ class Crixel::Image
   @image : Raylib::Image = Raylib::Image.new
   @name : String
   
-  def initialize(name : String = "", width : UInt32, height : UInt32, color : Color = Color::RGBA::WHITE)
+  def initialize(name : String = "", width : UInt32 = 100_u32, height : UInt32 = 100_u32, color : Color = Color::RGBA::WHITE)
     @image = Raylib.gen_image_color(width, height, color.to_raylib)
     @name = (name.empty? ? "@Image#{@image.id}@" : name) 
     image = Assets::Image.new(@name, @image)
@@ -64,7 +64,7 @@ class Crixel::Image
     Assets.add_image(image)
   end
 
-  def initialize(name : String = "", @image : Raylib::Image)
+  def initialize(@image : Raylib::Image, name : String = "")
     @name = (name.empty? ? "@Image#{@image.id}@" : name) 
     image = Assets::Image.new(@name, @image)
     

@@ -5,8 +5,17 @@ Design:
 
 # TODO
   - Animation
-    -  Frame
-       -  Holds texture info and src/dst/offset etc frame info
+    - Make testbed for this
+      - Should play animation
+        - WASD - Character position
+        - Arrows - Frame position
+        - Shift WASD - Character origin
+        - Shift Arrows - Frame origin
+        - QE - Character rotation
+        - ,. - Frame rotation
+        - Space - Play/Pause
+        - Shift Space - Stop
+        - R - Replay
   - Baked File System Enhancements
     - Custom loader
       - Opens raylib during compilation process to make asset entries in Assets.
@@ -38,7 +47,7 @@ Design:
   - Image
     - Needs it own special drawing functions.
     - To Asset
-    - NEeds to be finished
+    - Needs to be finished
   - Tilemap
   - Collision Manager
     - Quadtree

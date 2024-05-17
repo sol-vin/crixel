@@ -77,8 +77,8 @@ module Crixel
   def self.stop_2d_mode
     if @@camera_stack.pop?
       Raylib.end_mode_2d
-      if current_camera?
-        Raylib.begin_mode_2d(current_camera?.not_nil!.to_rcamera)
+      if cam = current_camera?
+        Raylib.begin_mode_2d(cam.to_rcamera)
       else
       end
     else

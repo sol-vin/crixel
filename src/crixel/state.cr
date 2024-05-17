@@ -147,7 +147,7 @@ class Crixel::State
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     @drawing = true
     Crixel.start_2d_mode(@camera)
-    Raylib.clear_background(@camera.bg_color.to_raylib)
+    Raylib.clear_background(@camera.camera_bg_color.to_raylib)
 
     emit PreDraw, self, total_time, elapsed_time
     @draw_order.each do |child|
