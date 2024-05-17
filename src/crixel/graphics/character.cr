@@ -49,7 +49,7 @@ class Crixel::Character < Crixel::Basic
         height: f.src_rectangle.height * scale.y
       )
 
-      Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation + self.rotation, f.origin, tint)
+      Sprite.draw(f.texture, f.src_rectangle, dest, f.rotation*Raylib::RAD2DEG + self.rotation*Raylib::RAD2DEG, f.origin, tint)
       rot.draw(tint: Color::RGBA::YELLOW)
     end
   end

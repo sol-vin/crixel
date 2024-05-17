@@ -38,7 +38,10 @@ struct Crixel::Vector2
   end
 
   def add(v2 : Vector2) : Vector2
-    Raymath.vector2_add(self.to_raylib, v2.to_raylib).to_crixel
+    Vector2.new(
+      x + v2.x,
+      y + v2.y
+    )
   end
 
   def add_value(add : Number) : Vector2
@@ -46,7 +49,10 @@ struct Crixel::Vector2
   end
 
   def subtract(v2 : Vector2) : Vector2
-    Raymath.vector2_subtract(self.to_raylib, v2.to_raylib).to_crixel
+    Vector2.new(
+      x - v2.x,
+      y - v2.y
+    )
   end
 
   def subtract_value(sub : Number) : Vector2
@@ -82,7 +88,10 @@ struct Crixel::Vector2
   end
 
   def multiply(v2 : Vector2) : Vector2
-    Raymath.vector2_multiply(self.to_raylib, v2.to_raylib).to_crixel
+    Vector2.new(
+      x * v2.x,
+      y * v2.y
+    )
   end
 
   def negate : Vector2
@@ -90,7 +99,10 @@ struct Crixel::Vector2
   end
 
   def divide(v2 : Vector2) : Vector2
-    Raymath.vector2_divide(self.to_raylib, v2.to_raylib).to_crixel
+    Vector2.new(
+      x / v2.x,
+      y / v2.y
+    )
   end
 
   def normalize : Vector2
