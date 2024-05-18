@@ -6,20 +6,13 @@ module Crixel::IOBB
   include IBody
   include IRotation
 
-  def points : StaticArray(Vector2, 4)
-    points = StaticArray(Vector2, 4).new(Vector2.zero)
+  alias Points = StaticArray(Vector2, 4)
+
+  def self.get_points(x, y, width, height, rotation = 0.0_f32, origin : Vector2 = Vector2.zero) : Points
+    points = Points.new(Vector2.zero)
     sin_rotation = Math.sin(rotation)
     cos_rotation = Math.cos(rotation)
 
-    dest = Rectangle.new(
-      dst_rectangle.x + origin.x,
-      dst_rectangle.y + origin.y,
-      dst_rectangle.width,
-      dst_rectangle.height
-    )
-
-    x = dest.x
-    y = dest.y
     dx = -origin.x
     dy = -origin.y
 
@@ -31,14 +24,14 @@ module Crixel::IOBB
     top_left.x = x + dx*cos_rotation - dy*sin_rotation
     top_left.y = y + dx*sin_rotation + dy*cos_rotation
 
-    top_right.x = x + (dx + dest.width)*cos_rotation - dy*sin_rotation
-    top_right.y = y + (dx + dest.width)*sin_rotation + dy*cos_rotation
+    top_right.x = x + (dx + width)*cos_rotation - dy*sin_rotation
+    top_right.y = y + (dx + width)*sin_rotation + dy*cos_rotation
 
-    bottom_left.x = x + dx*cos_rotation - (dy + dest.height)*sin_rotation
-    bottom_left.y = y + dx*sin_rotation + (dy + dest.height)*cos_rotation
+    bottom_left.x = x + dx*cos_rotation - (dy + height)*sin_rotation
+    bottom_left.y = y + dx*sin_rotation + (dy + height)*cos_rotation
 
-    bottom_right.x = x + (dx + dest.width)*cos_rotation - (dy + dest.height)*sin_rotation
-    bottom_right.y = y + (dx + dest.width)*sin_rotation + (dy + dest.height)*cos_rotation
+    bottom_right.x = x + (dx + width)*cos_rotation - (dy + height)*sin_rotation
+    bottom_right.y = y + (dx + width)*sin_rotation + (dy + height)*cos_rotation
 
     points[0] = top_left
     points[1] = top_right
@@ -47,10 +40,18 @@ module Crixel::IOBB
     points
   end
 
+  def self.get_points(r : Rectangle, rotation = 0.0_f32, origin : Vector2 = Vector2.zero) : Points
+    get_points(r.x, r.y, r.width, r.height, rotation, origin)
+  end
+
+  def points : Points
+    self.class.get_points(x, y, width, height, rotation, origin)
+  end
+
   def dst_rectangle
     Rectangle.new(
-      x: x - origin.x,
-      y: y - origin.y,
+      x: x,
+      y: y,
       width: width,
       height: height
     )

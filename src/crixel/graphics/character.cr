@@ -47,14 +47,18 @@ class Crixel::Character < Crixel::Basic
 
       rot = f.position.rotate(self.rotation) + self.position
       dest = Rectangle.new(
-        x: rot.x + f.origin.x + origin.x,
-        y: rot.y + f.origin.y + origin.y,
+        x: rot.x,
+        y: rot.y,
         width: f.src_rectangle.width * scale.x,
         height: f.src_rectangle.height * scale.y
       )
       dest.draw
 
-      Sprite.draw(f.texture, f.src_rectangle, dest, (f.rotation + self.rotation)*Raylib::RAD2DEG, f.origin, tint)
+      # Sprite.draw(f.texture, f.src_rectangle, dest, (f.rotation + self.rotation) * Raylib::RAD2DEG, f.origin, tint)
+
+      points = IOBB.get_points(dest.x, dest.y, dest.width, dest.height, f.rotation + self.rotation, f.origin)
+      Sprite.draw_quad(f.texture, f.src_rectangle, points[0]+f.origin, points[1]+f.origin, points[2]+f.origin, points[3]+f.origin, tint)
+      points.each { |n| (n+f.origin).draw(tint: Color::RGBA::CYAN) }
     end
   end
 end
