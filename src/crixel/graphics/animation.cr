@@ -1,15 +1,18 @@
 class Crixel::Animation
-  def self.from_spritesheet(texture_name : String, x_frames : UInt32, y_frames : UInt32, duration = Time::Span.new(nanoseconds: 100_000_000))
+  def self.from_spritesheet(texture_name : String, x_frames : UInt32, y_frames : UInt32, x_offset = 0.5_f32, y_offset = 0.5_f32, duration = Time::Span.new(nanoseconds: 100_000_000))
     r_texture = Assets.get_rtexture(texture_name)
     animation = self.new
     y_frames.times do |y|
       x_frames.times do |x|
         src = Rectangle.new
-        src.x = (x * (r_texture.width/x_frames)).to_f32
-        src.y = (y * (r_texture.height/y_frames)).to_f32
-        src.width = (r_texture.width/x_frames).to_f32
-        src.height = (r_texture.height/y_frames).to_f32
-        dst = Rectangle.new(0, 0, (r_texture.width/x_frames), (r_texture.height/y_frames))
+        frame_width = (r_texture.width/x_frames).to_f32
+        frame_height = (r_texture.height/y_frames).to_f32
+
+        src.x = (x * frame_width)
+        src.y = (y * frame_height)
+        src.width = frame_width
+        src.height = frame_height
+        dst = Rectangle.new(x_offset * frame_width, y_offset * frame_height, frame_width, frame_height)
         
         frame = Frame.new(texture_name, src, dst)
         frame.duration = duration

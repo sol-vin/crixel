@@ -52,11 +52,9 @@ class Crixel::Character < Crixel::Basic
         width: f.src.width * scale.x,
         height: f.src.height * scale.y
       )
-      dest.draw
 
       points = IOBB.get_points(dest.x, dest.y, dest.width, dest.height, rotation, origin)
       Sprite.draw_quad(f.texture, f.src, points[0], points[1], points[2], points[3], tint)
-      points.each {|n| (n).draw}
     end
   end
 end
