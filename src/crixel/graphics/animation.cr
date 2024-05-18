@@ -4,17 +4,14 @@ class Crixel::Animation
     animation = self.new
     y_frames.times do |y|
       x_frames.times do |x|
-        frame = Frame.new
         src = Rectangle.new
         src.x = (x * (r_texture.width/x_frames)).to_f32
         src.y = (y * (r_texture.height/y_frames)).to_f32
         src.width = (r_texture.width/x_frames).to_f32
         src.height = (r_texture.height/y_frames).to_f32
-
-        frame.width = src.width
-        frame.height = src.height
-        frame.src_rectangle = src
-        frame.texture = texture_name
+        dst = Rectangle.new(0, 0, (r_texture.width/x_frames), (r_texture.height/y_frames))
+        
+        frame = Frame.new(texture_name, src, dst)
         frame.duration = duration
         animation.frames << frame
       end

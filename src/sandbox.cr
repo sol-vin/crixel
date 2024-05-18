@@ -82,40 +82,44 @@ class PlayState < Crixel::State
       key = inputs.get_key(Crixel::Key::Code::Up)
 
       key.on_down(name: "up_down") do |total_time, elapsed_time|
-        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
-          @character.current_animation.frames.map! {|f| f.origin = f.origin + Crixel::Vector2.unit_y * -0.1; f}
-        else
-          @character.current_animation.frames.map! {|f| f.y -= 0.1; f }
+        @character.current_animation.frames.map! do |f| 
+          dst = f.dst
+          dst.y -= 0.1
+          f.dst = dst
+          f 
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Down)
 
       key.on_down(name: "down_down") do |total_time, elapsed_time|
-        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
-          @character.current_animation.frames.map! {|f| f.origin = f.origin + Crixel::Vector2.unit_y * 0.1; f}
-        else
-          @character.current_animation.frames.map! {|f| f.y += 0.1; f }
+        @character.current_animation.frames.map! do |f| 
+          dst = f.dst
+          dst.y += 0.1
+          f.dst = dst
+          f 
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Left)
 
       key.on_down(name: "left_down") do |total_time, elapsed_time|
-        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
-          @character.current_animation.frames.map! {|f| f.origin = f.origin + Crixel::Vector2.unit_x * -0.1; f}
-        else
-          @character.current_animation.frames.map! {|f| f.x -= 0.1; f }
+        @character.current_animation.frames.map! do |f| 
+          dst = f.dst
+          dst.x -= 0.1
+          f.dst = dst
+          f 
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Right)
 
       key.on_down(name: "right_down") do |total_time, elapsed_time|
-        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
-          @character.current_animation.frames.map! {|f| f.origin = f.origin + Crixel::Vector2.unit_x * 0.1; f}
-        else
-          @character.current_animation.frames.map! {|f| f.x += 0.1; f }
+        @character.current_animation.frames.map! do |f| 
+          dst = f.dst
+          dst.x += 0.1
+          f.dst = dst
+          f 
         end
       end
 
@@ -129,18 +133,6 @@ class PlayState < Crixel::State
 
       key.on_down(name: "e_down") do |total_time, elapsed_time|
         @character.rotation += 0.001
-      end
-
-      key = inputs.get_key(Crixel::Key::Code::Comma)
-
-      key.on_down(name: "comma_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! {|f| f.rotation -= 0.01; f }
-      end
-
-      key = inputs.get_key(Crixel::Key::Code::Period)
-
-      key.on_down(name: "period_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! {|f| f.rotation += 0.01; f }
       end
     end
 
@@ -156,7 +148,6 @@ class PlayState < Crixel::State
       @character.position.draw(tint: Crixel::Color::RGBA::RED)
       (@character.position + @character.origin).draw(tint: Crixel::Color::RGBA::MAGENTA)
       @character.current_frame_rect.draw(tint: Crixel::Color::RGBA::BLUE)
-      (@character.current_animation.current_frame.origin + @character.position+ @character.current_animation.current_frame.position).draw(tint: Crixel::Color::RGBA::GREEN)
     end
   end
 end

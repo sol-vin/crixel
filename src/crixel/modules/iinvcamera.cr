@@ -5,7 +5,7 @@ module Crixel::IInvCamera
     Raylib::Camera2D.new(
       target: position.to_raylib,
       offset: origin.to_raylib,
-      rotation: -(rotation/Raylib::DEG2RAD).to_f32,
+      rotation: -(rotation*Raylib::RAD2DEG).to_f32,
       zoom: camera_zoom
     )
   end

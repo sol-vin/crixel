@@ -28,8 +28,10 @@ class Crixel::Timer
   end
 
   def start
-    @current_time = Time::Span.new(nanoseconds: 0) unless @current_time
-    emit Started, self
+    unless @current_time
+      @current_time = Time::Span.new(nanoseconds: 0) 
+      emit Started, self
+    end
   end
 
   def pause

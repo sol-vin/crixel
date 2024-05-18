@@ -15,7 +15,7 @@ class Crixel::Character < Crixel::Basic
 
   def current_frame_rect
     cf = current_animation.current_frame
-    Rectangle.new(x + cf.x , y + cf.y, cf.width, cf.height)
+    Rectangle.new(x + cf.dst.x , y + cf.dst.y, cf.dst.width, cf.dst.height)
   end
 
   def current_frame
@@ -45,20 +45,18 @@ class Crixel::Character < Crixel::Basic
       sin_rotation = Math.sin(self.rotation)
       cos_rotation = Math.cos(self.rotation)
 
-      rot = f.position.rotate(self.rotation) + self.position
+      rot = f.dst.position.rotate(self.rotation) + self.position
       dest = Rectangle.new(
         x: rot.x,
         y: rot.y,
-        width: f.src_rectangle.width * scale.x,
-        height: f.src_rectangle.height * scale.y
+        width: f.src.width * scale.x,
+        height: f.src.height * scale.y
       )
       dest.draw
 
-      # Sprite.draw(f.texture, f.src_rectangle, dest, (f.rotation + self.rotation) * Raylib::RAD2DEG, f.origin, tint)
-
-      points = IOBB.get_points(dest.x, dest.y, dest.width, dest.height, f.rotation + self.rotation, f.origin)
-      Sprite.draw_quad(f.texture, f.src_rectangle, points[0]+f.origin, points[1]+f.origin, points[2]+f.origin, points[3]+f.origin, tint)
-      points.each { |n| (n+f.origin).draw(tint: Color::RGBA::CYAN) }
+      points = IOBB.get_points(dest.x, dest.y, dest.width, dest.height, rotation, origin)
+      Sprite.draw_quad(f.texture, f.src, points[0], points[1], points[2], points[3], tint)
+      points.each {|n| (n).draw}
     end
   end
 end
