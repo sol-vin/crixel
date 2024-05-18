@@ -4,7 +4,7 @@ Design:
 
 
 # TODO
-  - Animation
+  <!-- - Animation
     - Make testbed for this
       - Should play animation
         - WASD - Character position
@@ -15,7 +15,7 @@ Design:
         - ,. - Frame rotation
         - Space - Play/Pause
         - Shift Space - Stop
-        - R - Replay
+        - R - Replay -->
   - Baked File System Enhancements
     - Custom loader
       - Opens raylib during compilation process to make asset entries in Assets.

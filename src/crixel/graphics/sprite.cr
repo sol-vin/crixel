@@ -1,7 +1,9 @@
 class Crixel::Sprite < Crixel::Basic
-  def self.draw_quad(texture_name, src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
-    r_texture = Assets.get_rtexture texture_name
-    
+
+  def self.draw_quad(texture_name : String, src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
+    self.draw_quad(Assets.get_rtexture(texture_name), src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
+  end
+  def self.draw_quad(r_texture : Raylib::Texture2D, src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
     flip_x = false
 
     if src_rectangle.width < 0
@@ -63,8 +65,9 @@ class Crixel::Sprite < Crixel::Basic
     tint : Color = Color::RGBA::WHITE
   )
     r_texture = Assets.get_rtexture texture_name
-    
-    Raylib.draw_texture_pro(r_texture, src_rectangle.to_raylib, dest_rectangle.to_raylib, origin.to_raylib, rotation, tint.to_raylib)
+    points = IOBB.get_points(dest_rectangle, rotation, origin)
+    Sprite.draw_quad(r_texture, src_rectangle, points[0], points[1], points[2], points[3], tint)
+    # Raylib.draw_texture_pro(r_texture, src_rectangle.to_raylib, dest_rectangle.to_raylib, origin.to_raylib, rotation, tint.to_raylib)
   end
 
   include ISprite

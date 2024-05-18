@@ -10,13 +10,11 @@ Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 
 class PlayState < Crixel::State
-  @text : Crixel::Text = Crixel::Text.new(text: "Hello World!", text_size: 40)
   def initialize
     super
     
     # Setup this state
     on_setup do
-      add(@text)
     end
 
     # Do stuff before objects are updated

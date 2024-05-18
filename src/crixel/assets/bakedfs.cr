@@ -14,6 +14,10 @@ module ::Crixel::Assets::BakedFS
     load_files
   end
 
+  on(Assets::PostSetup) do
+    files.clear
+  end
+
   macro bake(path = "rsrc", dir = "./")
     module ::Crixel::Assets::BakedFS
       bake_folder {{path}}, dir: {{dir}}, allow_empty: true

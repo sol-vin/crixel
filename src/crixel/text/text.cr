@@ -93,7 +93,9 @@ class Crixel::Text < Crixel::Basic
         src = Rectangle.new(0, 0, size.x, -size.y)
       end
 
-      # Sprite.draw(@render_texture.texture, x, y, size, rotation, origin, src, tint)
+      obb_points = IOBB.get_points(x, y, size.x, size.y, rotation, origin)
+
+      Sprite.draw_quad(@render_texture.texture, src, obb_points[0], obb_points[1], obb_points[2], obb_points[3], tint)
     end
   end
 end

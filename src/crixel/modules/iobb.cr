@@ -41,11 +41,11 @@ module Crixel::IOBB
   end
 
   def self.get_points(r : Rectangle, rotation = 0.0_f32, origin : Vector2 = Vector2.zero) : Points
-    get_points(r.x, r.y, r.width, r.height, rotation, origin)
+    IOBB.get_points(r.x, r.y, r.width, r.height, rotation, origin)
   end
 
   def points : Points
-    self.class.get_points(x, y, width, height, rotation, origin)
+    IOBB.get_points(x, y, width, height, rotation, origin)
   end
 
   def dst_rectangle
