@@ -136,12 +136,12 @@ ADV IDEA
 ```crystal
 class Basic
   @parent : State
-  
+
   def initialize(@parent)
   end
 
   def update
-    send State::Add, Basic.new
+    send State::Add, @parent, Basic.new
   end
 end
 
@@ -162,7 +162,10 @@ class State
 
   def update
     #Queue jobs
-    @objects.each {|o| queue Update, o }
+    @objects.each do |object|
+      spawn_counter Update, object
+    end
+    
     wait_for_counter(Update, @objects.size)
     run Add
     run Remove
