@@ -10,13 +10,66 @@ Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 
 class PlayState < Crixel::State
-  @text : Crixel::Text = Crixel::Text.new(text: "Hello World!", text_size: 40)
+  @text : Crixel::Text = Crixel::Text.new(text: "Hello World!", text_size: 100)
+
   def initialize
     super
     
     # Setup this state
     on_setup do
       add(@text)
+      
+      key = inputs.get_key(Crixel::Key::Code::W)
+
+      key.on_down(name: "w_down") do |total_time, elapsed_time|
+        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
+          @text.origin = @text.origin + Crixel::Vector2.unit_y * -0.1
+        else
+          @text.y -= 0.1
+        end
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::S)
+
+      key.on_down(name: "s_down") do |total_time, elapsed_time|
+        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
+          @text.origin = @text.origin + Crixel::Vector2.unit_y * 0.1
+        else
+          @text.y += 0.1
+        end
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::A)
+
+      key.on_down(name: "a_down") do |total_time, elapsed_time|
+        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
+          @text.origin = @text.origin + Crixel::Vector2.unit_x * -0.1
+        else
+          @text.x -= 0.1
+        end
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::D)
+
+      key.on_down(name: "d_down") do |total_time, elapsed_time|
+        if inputs.get_key(Crixel::Key::Code::LeftShift).down?
+          @text.origin = @text.origin + Crixel::Vector2.unit_x * 0.1
+        else
+          @text.x += 0.1
+        end
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::Q)
+
+      key.on_down(name: "q_down") do |total_time, elapsed_time|
+        @text.rotation -= 0.01
+      end
+      
+      key = inputs.get_key(Crixel::Key::Code::E)
+
+      key.on_down(name: "e_down") do |total_time, elapsed_time|
+        @text.rotation += 0.01
+      end
     end
 
     # Do stuff before objects are updated
@@ -41,6 +94,5 @@ class PlayState < Crixel::State
   end
 end
 
-Crixel.start_window(400, 300) # This must be done here
-Crixel.run(PlayState.new)
+Crixel.play(400, 300) { PlayState.new }
 

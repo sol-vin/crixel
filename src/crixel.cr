@@ -86,6 +86,12 @@ module Crixel
     end
   end
 
+  def self.play(width, height, title = "Crixel", &block : Proc(State))
+    start_window(width, height)
+    state = yield
+    run(state, title)
+  end
+
   def self.start_window(@@width, @@height)
     if !@@started
       Raylib.set_trace_log_level(Raylib::TraceLogLevel::Warning)
@@ -102,15 +108,6 @@ module Crixel
   def self.run(state = State.new, @@title = "Crixel")
     if @@started && !@@running
       @@running = true
-
-      # If the state is deleted, pop if is the main_state, or delete it out of states
-      state.on_destroyed do
-        if state == main_state
-          state = @@states.pop
-        else
-          @@states.delete(state)
-        end
-      end
 
       emit Open
 
@@ -155,6 +152,16 @@ module Crixel
     state.setup
 
     @@states.push state
+
+    # If the state is deleted, pop if is the main_state, or delete it out of states
+    state.on_destroyed do
+      if state == main_state
+        state = @@states.pop
+      else
+        @@states.delete(state)
+      end
+    end
+      
     emit State::Changed, state
   end
 

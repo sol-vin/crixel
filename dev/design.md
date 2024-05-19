@@ -83,3 +83,98 @@ Design:
     - Own data type (non Basic)
     - use load_sound_alias to prevent changing original source.
     - hook Crixel::Sound#on_destroyed/on_changed to -->
+
+
+
+
+
+Multithreaded possibilities
+
+        Channels
+State <-----------> Objects
+
+Basic Idea
+```crystal
+class Basic
+  property add_proc : Proc(Basic, Nil) = -> {|b| }
+
+end
+
+class State
+  @objects = [] of Basic
+  @add_object_channel = Channel(Basic).new
+  @done_updating_channel = Channel(Nil).new
+
+  def add(b : Basic)
+    @objects << b
+    b.add_proc = -> { |b| add_object_channel.send b }
+  end
+
+  def update
+    total_objects = @objects.size
+
+    @objects.each do |o|
+      spawn(name: "#{self.class.to_s} - #{o.name}") do
+        o.update
+        @done_updating_channel.send nil
+      end
+    end
+
+    # block until objects finish
+    total_objects.times { @done_updating_channel.receive }
+  end
+
+  def draw
+    @objects.each do |o|
+      o.draw
+    end
+  end
+end
+```
+
+ADV IDEA
+```crystal
+class Basic
+  @parent : State
+  
+  def initialize(@parent)
+  end
+
+  def update
+    send State::Add, Basic.new
+  end
+end
+
+class State
+  @objects = [] of Basic
+
+  job(Add, object : Basic) do |object|
+    @objects << object
+  end
+
+  job(Remove, object : Basic) do |object|
+    @objects.delete object
+  end
+
+  counter(Update, object : Basic) do |object|
+    object.update
+  end
+
+  def update
+    #Queue jobs
+    @objects.each {|o| queue Update, o }
+    wait_for_counter(Update, @objects.size)
+    run Add
+    run Remove
+  end
+end
+```
+
+Notes:
+  - Need a way to "jobify" each aspect of the updater?
+  - Frame 1: Update -> Spawn(Draw)]
+  - Frame 2: Update -Wait(Draw)-> Spawn(Draw)
+  - etc.
+  - Need a raylib command buffer
+    - Should contain some way to send all the arbitrary commands to raylib
+
