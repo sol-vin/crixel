@@ -44,6 +44,42 @@ module Crixel
 
   # Handles what camera should restored when a we begin and end raylib's 2d mode
   @@camera_stack = [] of ICamera
+  @@render_texture_stack = [] of Raylib::RenderTexture
+
+  @@screen : Raylib::RenderTexture = Raylib::RenderTexture.new
+
+  @@src : Raylib::Rectangle = Raylib::Rectangle.new
+  @@dst : Raylib::Rectangle = Raylib::Rectangle.new
+
+  def self.current_rt? : Raylib::RenderTexture?
+    @@render_texture_stack[-1]?
+  end
+
+  def self.enabled_rt_mode?
+    @@render_texture_stack.size > 0
+  end
+
+  def self.start_rt_mode(rt : Raylib::RenderTexture)
+    if enabled_rt_mode?
+      Raylib.end_texture_mode
+    end
+
+    @@render_texture_stack << rt
+
+    Raylib.begin_texture_mode(rt)
+  end
+
+  def self.stop_rt_mode
+    if @@render_texture_stack.pop?
+      Raylib.end_texture_mode
+      if rt = current_rt?
+        Raylib.begin_texture_mode(rt)
+      else
+      end
+    else
+      raise "Crixel.stop_rt_mode called but no rt was on the stack...."
+    end
+  end
 
   def self.current_camera? : ICamera?
     @@camera_stack[-1]?
@@ -97,6 +133,10 @@ module Crixel
       Raylib.set_trace_log_level(Raylib::TraceLogLevel::Warning)
       @@started = true
       Raylib.init_window(@@width, @@height, title)
+      Raylib.set_window_state(Raylib::ConfigFlags::WindowResizable)
+      Raylib.set_target_fps(60)
+      @@screen = Raylib.load_render_texture(@@width, @@height)
+      recalculate_window
       emit Start
       emit Started
     end
@@ -104,6 +144,41 @@ module Crixel
 
   class_getter total_time : Time::Span = Time::Span.new(nanoseconds: 0)
   class_getter elapsed_time : Time::Span = Time::Span.new(nanoseconds: 0)
+
+  def self.recalculate_window
+    @@src = Raylib::Rectangle.new(
+      x: 0,
+      y: 0,
+      width: @@width,
+      height: -@@height
+    )
+
+    window_width = Raylib.get_screen_width.to_f32
+    window_height = Raylib.get_screen_height.to_f32
+
+    @@dst = Raylib::Rectangle.new(
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    )
+
+    window_ratio = window_width/window_height
+    screen_ratio = @@width.to_f32/@@height.to_f32
+    if window_ratio > screen_ratio
+      # Window is more wide than the screen
+      @@dst.height = window_height
+      @@dst.width = window_height * screen_ratio
+
+      @@dst.x = (window_width/2) - (@@dst.width/2)
+    else
+      # Window is more high than the screen
+      @@dst.width = window_width
+      @@dst.height = window_width/screen_ratio
+
+      @@dst.y = (window_height/2) - (@@dst.height/2)
+    end
+  end
 
   def self.run(state = State.new, @@title = "Crixel")
     if @@started && !@@running
@@ -117,8 +192,21 @@ module Crixel
         @@elapsed_time = Time.measure do
           Raylib.begin_drawing
           Mouse.update
+          start_rt_mode(@@screen)
           update(@@total_time, @@elapsed_time)
           draw(@@total_time, @@elapsed_time)
+          stop_rt_mode
+
+          if current_rt?
+            raise "RT Stack had entries after the frame was done.
+                   stop_rt_mode needs to be called a number of times before this point"
+          end
+
+          if Raylib.window_resized?
+            recalculate_window
+          end
+          Raylib.clear_background(Raylib::BLACK)
+          Raylib.draw_texture_pro(@@screen.texture, @@src, @@dst, Raylib::Vector2.zero, 0, Raylib::WHITE)
           Raylib.end_drawing
         end
 
@@ -214,6 +302,7 @@ module Crixel
     emit Close
     @@states.each(&.destroy)
     @@states.clear
+    Raylib.unload_render_texture(@@screen)
     Raylib.close_window
     emit Closed
     @@started = false
