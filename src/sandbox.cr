@@ -62,13 +62,25 @@ class PlayState < Crixel::State
       key = inputs.get_key(Crixel::Key::Code::Q)
 
       key.on_down(name: "q_down") do |total_time, elapsed_time|
-        @text.rotation -= 0.01
+        @text.rotation -= 0.001
       end
       
       key = inputs.get_key(Crixel::Key::Code::E)
 
       key.on_down(name: "e_down") do |total_time, elapsed_time|
-        @text.rotation += 0.01
+        @text.rotation += 0.001
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::Up)
+
+      key.on_down(name: "up_down") do |total_time, elapsed_time|
+        @text.height += 0.01
+      end
+
+      key = inputs.get_key(Crixel::Key::Code::Down)
+
+      key.on_down(name: "down_down") do |total_time, elapsed_time|
+        @text.height -= 0.01
       end
     end
 

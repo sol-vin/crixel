@@ -1,6 +1,5 @@
 require "json"
 
-
 class Crixel::Assets::JSON < Crixel::Asset
   getter name : String
   property json : ::JSON::Any

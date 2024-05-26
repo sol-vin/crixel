@@ -1,7 +1,6 @@
 require "file_utils"
 require "yaml"
 
-
 FileUtils.cd("examples") do
   puts "BUILDING EXAMPLES FROM #{FileUtils.pwd}"
   begin
@@ -44,7 +43,6 @@ FileUtils.cd("examples") do
       {% end %}
 
       FileUtils.rm_r("./default_rsrc")
-
     end
   end
 end

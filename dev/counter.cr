@@ -9,7 +9,7 @@ time1 = Time.measure do
     end
   end
 
-  puts "1 #{array.map {|x| x == COUNTER_MAX}}"
+  puts "1 #{array.map { |x| x == COUNTER_MAX }}"
 end
 puts " - #{time1.total_seconds}"
 
@@ -25,8 +25,8 @@ time2 = Time.measure do
     end
   end
 
-  10.times {finished_channel.receive}
+  10.times { finished_channel.receive }
 
-  puts "2 #{array.map {|x| x == COUNTER_MAX}}"
+  puts "2 #{array.map { |x| x == COUNTER_MAX }}"
 end
 puts " - #{time2.total_seconds}"

@@ -8,7 +8,6 @@ require "./crixel/default_rsrc"
 
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
-
 class PlayState < Crixel::State
   @total_time_text = Crixel::Text.new(text_size: 20, tint: Crixel::Color::RGBA::CYAN)
 
@@ -82,44 +81,44 @@ class PlayState < Crixel::State
       key = inputs.get_key(Crixel::Key::Code::Up)
 
       key.on_down(name: "up_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! do |f| 
+        @character.current_animation.frames.map! do |f|
           dst = f.dst
           dst.y -= 0.1
           f.dst = dst
-          f 
+          f
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Down)
 
       key.on_down(name: "down_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! do |f| 
+        @character.current_animation.frames.map! do |f|
           dst = f.dst
           dst.y += 0.1
           f.dst = dst
-          f 
+          f
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Left)
 
       key.on_down(name: "left_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! do |f| 
+        @character.current_animation.frames.map! do |f|
           dst = f.dst
           dst.x -= 0.1
           f.dst = dst
-          f 
+          f
         end
       end
 
       key = inputs.get_key(Crixel::Key::Code::Right)
 
       key.on_down(name: "right_down") do |total_time, elapsed_time|
-        @character.current_animation.frames.map! do |f| 
+        @character.current_animation.frames.map! do |f|
           dst = f.dst
           dst.x += 0.1
           f.dst = dst
-          f 
+          f
         end
       end
 
@@ -154,4 +153,3 @@ end
 
 Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)
-

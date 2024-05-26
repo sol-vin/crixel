@@ -161,7 +161,7 @@ module Crixel
         @@states.delete(state)
       end
     end
-      
+
     emit State::Changed, state
   end
 

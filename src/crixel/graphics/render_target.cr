@@ -1,4 +1,5 @@
 require "./sprite"
+
 class Crixel::RenderTarget < Crixel::Sprite
   @render_texture : Raylib::RenderTexture2D
 

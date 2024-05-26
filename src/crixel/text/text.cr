@@ -56,6 +56,11 @@ class Crixel::Text < Crixel::Basic
     Crixel.stop_2d_mode
   end
 
+  def height=(n)
+    @dirty = true
+    super(n)
+  end
+
   def text=(t)
     @dirty = true if @text != t
     @text = t
@@ -63,10 +68,12 @@ class Crixel::Text < Crixel::Basic
 
   # Alias of IBody#width
   def limit_width(w)
+    @dirty = true
     @width = w
   end
 
   def unlimit_width
+    @dirty = true
     @width = -1.0_f32
   end
 
@@ -81,6 +88,7 @@ class Crixel::Text < Crixel::Basic
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     if visible?
       _remake_texture if dirty?
+      @dirty = false
       size = Vector2.zero
       src = Rectangle.new
 

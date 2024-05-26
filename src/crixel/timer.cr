@@ -29,7 +29,7 @@ class Crixel::Timer
 
   def start
     unless @current_time
-      @current_time = Time::Span.new(nanoseconds: 0) 
+      @current_time = Time::Span.new(nanoseconds: 0)
       emit Started, self
     end
   end

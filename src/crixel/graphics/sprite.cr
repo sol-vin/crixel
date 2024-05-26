@@ -1,8 +1,8 @@
 class Crixel::Sprite < Crixel::Basic
-
   def self.draw_quad(texture_name : String, src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
     self.draw_quad(Assets.get_rtexture(texture_name), src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
   end
+
   def self.draw_quad(r_texture : Raylib::Texture2D, src_rectangle, top_left, top_right, bottom_right, bottom_left, tint)
     flip_x = false
 
@@ -21,46 +21,52 @@ class Crixel::Sprite < Crixel::Basic
     RLGL.color_4ub(tint.r, tint.g, tint.b, tint.a)
     RLGL.normal_3f(0.0_f32, 0.0_f32, 1.0_f32) # Normal vector pointing towards viewer
 
+    src_x = src_rectangle.x.to_i
+    src_y = src_rectangle.y.to_i
+    src_width = src_rectangle.width.to_i
+    src_height = src_rectangle.height.to_i
+
     # Top-left corner for texture and quad
     if flip_x
-      RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, src_rectangle.y/r_texture.height)
+      RLGL.texcoord_2f((src_x + src_width)/r_texture.width, src_y/r_texture.height)
     else
-      RLGL.texcoord_2f(src_rectangle.x/r_texture.width, src_rectangle.y/r_texture.height)
+      RLGL.texcoord_2f(src_x/r_texture.width, src_y/r_texture.height)
     end
     RLGL.vertex_2f(top_left.x, top_left.y)
 
     # Bottom-left corner for texture and quad
     if flip_x
-      RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+      RLGL.texcoord_2f((src_x + src_width)/r_texture.width, (src_y + src_height)/r_texture.height)
     else
-      RLGL.texcoord_2f(src_rectangle.x/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+      RLGL.texcoord_2f(src_rectangle.x/r_texture.width, (src_y + src_height)/r_texture.height)
     end
     RLGL.vertex_2f(bottom_left.x, bottom_left.y)
 
     # Bottom-right corner for texture and quad
     if flip_x
-      RLGL.texcoord_2f(src_rectangle.x/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+      RLGL.texcoord_2f(src_x/r_texture.width, (src_y + src_height)/r_texture.height)
     else
-      RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, (src_rectangle.y + src_rectangle.height)/r_texture.height)
+      RLGL.texcoord_2f((src_x + src_width)/r_texture.width, (src_y + src_height)/r_texture.height)
     end
     RLGL.vertex_2f(bottom_right.x, bottom_right.y)
 
     # Top-right corner for texture and quad
     if flip_x
-      RLGL.texcoord_2f(src_rectangle.x/r_texture.width, src_rectangle.y/r_texture.height)
+      RLGL.texcoord_2f(src_x/r_texture.width, src_y/r_texture.height)
     else
-      RLGL.texcoord_2f((src_rectangle.x + src_rectangle.width)/r_texture.width, src_rectangle.y/r_texture.height)
+      RLGL.texcoord_2f((src_x + src_width)/r_texture.width, src_y/r_texture.height)
     end
     RLGL.vertex_2f(top_right.x, top_right.y)
 
     RLGL.end
     RLGL.set_texture(0)
   end
+
   def self.draw(
     texture_name : String,
     src_rectangle : Rectangle,
     dest_rectangle : Rectangle,
-    rotation : Number = 0.0_f32, 
+    rotation : Number = 0.0_f32,
     origin : Vector2 = Vector2.zero,
     tint : Color = Color::RGBA::WHITE
   )

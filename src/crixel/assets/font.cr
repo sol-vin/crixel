@@ -10,7 +10,7 @@ module Crixel::Assets
   SUPPORTED_FONTS = %w[TTF OTF]
   @@fonts = {} of String => Font
 
-  DEFAULT_FONT_SIZE = 40
+  DEFAULT_FONT_SIZE = 128
 
   add_consumer do |path, io, size|
     full_path = Path.new(path)
@@ -19,7 +19,7 @@ module Crixel::Assets
     if match = full_path.basename.match(/^.+\.(\d+)\..+$/)
       font_size = match[1].to_i
     end
-    
+
     if SUPPORTED_FONTS.any? { |ext| extension.upcase[1..] == ext }
       content = io.gets_to_end
       font = Raylib.load_font_from_memory(extension, content, size, font_size || DEFAULT_FONT_SIZE, Pointer(Int32).null, 0)

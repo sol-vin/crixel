@@ -84,7 +84,6 @@ class Crixel::State
 
   # Adds an object to this state. If the object is added mid-update/mid-draw add it to the action queue instead.
   def add(object : Basic)
-
     if updating? || drawing?
       @action_queue << QueuedAction.new(QueuedAction::Type::Add, object)
     else

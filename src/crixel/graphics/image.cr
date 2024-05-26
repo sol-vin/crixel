@@ -2,22 +2,22 @@ class Crixel::Image
   # TODO: FInish this
   def self.from_screen(name = "")
     image = Raylib.load_image_from_screen
-    Image.new(name. image)
+    Image.new(name.image)
   end
 
   def self.from_texture(texture : Assets::Texture)
     image = Raylib.load_image_from_texture(texture.rtexture)
-    Image.new(name. image)
+    Image.new(name.image)
   end
 
   def self.from_texture(texture_name : String)
     image = Raylib.load_image_from_texture(Assets.get_texture(texture_name).rtexture)
-    Image.new(name. image)
+    Image.new(name.image)
   end
 
   def self.from_file(filename : String)
     image = Raylib.load_image(filename)
-    Image.new(name. image)
+    Image.new(name.image)
   end
 
   def self.make_linear_gradient
@@ -50,12 +50,12 @@ class Crixel::Image
 
   @image : Raylib::Image = Raylib::Image.new
   @name : String
-  
+
   def initialize(name : String = "", width : UInt32 = 100_u32, height : UInt32 = 100_u32, color : Color = Color::RGBA::WHITE)
     @image = Raylib.gen_image_color(width, height, color.to_raylib)
-    @name = (name.empty? ? "@Image#{@image.id}@" : name) 
+    @name = (name.empty? ? "@Image#{@image.id}@" : name)
     image = Assets::Image.new(@name, @image)
-    
+
     image.on_destroyed(once: true) do
       Assets.remove_image(@name, unload: false) # Its already unloaded
       @image = Raylib::Image.new
@@ -65,9 +65,9 @@ class Crixel::Image
   end
 
   def initialize(@image : Raylib::Image, name : String = "")
-    @name = (name.empty? ? "@Image#{@image.id}@" : name) 
+    @name = (name.empty? ? "@Image#{@image.id}@" : name)
     image = Assets::Image.new(@name, @image)
-    
+
     image.on_destroyed(once: true) do
       Assets.remove_image(@name, unload: false) # Its already unloaded
       @image = Raylib::Image.new

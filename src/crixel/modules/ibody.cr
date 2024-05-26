@@ -1,5 +1,6 @@
 require "./iposition"
 require "./isize"
+
 module Crixel::IBody
   include IPosition
   include ISize

@@ -13,7 +13,7 @@ class Crixel::Animation
         src.width = frame_width
         src.height = frame_height
         dst = Rectangle.new(x_offset * frame_width, y_offset * frame_height, frame_width, frame_height)
-        
+
         frame = Frame.new(texture_name, src, dst)
         frame.duration = duration
         animation.frames << frame
@@ -44,7 +44,7 @@ class Crixel::Animation
       emit Unpaused, self
     else
       emit Played, self
-    end 
+    end
   end
 
   def stop
@@ -86,7 +86,7 @@ class Crixel::Animation
       if frame_oob && looping?
         @frame_index = 0
       elsif frame_oob
-        @frame_index = 0 
+        @frame_index = 0
         @playing = false
       end
     end

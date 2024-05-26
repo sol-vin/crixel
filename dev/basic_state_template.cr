@@ -8,11 +8,10 @@ require "./crixel/default_rsrc"
 
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
-
 class PlayState < Crixel::State
   def initialize
     super
-    
+
     # Setup this state
     on_setup do
     end
@@ -41,4 +40,3 @@ end
 
 Crixel.start_window(400, 300) # This must be done here
 Crixel.run(PlayState.new)
-

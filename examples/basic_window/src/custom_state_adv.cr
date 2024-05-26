@@ -24,7 +24,7 @@ class PlayState < Crixel::State
 
     on_setup do
       @backup_camera.origin = Crixel::Vector2.new(Crixel.width/2, Crixel.height/2)
-      
+
       @startup.play
       @c.zoom = 0.7_f32
       @c.bg_color = Crixel::Color::RGBA::BLACK
@@ -42,7 +42,7 @@ class PlayState < Crixel::State
 
       add(@c)
       view(@backup_camera)
-      
+
       # Zoom in with Q
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
@@ -77,7 +77,6 @@ class PlayState < Crixel::State
       key5.on_released(name: "a_released") do |total_time, elapsed_time|
         view(@backup_camera)
       end
-
 
       up = inputs.get_key(Crixel::Key::Code::Up)
       down = inputs.get_key(Crixel::Key::Code::Down)

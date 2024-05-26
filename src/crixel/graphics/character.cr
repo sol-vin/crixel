@@ -15,7 +15,7 @@ class Crixel::Character < Crixel::Basic
 
   def current_frame_rect
     cf = current_animation.current_frame
-    Rectangle.new(x + cf.dst.x , y + cf.dst.y, cf.dst.width, cf.dst.height)
+    Rectangle.new(x + cf.dst.x, y + cf.dst.y, cf.dst.width, cf.dst.height)
   end
 
   def current_frame

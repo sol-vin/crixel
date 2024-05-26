@@ -14,10 +14,6 @@ macro counter(max, &block)
   end
 end
 
-
-
-
-
 COUNTER_MAX = (Int32::MAX/100).to_i
 
 array = StaticArray(UInt32, 10).new(0_u32)
@@ -28,7 +24,7 @@ time1 = Time.measure do
     end
   end
 end
-puts "1 #{array.map {|x| x == COUNTER_MAX}}"
+puts "1 #{array.map { |x| x == COUNTER_MAX }}"
 puts " - #{time1.total_seconds}"
 
 # time2 = Time.measure do
