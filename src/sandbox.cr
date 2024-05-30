@@ -19,7 +19,7 @@ class PlayState < Crixel::State
       add(@text)
 
       key = inputs.get_key(Crixel::Key::Code::W)
- 
+
       key.on_down(name: "w_down") do |total_time, elapsed_time|
         if inputs.get_key(Crixel::Key::Code::LeftShift).down?
           @text.origin = @text.origin + Crixel::Vector2.unit_y * -elapsed_time.total_milliseconds * 0.1
@@ -97,6 +97,7 @@ class PlayState < Crixel::State
 
     # Draw stuff above this state (in the camera)
     on_post_draw do |total_time, elapsed_time|
+      @text.draw_obb(Crixel::Color::RGBA::RED)
     end
 
     # Draw stuff in the HUD (not in the camera)

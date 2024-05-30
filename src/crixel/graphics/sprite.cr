@@ -95,6 +95,8 @@ class Crixel::Sprite < Crixel::Basic
     else
       self.src_rectangle = Rectangle.new(width: r_texture.width, height: r_texture.height)
     end
+
+    super()
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)

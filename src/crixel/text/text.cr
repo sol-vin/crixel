@@ -13,7 +13,7 @@ class Crixel::Text < Crixel::Basic
     tint : Color = Color::RGBA::WHITE,
     font : String = "default_rsrc/font.ttf"
   )
-    Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation, text_height, spacing, tint.to_raylib)
+    Raylib.draw_text_pro(Assets.get_rfont(font), text, position.to_raylib, origin.to_raylib, rotation*Raylib::RAD2DEG, text_height, spacing, tint.to_raylib)
   end
 
   include IOBB
@@ -28,6 +28,8 @@ class Crixel::Text < Crixel::Basic
     @text_size = text_size
 
     self.text = text
+
+    super()
   end
 
   def width

@@ -4,18 +4,6 @@ Design:
 
 
 # TODO
-  <!-- - Animation
-    - Make testbed for this
-      - Should play animation
-        - WASD - Character position
-        - Arrows - Frame position
-        - Shift WASD - Character origin
-        - Shift Arrows - Frame origin
-        - QE - Character rotation
-        - ,. - Frame rotation
-        - Space - Play/Pause
-        - Shift Space - Stop
-        - R - Replay -->
   - Baked File System Enhancements
     - Custom loader
       - Opens raylib during compilation process to make asset entries in Assets.
@@ -27,16 +15,6 @@ Design:
       - If not make sol-vin/baked_file_system the way it should be (full customize)
     - Configuration
       - file.png, _file.png.yml
-  <!-- - Raylib compatable types - Vector2, Color, Rectangle -->
-  <!-- - Timer -->
-  <!-- - Primitives (Circle, Rectangle, Point, etc) -->
-  - RenderTexture
-    <!-- - Render texture camera -->
-    <!-- - Render texture objects( rt as a state/in a state)?
-      - RenderTexture addon for State? -->
-    - Render texture for Crixel.run to allow scaling
-  <!-- - Update and Draw layer ordering
-    - Create "delete/add" queue to be run between updates and draws to prevent .dup or looping errors -->
   - Palettes
     - Built in palettes
       - `require "crixel/default/palettes`
@@ -55,9 +33,6 @@ Design:
   - Tilemap
   - Collision Manager
     - Quadtree
-      - NodeObject
-        - body : Rectangle
-        - object : Crixel::Basic
     - Add similarly to input system
       - Add to Crixel::State via monkey patch
       - Include callback for on(Basic::Added)
@@ -72,13 +47,33 @@ Design:
   - Crixel::Config
     - Config for run
   - Scissor mode?
-    - Scissor
+    - Scissor stack?
   - Shaders?
     - see begin_shader_mode and https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_texture_outline.c
   - Particles
   - GUI
+    - Controls
+      - Label
+      - Button
+      - Checkbox
+      - Dropdown
+      - Textbox
+        - Requires custom key listener (needs to shut off input manager)
+    - Z-order click order
+      - Allow clickthrough
   - Debugger
     - Flx.watch equivalent (must be a macro probably)
+  - More shapes
+    - Donut
+    - Arrows
+  - Effects
+    - Includable?
+    - Types
+      - Rainbow
+      - Trails
+      - Glitch
+      - Outline
+      - 
   <!-- - Crixel::Sound
     - Own data type (non Basic)
     - use load_sound_alias to prevent changing original source.

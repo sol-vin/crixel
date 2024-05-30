@@ -29,9 +29,9 @@ FileUtils.cd("examples") do
 
       shard_yml["targets"].as_h.each do |target, _|
         puts "  - building target: #{target}"
-        output = `shards build #{target.as_s} --release -s -p -t`
+        output = `shards build #{target.as_s} --release -s -p -t --error-trace`
 
-        puts output.lines[0..20].join("\n")
+        puts output
       end
       {% if flag?(:win32) %}
         FileUtils.cp(Dir.glob("./bin/*.exe"), "../_build/")

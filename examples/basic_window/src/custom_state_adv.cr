@@ -1,6 +1,8 @@
 require "crixel"
 require "crixel/audio"
 require "crixel/input"
+require "crixel/text"
+require "crixel/graphics"
 
 require "crixel/default_rsrc"
 
@@ -26,8 +28,8 @@ class PlayState < Crixel::State
       @backup_camera.origin = Crixel::Vector2.new(Crixel.width/2, Crixel.height/2)
 
       @startup.play
-      @c.zoom = 0.7_f32
-      @c.bg_color = Crixel::Color::RGBA::BLACK
+      @c.camera_zoom = 0.7_f32
+      @c.camera_bg_color = Crixel::Color::RGBA::BLACK
 
       @c.origin = Crixel::Vector2.new(x: @c.width/2, y: @c.height/2)
       @c.on_draw do |total_time, elapsed_time|
@@ -47,13 +49,13 @@ class PlayState < Crixel::State
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
       key1.on_down(name: "q_pressed") do |total_time, elapsed_time|
-        @camera.zoom += 0.001
+        @camera.camera_zoom += 0.001
       end
 
       # ZOom out with W
       key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
-        @camera.zoom -= 0.001
+        @camera.camera_zoom -= 0.001
       end
 
       # Play the sound
@@ -84,19 +86,19 @@ class PlayState < Crixel::State
       right = inputs.get_key(Crixel::Key::Code::Right)
 
       up.on_down do |total_time, elapsed_time|
-        @backup_camera.offset = @backup_camera.offset - Crixel::Vector2.unit_y
+        @backup_camera.camera_offset = @backup_camera.camera_offset - Crixel::Vector2.unit_y
       end
 
       down.on_down do |total_time, elapsed_time|
-        @backup_camera.offset = @backup_camera.offset + Crixel::Vector2.unit_y
+        @backup_camera.camera_offset = @backup_camera.camera_offset + Crixel::Vector2.unit_y
       end
 
       left.on_down do |total_time, elapsed_time|
-        @backup_camera.offset = @backup_camera.offset - Crixel::Vector2.unit_x
+        @backup_camera.camera_offset = @backup_camera.camera_offset - Crixel::Vector2.unit_x
       end
 
       right.on_down do |total_time, elapsed_time|
-        @backup_camera.offset = @backup_camera.offset + Crixel::Vector2.unit_x
+        @backup_camera.camera_offset = @backup_camera.camera_offset + Crixel::Vector2.unit_x
       end
 
       4.times { @texts << Crixel::Text.new(text: "XXXX XXXX", text_size: 20) }
@@ -123,7 +125,7 @@ class PlayState < Crixel::State
         t.text = "#{ps[i].x.to_i}, #{ps[i].y.to_i}"
 
         t.origin = Crixel::Vector2.new(
-          x: t.text_size.x/2,
+          x: t.width/2,
           y: t.height/2
         )
       end

@@ -2,12 +2,16 @@ class Crixel::Basic
   include Updatable
   include Drawable
 
-  getter id : UInt32 = Crixel.get_id
+  getter id : UInt32
 
   event Added, object : self, parent : State
   event Destroyed, object : self
 
   getter? destroyed = false
+
+  def initialize
+    @id = Crixel.get_id
+  end
 
   def destroy
     unless @destroyed
