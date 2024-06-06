@@ -19,11 +19,11 @@ struct Crixel::Line
     @y2 = y2.to_f32
   end
 
-  def draw(thickness : Number = 1, tint : Color = Color::RGBA::WHITE, fill = false)
-    Line.draw(x1, y1, x2, y2, thickness, tint, fill)
+  def draw(thickness : Number = 1, tint : Color = Color::RGBA::WHITE)
+    Line.draw(x1, y1, x2, y2, thickness, tint)
   end
 
-  def self.draw(x1, y1, x2, y2, thickness : Number = 1, tint : Color = Color::RGBA::WHITE, fill = false)
-    Raylib.draw_line_ex(Raylib::Vector2.new(x: x1, y: y1), Raylib::Vector2.new(x: x2, y: y2), thickness.to_f, tint.to_rgba.to_raylib)
+  def self.draw(x1, y1, x2, y2, thickness : Number = 1, tint : Color = Color::RGBA::WHITE)
+    Raylib.draw_line_ex(Raylib::Vector2.new(x: x1, y: y1), Raylib::Vector2.new(x: x2, y: y2), thickness.to_f, tint.to_raylib)
   end
 end

@@ -15,7 +15,7 @@ class PlayState < Crixel::State
     Two
   end
 
-  BASE_BALL_SPEED = 50.0_f32
+  BASE_BALL_SPEED = 80.0_f32
 
   @player1 : Crixel::Sprite = Crixel::Sprite.new("rsrc/paddle.png")
   @player2 : Crixel::Sprite = Crixel::Sprite.new("rsrc/paddle.png")
@@ -23,6 +23,10 @@ class PlayState < Crixel::State
   @ball_direction : Crixel::Vector2 = Crixel::Vector2.zero
   @ball_speed : Float32 = BASE_BALL_SPEED
   @ball_owner : Player = Player::None
+
+  TRAIL_COUNT = 300
+
+  @trails = [] of Tuple(Player, Crixel::Line)
 
 
   # @hit_sound : Crixel::Sound = Crixel::Sound.new("rsrc/hit.mp3")
@@ -37,6 +41,8 @@ class PlayState < Crixel::State
   SPEED = 100
 
   single_event Score, player : Player
+
+  MIN_ANGLE = 0.25
 
   def initialize
     super
@@ -64,6 +70,8 @@ class PlayState < Crixel::State
 
       add(@ball)
 
+      reset_trails
+      
       inputs.get_key(Crixel::Key::Code::W).on_down do |t, e|
         move_up(@player1, e)
       end
@@ -92,6 +100,7 @@ class PlayState < Crixel::State
         end
 
         reset_ball
+        reset_trails
       end
     end
 
@@ -100,26 +109,30 @@ class PlayState < Crixel::State
       @ball.x += @ball_direction.x * @ball_speed * elapsed_time.total_seconds
       @ball.y += @ball_direction.y * @ball_speed * elapsed_time.total_seconds
 
-      if @ball.y < 0
+      if @ball.y < 0 && @ball_direction.y < 0
         @ball_direction.y *= -1
-      elsif @ball.bottom > Crixel.height
+      elsif @ball.bottom > Crixel.height && @ball_direction.y > 0
         @ball_direction.y *= -1
       end
 
       if @ball.intersects?(@player1) && @ball_owner != Player::One
         @ball_speed *= 1.1_f32
         @ball_direction.x = @ball.x + @ball.width/2 - @player1.x + @player1.width/2
-        @ball_direction.y = @ball.y + @ball.height/2 - @player1.y + @player1.height/2
+        @ball_direction.y = (@ball.y + @ball.height/2 - @player1.y + @player1.height/2) * -1
 
         @ball_direction = @ball_direction.normalize
+        @ball_direction.x = 1.0_f32 - @ball_direction.x
+
         @ball_owner = Player::One
         @ball.tint = get_ball_color
       elsif @ball.intersects?(@player2) && @ball_owner != Player::Two
         @ball_speed *= 1.1_f32
         @ball_direction.x = (@player2.x + @player2.width/2 - @ball.x + @ball.width/2) * -1
         @ball_direction.y = @ball.y + @ball.height/2 - @player2.y + @player2.height/2
-
+        
         @ball_direction = @ball_direction.normalize
+        @ball_direction.x = -1.0_f32 - @ball_direction.x
+
         @ball_owner = Player::Two
         @ball.tint = get_ball_color
       end
@@ -132,10 +145,25 @@ class PlayState < Crixel::State
       elsif @ball.x < 0
         emit Score, Player::Two
       end
+
+      @trails.pop
+      @trails.unshift({@ball_owner, Crixel::Line.new(@trails[0][1].x2, @trails[0][1].y2, @ball.x + @ball.width/2, @ball.y + @ball.height/2)})
     end
 
     # Draw stuff below this state (in the camera)
     on_pre_draw do |total_time, elapsed_time|
+      @trails.reverse.each_with_index do |item, index|
+        owner = item[0]
+        line = item[1]
+        color = Crixel::Color::WHITE
+        if owner == Player::One
+          color = Crixel::Color::RED
+        elsif owner == Player::Two
+          color = Crixel::Color::BLUE
+        end
+
+        line.draw(tint: color.fade(index/@trails.size), thickness: 4)
+      end
     end
 
     # Draw stuff above this state (in the camera)
@@ -176,6 +204,10 @@ class PlayState < Crixel::State
     else
       raise("Impossible")
     end
+  end
+
+  def reset_trails
+    @trails = Array(Tuple(Player, Crixel::Line)).new(TRAIL_COUNT, {@ball_owner, Crixel::Line.new(@ball.x, @ball.y, @ball.x, @ball.y,)})
   end
 end
 
