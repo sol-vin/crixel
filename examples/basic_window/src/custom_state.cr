@@ -10,7 +10,7 @@ class PlayState < Crixel::State
     # Assign events here such as "on_setup", "on_pre_draw", etc
 
     on_setup do
-      @text 
+      @text
 
       add(@text) # Adds out text element to the scene.
     end

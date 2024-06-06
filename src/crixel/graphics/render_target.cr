@@ -34,7 +34,6 @@ class Crixel::RenderTarget < Crixel::Sprite
       @render_texture = Raylib::RenderTexture2D.new
     end
     super(texture: @texture_name, x: x, y: y, width: width, height: height)
-
   end
 
   def clear_background(color : Color::RGBA)

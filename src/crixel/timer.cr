@@ -73,4 +73,12 @@ class Crixel::Timer
       end
     end
   end
+
+  def percent
+    (current_time.total_seconds/trigger_time.total_seconds).clamp(0.0, 1.0)
+  end
+
+  def inv_percent
+    1.0 - (current_time.total_seconds/trigger_time.total_seconds).clamp(0.0, 1.0)
+  end
 end
