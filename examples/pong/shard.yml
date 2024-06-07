@@ -1,0 +1,17 @@
+name: pong
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  pong:
+    main: src/pong.cr
+
+dependencies:
+  crixel:
+    path: ../../
+
+crystal: '>= 1.11.2'
+
+license: MIT

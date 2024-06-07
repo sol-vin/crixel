@@ -1,6 +1,4 @@
 require "../src/crixel"
-require "../src/crixel/input"
-require "../src/crixel/audio"
 
 Crixel.start_window(100, 100)
 

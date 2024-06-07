@@ -4,6 +4,7 @@ Design:
 
 
 # TODO
+  - Break up raylib into smaller parts
   - Baked File System Enhancements
     - Custom loader
       - Opens raylib during compilation process to make asset entries in Assets.
@@ -73,7 +74,6 @@ Design:
       - Trails
       - Glitch
       - Outline
-      - 
   <!-- - Crixel::Sound
     - Own data type (non Basic)
     - use load_sound_alias to prevent changing original source.

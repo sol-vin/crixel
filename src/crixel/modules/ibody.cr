@@ -58,10 +58,31 @@ module Crixel::IBody
     Rectangle.draw(x, y, width, height, tint, fill)
   end
 
+  def intersects?(x, y) : Bool
+    self.x < x &&
+      self.right > x &&
+      self.y < y &&
+      self.bottom > y
+  end
+
+  def intersects?(v2 : Vector2) : Bool
+    self.x < v2.x &&
+      self.right > v2.x &&
+      self.y < v2.y &&
+      self.bottom > v2.y
+  end
+
   def intersects?(other : IBody) : Bool
     x < other.right &&
       right > other.x &&
       y < other.bottom &&
       bottom > other.y
+  end
+
+  def intersects?(x, y, width, height) : Bool
+    self.x < x + width &&
+      self.right > x &&
+      self.y < y + height &&
+      self.bottom > y
   end
 end

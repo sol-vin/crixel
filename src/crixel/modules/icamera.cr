@@ -10,18 +10,27 @@ module Crixel::ICamera
   property camera_bg_color : Color::RGBA = Color::RGBA::CLEAR
   property camera_offset : Vector2 = Vector2.zero
 
-  def follow(x, y, speed = 1.0_f32)
-    distance = Vector2.new((x - @x), (y - @y))
-    @x += distance.x * speed
-    @y += distance.y * speed
+  def includes?(x, y) : Bool
+    world_space.intersects?(x, y)
   end
 
-  def follow(pos : IPosition, speed = 1.0_f32)
-    follow(pos.x, pos.y, speed)
+  def includes?(v2 : Vector2) : Bool
+    world_space.intersects?(v2)
   end
 
-  def follow(pos : Vector2, speed = 1.0_f32)
-    follow(pos.x, pos.y, speed)
+  def to_world(x, y) : Vector2
+    Raylib.get_screen_to_world_2d(Raylib::Vector2.new(x: x, y: y), to_rcamera).to_crixel
+  end
+
+  def world_space : Rectangle
+    top_left = Raylib.get_screen_to_world_2d(Raylib::Vector2.new(x: 0, y: 0), to_rcamera)
+    bottom_right = Raylib.get_screen_to_world_2d(Raylib::Vector2.new(x: Crixel.width, y: Crixel.height), to_rcamera)
+    Rectangle.new(
+      x: top_left.x,
+      y: top_left.y,
+      width: bottom_right.x,
+      height: bottom_right.y
+    )
   end
 
   def to_rcamera : Raylib::Camera2D

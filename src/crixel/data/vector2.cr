@@ -5,8 +5,7 @@ struct Raylib::Vector2
 end
 
 struct Crixel::Vector2
-  property x : Float32 = 0.0_f32
-  property y : Float32 = 0.0_f32
+  include IPosition
 
   def self.zero : Vector2
     Vector2.new(0, 0)
