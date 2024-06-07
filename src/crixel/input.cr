@@ -79,8 +79,7 @@ class Crixel::State
     state.inputs.setup
   end
 
-  def update(total_time : Time::Span, elapsed_time : Time::Span)
+  on(State::PreUpdate) do |state|
     Input::Manager.update(self, total_time, elapsed_time)
-    previous_def # TODO: This MAY cause problems in the future?
   end
 end

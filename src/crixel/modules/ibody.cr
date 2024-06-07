@@ -5,6 +5,8 @@ module Crixel::IBody
   include IPosition
   include ISize
 
+  alias Points = StaticArray(Vector2, 4)
+
   def body : Rectangle
     Rectangle.new(
       x: x,
@@ -52,6 +54,15 @@ module Crixel::IBody
 
   def top=(y)
     @y = y
+  end
+
+  def points : Points
+    Vector2{
+      Vector2.new(left, top),
+      Vector2.new(right, top),
+      Vector2.new(right, bottom),
+      Vector2.new(left, bottom),
+    }
   end
 
   def draw_body(tint : Color, fill = false)

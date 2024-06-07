@@ -1,10 +1,10 @@
-require "./crixel"
-require "./crixel/audio"
-require "./crixel/input"
-require "./crixel/text"
-require "./crixel/graphics"
+require "crixel"
+require "crixel/audio"
+require "crixel/input"
+require "crixel/text"
+require "crixel/graphics"
 
-require "./crixel/default_rsrc"
+require "crixel/default_rsrc"
 
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
