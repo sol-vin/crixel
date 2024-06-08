@@ -10,6 +10,13 @@ struct Crixel::Rectangle
     @height = height.to_f32
   end
 
+  def initialize(pos : Vector2, width : Number = 0.0_f32, height : Number = 0.0_f32)
+    @x = pos.x
+    @y = pos.y
+    @width = width.to_f32
+    @height = height.to_f32
+  end
+
   def body : IBody
     return self
   end

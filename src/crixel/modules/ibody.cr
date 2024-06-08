@@ -76,7 +76,7 @@ module Crixel::IBody
       self.bottom > y
   end
 
-  def intersects?(v2 : Vector2) : Bool
+  def intersects?(v2 : IPosition) : Bool
     self.x < v2.x &&
       self.right > v2.x &&
       self.y < v2.y &&
