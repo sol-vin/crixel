@@ -64,6 +64,20 @@ module Crixel::IOBB
     end
   end
 
+  def bounding_box
+    min_x = points.map(&.x).min
+    min_y = points.map(&.y).min
+    max_x = points.map(&.x).max
+    max_y = points.map(&.y).max
+
+    Rectangle.new(
+      x: min_x,
+      y: min_y,
+      width: max_x - min_x,
+      height: max_y - min_y
+    )
+  end
+
   # Bounding box around the sprite's drawing area (includes rotation)
   def draw_area_bounding_box(tint : Color, fill = false)
     points = self.points

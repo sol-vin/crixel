@@ -28,32 +28,32 @@ module Crixel::IBody
     x
   end
 
-  def left=(x)
-    @x = x
+  def left=(x : Number)
+    @x = x.to_f32
   end
 
   def right
     x + width
   end
 
-  def right=(x)
-    @x = x - width
+  def right=(x : Number)
+    @x = (x - width).to_f32
   end
 
   def bottom
     y + height
   end
 
-  def bottom=(y)
-    @y = y - height
+  def bottom=(y : Number)
+    @y = (y - height).to_f32
   end
 
   def top
     y
   end
 
-  def top=(y)
-    @y = y
+  def top=(y : Number)
+    @y = y.to_f32
   end
 
   def points : Points
