@@ -45,7 +45,7 @@ class PlayState < Crixel::State
     end
   end
 
-  MAX_BALLS = 1_000
+  MAX_BALLS = 1000
   @q = Crixel::QuadTree.new
   @items = [] of Ball
 
@@ -111,6 +111,7 @@ class PlayState < Crixel::State
     # Draw stuff in the HUD (not in the camera)
     on_draw_hud do |total_time, elapsed_time|
       Raylib.draw_fps(0, 0)
+      Crixel::Text.draw("#{@q.total_checks.to_s}/#{MAX_BALLS**2}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
     end
   end
 end

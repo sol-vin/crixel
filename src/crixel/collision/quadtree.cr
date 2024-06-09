@@ -13,6 +13,8 @@ class Crixel::QuadTree
   getter sw : QuadTree?
   getter se : QuadTree?
 
+  getter total_checks = 0
+
   def initialize(@current_depth = 0, @max_depth = 10)
   end
 
@@ -20,21 +22,12 @@ class Crixel::QuadTree
     @children.includes?(child)
   end
 
-  def intersects?(other : Basic)
-    case other
-    when .is_a?(IOBB) then return self.intersects?(other.as(IOBB).bounding_box) # TODO: Fix this by adding SAT? Better check against AABB?
-    when .is_a?(IBody) then return self.intersects?(other.as(IBody))
-    when .is_a?(IPosition) then return self.contains?(other.as(IPosition))
-    else return false
-    end
-  end
-
   def insert(child : Basic)
-    raise("Not insertable here (doesnt have a shape)") unless child.is_a?(IOBB | IBody | IPosition) #TODO: Fix this with collision_shape in Colliable
+    raise("Not insertable here (doesnt have a shape)") unless child.is_a?(IBody)
     raise("Not insertable here (is not Collidable)") unless child.is_a?(Collidable)
 
     if divided?
-      bounds = _get_bounding_box(child)
+      bounds = child.as(IBody)
       @nw.not_nil!.insert(child) if bounds.intersects?(@nw.not_nil!)
       @ne.not_nil!.insert(child) if bounds.intersects?(@ne.not_nil!)
       @sw.not_nil!.insert(child) if bounds.intersects?(@sw.not_nil!)
@@ -66,7 +59,7 @@ class Crixel::QuadTree
     @se = se
 
     @children.each do |child|
-      bounds = _get_bounding_box(child)
+      bounds = child.as(IBody)
       @nw.not_nil!.insert(child) if bounds.intersects?(@nw.not_nil!)
       @ne.not_nil!.insert(child) if bounds.intersects?(@ne.not_nil!)
       @sw.not_nil!.insert(child) if bounds.intersects?(@sw.not_nil!)
@@ -111,14 +104,15 @@ class Crixel::QuadTree
     self.each do |qt|
       qt.children[0...(qt.children.size-1)].each_with_index do |child1, index|
         qt.children[(index+1)...qt.children.size].each do |child2|
+          @total_checks += 1
           c1 = child1.as(Collidable)
           c2 = child2.as(Collidable)
 
           next unless c1.collision_mask.intersects?(c2.collision_mask)
 
           # Broadphase
-          bounds1 = _get_bounding_box(child1)
-          bounds2 = _get_bounding_box(child2)
+          bounds1 = child1.as(IBody)
+          bounds2 = child1.as(IBody)
           next unless bounds1.intersects?(bounds2)
 
           #Narrowphase
@@ -127,16 +121,6 @@ class Crixel::QuadTree
           yield child1, child2
         end
       end
-    end
-  end
-
-  private def _get_bounding_box(object : Basic)      
-    case object
-      when .is_a?(IOBB) then return object.as(IOBB).bounding_box
-      when .is_a?(IBody) then return object.as(IBody)
-      when .is_a?(IPosition) then return Rectangle.new(object.as(IPosition).position, 1, 1)
-      else
-        raise("Impossible: A Basic without a shape somehow got in here")
     end
   end
 end
