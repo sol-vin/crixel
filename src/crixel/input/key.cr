@@ -112,6 +112,10 @@ class Crixel::Key
     Menu         =  82
     VolumeUp     =  24
     VolumeDown   =  25
+
+    def down?
+      Raylib.key_down?(self.to_i)
+    end
   end
 
   getter code : Code

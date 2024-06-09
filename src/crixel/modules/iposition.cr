@@ -7,7 +7,8 @@ module Crixel::IPosition
   end
 
   def position=(other : IPosition)
-    position = other
+    @x = other.x
+    @y = other.y
   end
 
   def follow(x, y, speed = 1.0_f32)

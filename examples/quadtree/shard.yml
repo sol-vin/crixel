@@ -1,0 +1,17 @@
+name: quadtree
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  quadtree:
+    main: src/quadtree.cr
+
+dependencies:
+  crixel:
+    path: ../../
+
+crystal: '>= 1.11.2'
+
+license: MIT

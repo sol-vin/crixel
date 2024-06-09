@@ -1,7 +1,7 @@
 class Crixel::QuadTree
   include IBody
   getter max_children = 5
-  getter max_depth = 10
+  getter max_depth = 6
 
   getter current_depth = 0
 
@@ -15,7 +15,7 @@ class Crixel::QuadTree
 
   getter total_checks = 0
 
-  def initialize(@current_depth = 0, @max_depth = 10)
+  def initialize(@current_depth = 0, @max_depth = 6)
   end
 
   def includes?(child : Basic)
@@ -69,7 +69,6 @@ class Crixel::QuadTree
     # @children.clear
   end
 
-
   def draw(tint : Color = Color::WHITE)
     draw_body(tint)
     if divided?
@@ -98,6 +97,26 @@ class Crixel::QuadTree
 
       break if qts.empty?
     end
+  end
+
+  def query(x, y, w, h) : Array(Basic)
+    output = [] of Basic
+    if self.contained_by?(x, y, w, h)
+      # Fully contained by the query so all children are intersecting
+      output.concat children
+    elsif self.intersects?(x, y, w, h)
+      if self.divided?
+        # Recursive call for query since we are divided
+        output.concat @nw.not_nil!.query(x, y, w, h)
+        output.concat @ne.not_nil!.query(x, y, w, h)
+        output.concat @sw.not_nil!.query(x, y, w, h)
+        output.concat @se.not_nil!.query(x, y, w, h)
+      else
+        # Not divided, so just check the items in here for intersection
+        output.concat children.select {|c| c.as(IBody).intersects?(x, y, w, h)}
+      end
+    end
+    output
   end
 
   def check(&block : Proc(Basic, Basic, Nil))

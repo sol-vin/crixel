@@ -1,11 +1,11 @@
-require "./crixel"
-require "./crixel/audio"
-require "./crixel/input"
-require "./crixel/text"
-require "./crixel/graphics"
-require "./crixel/collision"
+require "crixel"
+require "crixel/audio"
+require "crixel/input"
+require "crixel/text"
+require "crixel/graphics"
+require "crixel/collision"
 
-require "./crixel/default_rsrc"
+require "crixel/default_rsrc"
 
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
@@ -45,9 +45,9 @@ class PlayState < Crixel::State
     end
   end
 
-  MAX_BALLS = 5000
-  MOUSE_EFFECT_AREA = 300
-  PUSH_SPEED = 500
+  MAX_BALLS = 3000
+  MOUSE_EFFECT_AREA = 200
+  PUSH_SPEED = 200
   @q = Crixel::QuadTree.new
   @items = [] of Ball
 
