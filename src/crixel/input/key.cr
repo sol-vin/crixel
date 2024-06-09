@@ -113,8 +113,20 @@ class Crixel::Key
     VolumeUp     =  24
     VolumeDown   =  25
 
+    def up?
+      Raylib.key_up?(self.to_i)
+    end
+
     def down?
       Raylib.key_down?(self.to_i)
+    end
+
+    def pressed?
+      Raylib.key_pressed?(self.to_i)
+    end
+
+    def released?
+      Raylib.key_released?(self.to_i)
     end
   end
 

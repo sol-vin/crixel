@@ -20,6 +20,22 @@ class Crixel::Gamepad::Button
     MiddleRight    = 15
     LeftThumb      = 16
     RightThumb     = 17
+
+    def up?(player : Player)
+      Raylib.gamepad_button_up?(player.to_i, self.to_i)
+    end
+
+    def down?(player : Player)
+      Raylib.gamepad_button_down?(player.to_i, self.to_i)
+    end
+
+    def pressed?(player : Player)
+      Raylib.gamepad_button_pressed?(player.to_i, self.to_i)
+    end
+
+    def released?(player : Player)
+      Raylib.gamepad_button_released?(player.to_i, self.to_i)
+    end
   end
 
   getter player : Player

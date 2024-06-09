@@ -10,6 +10,14 @@ class Crixel::Mouse::Button
     Forward = 5
     Back    = 6
 
+    def up?
+      Raylib.mouse_button_up?(self.to_i)
+    end
+
+    def released?
+      Raylib.mouse_button_released?(self.to_i)
+    end
+
     def down?
       Raylib.mouse_button_down?(self.to_i)
     end
