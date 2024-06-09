@@ -5,7 +5,7 @@ class Crixel::QuadTree
 
   getter current_depth = 0
 
-  @children = Set(Basic).new
+  getter children = [] of Basic
   getter? divided = false
   
   getter nw : QuadTree?
@@ -22,25 +22,17 @@ class Crixel::QuadTree
 
   def intersects?(other : Basic)
     case other
-    when .is_a?(IOBB) then return false #TODO: Fix this
+    when .is_a?(IOBB) then return self.intersects?(other.as(IOBB).bounding_box) # TODO: Fix this by adding SAT? Better check against AABB?
     when .is_a?(IBody) then return self.intersects?(other.as(IBody))
-    when .is_a?(IPosition) then return self.intersects?(other.as(IPosition))
-    else return false
-    end
-  end
-
-  
-  def inside?(other : Basic)
-    case other
-    when .is_a?(IOBB) then return other.as(IOBB).bounding_box.points.all? {|v| v.x >= left && v.x <= right && v.y >= top && v.y <= bottom}
-    when .is_a?(IBody) then return other.as(IBody).points.all? {|v| v.x >= left && v.x <= right && v.y >= top && v.y <= bottom}
-    when .is_a?(IPosition) then return self.intersects?(other.as(IPosition))
+    when .is_a?(IPosition) then return self.contains?(other.as(IPosition))
     else return false
     end
   end
 
   def insert(child : Basic)
-    raise("Not insertable here") unless child.is_a?(IOBB | IBody | IPosition)
+    raise("Not insertable here (doesnt have a shape)") unless child.is_a?(IOBB | IBody | IPosition) #TODO: Fix this with collision_shape in Colliable
+    raise("Not insertable here (is not Collidable)") unless child.is_a?(Collidable)
+
     if divided?
       bounds = _get_bounding_box(child)
       @nw.not_nil!.insert(child) if bounds.intersects?(@nw.not_nil!)
@@ -81,8 +73,9 @@ class Crixel::QuadTree
       @se.not_nil!.insert(child) if bounds.intersects?(@se.not_nil!)
     end
 
-    @children.clear
+    # @children.clear
   end
+
 
   def draw(tint : Color = Color::WHITE)
     draw_body(tint)
@@ -94,13 +87,56 @@ class Crixel::QuadTree
     end
   end
 
+  def each(&block : Proc(QuadTree, Nil))
+    qts = [self] of QuadTree
+
+    loop do
+      current_qt = qts.pop
+      if current_qt.divided?
+        qts.concat [
+          current_qt.nw.not_nil!,
+          current_qt.ne.not_nil!,
+          current_qt.sw.not_nil!,
+          current_qt.se.not_nil!
+        ]
+      else
+        yield current_qt
+      end
+
+      break if qts.empty?
+    end
+  end
+
+  def check(&block : Proc(Basic, Basic, Nil))
+    self.each do |qt|
+      qt.children[0...(qt.children.size-1)].each_with_index do |child1, index|
+        qt.children[(index+1)...qt.children.size].each do |child2|
+          c1 = child1.as(Collidable)
+          c2 = child2.as(Collidable)
+
+          next unless c1.collision_mask.intersects?(c2.collision_mask)
+
+          # Broadphase
+          bounds1 = _get_bounding_box(child1)
+          bounds2 = _get_bounding_box(child2)
+          next unless bounds1.intersects?(bounds2)
+
+          #Narrowphase
+          #TODO: Write this
+
+          yield child1, child2
+        end
+      end
+    end
+  end
+
   private def _get_bounding_box(object : Basic)      
     case object
       when .is_a?(IOBB) then return object.as(IOBB).bounding_box
       when .is_a?(IBody) then return object.as(IBody)
       when .is_a?(IPosition) then return Rectangle.new(object.as(IPosition).position, 1, 1)
       else
-        raise("Impossible: A BAsic without a shape somehow got in here")
+        raise("Impossible: A Basic without a shape somehow got in here")
     end
   end
 end

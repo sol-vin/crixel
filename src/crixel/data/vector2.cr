@@ -59,27 +59,27 @@ struct Crixel::Vector2
   end
 
   def length : LibC::Float
-    Raymath.vector2_length(self.to_raylib).to_crixel
+    Raymath.vector2_length(self.to_raylib)
   end
 
   def length_sqr : LibC::Float
-    Raymath.vector2_length_sqr(self.to_raylib).to_crixel
+    Raymath.vector2_length_sqr(self.to_raylib)
   end
 
   def dot_product(v2 : Vector2) : LibC::Float
-    Raymath.vector2_dot_product(self.to_raylib, v2.to_raylib).to_crixel
+    Raymath.vector2_dot_product(self.to_raylib, v2.to_raylib)
   end
 
   def distance(v2 : Vector2) : LibC::Float
-    Raymath.vector2_distance(self.to_raylib, v2.to_raylib).to_crixel
+    Raymath.vector2_distance(self.to_raylib, v2.to_raylib)
   end
 
   def angle(v2 : Vector2) : LibC::Float
-    Raymath.vector2_angle(self.to_raylib, v2.to_raylib).to_crixel
+    Raymath.vector2_angle(self.to_raylib, v2.to_raylib)
   end
 
   def line_angle(v2 : Vector2) : LibC::Float
-    Raymath.vector2_line_angle(self.to_raylib, v2.to_raylib).to_crixel
+    Raymath.vector2_line_angle(self.to_raylib, v2.to_raylib)
   end
 
   def scale(scale : Number) : Vector2

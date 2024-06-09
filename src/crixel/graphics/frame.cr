@@ -1,4 +1,3 @@
-require "./isprite"
 
 struct Crixel::Frame
   property src : Rectangle

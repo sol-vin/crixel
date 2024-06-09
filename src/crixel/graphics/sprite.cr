@@ -76,6 +76,7 @@ class Crixel::Sprite < Crixel::Basic
     # Raylib.draw_texture_pro(r_texture, src_rectangle.to_raylib, dest_rectangle.to_raylib, origin.to_raylib, rotation, tint.to_raylib)
   end
 
+  include IOBB
   include ISprite
   include IInvCamera
 
@@ -100,6 +101,6 @@ class Crixel::Sprite < Crixel::Basic
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    draw_sprite if visible?
+    Sprite.draw(@texture, @src_rectangle, body, rotation, origin, tint)
   end
 end

@@ -57,30 +57,16 @@ module Crixel::IBody
   end
 
   def points : Points
-    Vector2{
+    Points[
       Vector2.new(left, top),
       Vector2.new(right, top),
       Vector2.new(right, bottom),
-      Vector2.new(left, bottom),
-    }
+      Vector2.new(left, bottom)
+    ]
   end
 
   def draw_body(tint : Color, fill = false)
     Rectangle.draw(x, y, width, height, tint, fill)
-  end
-
-  def intersects?(x, y) : Bool
-    self.x < x &&
-      self.right > x &&
-      self.y < y &&
-      self.bottom > y
-  end
-
-  def intersects?(v2 : IPosition) : Bool
-    self.x < v2.x &&
-      self.right > v2.x &&
-      self.y < v2.y &&
-      self.bottom > v2.y
   end
 
   def intersects?(other : IBody) : Bool
@@ -95,5 +81,27 @@ module Crixel::IBody
       self.right > x &&
       self.y < y + height &&
       self.bottom > y
+  end
+
+  def contains?(other : IBody)
+    other.points.all? {|v| v.x >= left && v.x <= right && v.y >= top && v.y <= bottom}
+  end
+
+  def contains?(x, y) : Bool
+    self.x < x &&
+      self.right > x &&
+      self.y < y &&
+      self.bottom > y
+  end
+
+  def contains?(v2 : IPosition) : Bool
+    self.x < v2.x &&
+      self.right > v2.x &&
+      self.y < v2.y &&
+      self.bottom > v2.y
+  end
+
+  def center
+    Vector2.new(x + width/2, y + height/2)
   end
 end

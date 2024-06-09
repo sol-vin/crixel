@@ -9,6 +9,14 @@ class Crixel::Mouse::Button
     Extra   = 4
     Forward = 5
     Back    = 6
+
+    def down?
+      Raylib.mouse_button_down?(self.to_i)
+    end
+
+    def pressed?
+      Raylib.mouse_button_pressed?(self.to_i)
+    end
   end
 
   getter code : Code
