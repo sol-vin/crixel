@@ -17,7 +17,7 @@ struct Crixel::Rectangle
   end
 
   def self.contains?(a_min, a_max, b_min, b_max)
-    a_min.x < b_min.x && a_max.y < b_min.y && a_max.x > b_max.x && a_max.y > b_max.y
+    a_min.x < b_min.x && a_min.y < b_min.y && a_max.x > b_max.x && a_max.y > b_max.y
   end
 
   def self.contains?(x1, y1, w1, h1, x2, y2)
