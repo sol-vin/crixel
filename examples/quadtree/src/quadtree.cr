@@ -73,6 +73,7 @@ class PlayState < Crixel::State
 
     # Do stuff after the objects are updated
     on_post_update do |total_time, elapsed_time|
+      @q = Crixel::Quad::Tree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
       @items.each {|i| @q.insert i}
 
       @q.check do |c1, c2|

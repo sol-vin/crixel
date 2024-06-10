@@ -38,22 +38,15 @@ class Crixel::Quad::Leaf
   end
 
   def root?
-    !parent
+    parent.nil?
   end
 
-  def insert(child : Basic) : Leaf
-    # If we are divided, attempt to insert 
-    if divided?
-      return nw!.insert(child) if nw!.contains?(child)
-      return ne!.insert(child) if ne!.contains?(child)
-      return sw!.insert(child) if sw!.contains?(child)
-      return se!.insert(child) if se!.contains?(child)
-    end
-
-    # Return ourself since we have to contain the child
-    return self
+  # Returns what leaf this object should insert into
+  def get_container(child : Basic) : Leaf
+    return get_container(child.as(IBody))
   end
 
+  # Returns what leaf contains this bounds
   def get_container(bounds : IBody) : Leaf
     if divided?
       return nw!.get_container(bounds) if nw!.contains?(bounds)
@@ -86,6 +79,17 @@ class Crixel::Quad::Leaf
       output.concat p.get_lineage
     end
     output
+  end
+
+
+  def get_root : Leaf
+    parent = @parent
+
+    until parent.root?
+      parent = parent.parent
+    end
+
+    parent
   end
 
   def equals?(other : self)
