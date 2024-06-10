@@ -45,10 +45,10 @@ class PlayState < Crixel::State
     end
   end
 
-  MAX_BALLS = 3000
+  MAX_BALLS = 100
   MOUSE_EFFECT_AREA = 200
   PUSH_SPEED = 200
-  @q = Crixel::QuadTree.new
+  @q = Crixel::Quad::Tree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
   @items = [] of Ball
 
   def initialize
@@ -73,12 +73,6 @@ class PlayState < Crixel::State
 
     # Do stuff after the objects are updated
     on_post_update do |total_time, elapsed_time|
-      @q = Crixel::QuadTree.new
-      @q.x = 0
-      @q.y = 0
-      @q.width = Crixel.width.to_f32
-      @q.height = Crixel.height.to_f32
-
       @items.each {|i| @q.insert i}
 
       @q.check do |c1, c2|
@@ -92,7 +86,7 @@ class PlayState < Crixel::State
         end
       end
 
-      @q.query(
+      @q.search(
         Crixel::Mouse.position.x - MOUSE_EFFECT_AREA/2, 
         Crixel::Mouse.position.y - MOUSE_EFFECT_AREA/2, 
         MOUSE_EFFECT_AREA, MOUSE_EFFECT_AREA).each do |a|
@@ -110,12 +104,14 @@ class PlayState < Crixel::State
 
     # Draw stuff above this state (in the camera)
     on_post_draw do |total_time, elapsed_time|
-      @q.draw(Crixel::Color::RED) if Crixel::Key::Code::Q.down?
+      @q.draw_grid if Crixel::Key::Code::Q.down?
     end
 
     # Draw stuff in the HUD (not in the camera)
     on_draw_hud do |total_time, elapsed_time|
       Raylib.draw_fps(0, 0)
+      Crixel::Text.draw("#{@q.total_leafs}/#{@q.total_objects}", Crixel::Vector2.new(0, Crixel.height - 25), tint: Crixel::Color::RED)
+
       Crixel::Text.draw("#{@q.total_checks.to_s}/#{MAX_BALLS**2}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
     end
   end

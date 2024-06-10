@@ -22,6 +22,8 @@ module Crixel
   VERSION       = "0.0.1"
   VERSION_STATE = "alpha"
 
+  alias ID = UInt32
+
   class_getter width : Int32 = 0
   class_getter height : Int32 = 0
   class_getter title : String = ""

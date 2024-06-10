@@ -2,7 +2,7 @@ class Crixel::Basic
   include Updatable
   include Drawable
 
-  getter id : UInt32
+  getter id : Crixel::ID
 
   event Added, object : self, parent : State
   event Destroyed, object : self
