@@ -74,10 +74,7 @@ module Crixel::IBody
   end
 
   def intersects?(x, y, width, height) : Bool
-    self.x < x + width &&
-      self.right > x &&
-      self.y < y + height &&
-      self.bottom > y
+    Rectangle.intersects?(self.x, self.y, self.width, self.height, x, y, width, height)
   end
 
   def contains?(other : IBody)
@@ -85,14 +82,11 @@ module Crixel::IBody
   end
 
   def contains?(x, y, w, h)
-    left < x && top < y && right > x + w && bottom > y + h
+    Rectangle.contains?(self.x, self.y, self.width, self.height, x, y, width, height)
   end
 
   def contains?(x, y) : Bool
-    self.x < x &&
-      self.right > x &&
-      self.y < y &&
-      self.bottom > y
+    Rectangle.contains?(self.x, self.y, self.width, self.height, x, y)
   end
 
   def contains?(v : IPosition) : Bool
@@ -100,7 +94,7 @@ module Crixel::IBody
   end
 
   def contained_by?(x, y, w, h)
-    x < self.left && y < self.top && x + w > self.right && y + h > self.bottom
+    Rectangle.contains?(x, y, width, height, self.x, self.y, self.width, self.height)
   end
 
   def center
