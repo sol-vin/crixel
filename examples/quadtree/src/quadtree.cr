@@ -54,7 +54,7 @@ class PlayState < Crixel::State
     end
   end
 
-  MAX_BALLS         = 7_000
+  MAX_BALLS         = 2_500
   MOUSE_EFFECT_AREA =   500
   PUSH_SPEED        =   200
   @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
@@ -90,18 +90,18 @@ class PlayState < Crixel::State
       @items.each { |i| @q.insert i }
       # @q.cleanup
 
-      # @check_time = Time.measure do
-      #   @items_matched = @q.check do |c1, c2|
-      #     b1 = c1.as(Ball)
-      #     b2 = c2.as(Ball)
+      @check_time = Time.measure do
+        @items_matched = @q.check do |c1, c2|
+          b1 = c1.as(Ball)
+          b2 = c2.as(Ball)
 
-      #     d = b1.position.distance(b2.position)
-      #     if d < b1.width
-      #       b1.tint = Crixel::Color::BLUE
-      #       b2.tint = Crixel::Color::BLUE
-      #     end
-      #   end
-      # end
+          d = b1.position.distance(b2.position)
+          if d < b1.width
+            b1.tint = Crixel::Color::BLUE
+            b2.tint = Crixel::Color::BLUE
+          end
+        end
+      end
 
       @search_time = Time.measure do
         if Crixel::Mouse::Button::Code::Left.down? || Crixel::Mouse::Button::Code::Right.down?
@@ -125,7 +125,7 @@ class PlayState < Crixel::State
 
     # Draw stuff above this state (in the camera)
     on_post_draw do |total_time, elapsed_time|
-      @q.draw_grid if Crixel::Key::Code::Q.down?
+      @q.draw(Crixel::Color::RED) if Crixel::Key::Code::Q.down?
     end
 
     # Draw stuff in the HUD (not in the camera)
