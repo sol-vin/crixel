@@ -1,8 +1,7 @@
 class Crixel::QuadTree
   class Node
-    include IBody
-
-    alias ID = Crixel::ID
+    include IBody # Adds #x, #y, #width, #height
+    alias ID = Crixel::ID # Just a UInt32
     getter id : ID
     getter depth : UInt32 = 0
     getter? divided = false
@@ -55,29 +54,9 @@ class Crixel::QuadTree
     end
   end
 
-  class ObjectInfo
-    getter object : Basic
-    property  node : Node
-
-    def initialize(@object, @node)
-    end
-    
-    def ==(other : Node)
-      @node.id = other.id
-    end
-
-    def ==(other : Node::ID)
-      @node.id = other
-    end
-
-    def hash
-      @id.to_u64
-    end
-  end
-
   include IBody
 
-  getter root : Node = Node.new(0_u32, 0_u32, -1.to_f32, -1.to_f32, -1.to_f32, -1.to_f32)
+  getter root : Node
   getter max_depth = 10
   getter max_children = 5
 
@@ -182,10 +161,10 @@ class Crixel::QuadTree
         w = current_node.width/2
         h = current_node.height/2
 
-        nw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y, w, h)
-        ne = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y, w, h)
-        sw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y + h, w, h)
-        se = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y + h, w, h)
+        nw = Node.new(_get_id, current_node.depth+1, current_node.x, current_node.y, w, h)
+        ne = Node.new(_get_id, current_node.depth+1, current_node.x + w, current_node.y, w, h)
+        sw = Node.new(_get_id, current_node.depth+1, current_node.x, current_node.y + h, w, h)
+        se = Node.new(_get_id, current_node.depth+1, current_node.x + w, current_node.y + h, w, h)
 
         current_node.nw = nw
         current_node.ne = ne
@@ -209,6 +188,7 @@ class Crixel::QuadTree
     end
   end
 
+  # Simple incrementing ID
   @current_id = 1_u32
   private def _get_id
     old = @current_id
@@ -216,10 +196,12 @@ class Crixel::QuadTree
     return old
   end
 
+  # Inserts an object into this quadtree
   def insert(object : Basic)
     _insert_from(object, @root)
   end
 
+  # Searches the 
   def search(x, y, w, h, &block : Proc(Basic, Nil))
     to_process = [@root] of Node
 
@@ -257,28 +239,40 @@ class Crixel::QuadTree
     end
   end
 
+  private def _check_pair?(o1 : Basic, o2 : Basic) : Bool
+    return false if o1 == o2
+    b1 = o1.as(IBody).body
+    b2 = o2.as(IBody).body
+    b1.intersects?(b2)
+  end
+
   def check(&block : Proc(Basic, Basic, Nil))
     checked = Set(CheckedPair).new
     total_matches = 0
 
+    check_proc = ->(o1 : Basic, o2 : Basic) do
+      pair1 = CheckedPair.new(o1.id, o2.id)
+      pair2 = CheckedPair.new(o2.id, o1.id)
+      shouldnt_check = o1 == o2 || checked.includes?(pair1) || checked.includes?(pair2)
+      checked << pair1 unless shouldnt_check
+      shouldnt_check
+    end
+
+    checked_proc = ->(o1 : Basic, o2 : Basic) do
+      @total_checks += 1
+      total_matches += 1
+      _check_pair?(o1, o2)
+    end
+
     @objects.each do |_, o1|
       b1 = o1.as(IBody).body
-
-      others = search(b1.x, b1.y, b1.width, b1.height)
-
-      others.size.times do |i|
-        o2 = others[i]
-        next if o1 == o2
-        pair1 = CheckedPair.new(o1.id, o2.id)
-        pair2 = CheckedPair.new(o2.id, o1.id)
-        next if checked.includes?(pair1) || checked.includes?(pair2)
-        checked << pair1
-
-        b2 = o2.as(IBody).body
-
-        @total_checks += 1
-        total_matches += 1
-        yield(o1, o2) if b1.intersects?(b2)
+      
+      search(b1.x, b1.y, b1.width, b1.height) do |o2|
+        if check_proc.call(o1, o2)
+          if checked_proc.call(o1, o2)
+            yield(o1, o2)
+          end
+        end
       end
     end
 
