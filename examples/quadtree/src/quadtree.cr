@@ -10,17 +10,22 @@ require "crixel/default_rsrc"
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 class PlayState < Crixel::State
-  class Ball < Crixel::Sprite
+  class Ball < Crixel::Basic
+    include Crixel::IBody
     include Crixel::Collidable
     SPEED = 10
     SIZE  = 10
 
     property velocity : Crixel::Vector2 = Crixel::Vector2.new(0, 0)
+    property tint : Crixel::Color = Crixel::Color::WHITE
 
     def initialize
       @velocity = Crixel::Vector2.new(rand - 1/2, rand - 1/2).normalize
       @collision_mask << :ball
-      super("rsrc/ball.png", width: SIZE, height: SIZE)
+      @width = SIZE.to_f32 + rand(SIZE)
+      @height = SIZE.to_f32 + rand(SIZE)
+
+      super
     end
 
     def update(total_time, elapsed_time)
@@ -42,6 +47,10 @@ class PlayState < Crixel::State
         @velocity.y *= -1
         self.bottom = Crixel.height
       end
+    end
+
+    def draw(total_time, elapsed_time)
+      Crixel::Rectangle.draw(@x, @y, @width, @height, @tint, true)
     end
   end
 
@@ -95,14 +104,15 @@ class PlayState < Crixel::State
       # end
 
       @search_time = Time.measure do
-        if Crixel::Mouse::Button::Code::Left.down?
+        if Crixel::Mouse::Button::Code::Left.down? || Crixel::Mouse::Button::Code::Right.down?
           @q.search(
             Crixel::Mouse.position.x - MOUSE_EFFECT_AREA/2,
             Crixel::Mouse.position.y - MOUSE_EFFECT_AREA/2,
             MOUSE_EFFECT_AREA, MOUSE_EFFECT_AREA) do |a|
             i = a.as(Ball)
             if i.center.distance(Crixel::Mouse.position) < MOUSE_EFFECT_AREA/2
-              i.tint = Crixel::Color::GREEN
+              i.tint = Crixel::Color::GREEN if Crixel::Mouse::Button::Code::Left.down?
+              i.velocity = (i.position - Crixel::Mouse.position).normalize if Crixel::Mouse::Button::Code::Right.down?
             end
           end
         end

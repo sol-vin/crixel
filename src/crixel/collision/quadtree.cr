@@ -69,11 +69,11 @@ class Crixel::QuadTree
   alias NodesChildren = Hash(Node::ID, Set(Crixel::ID))
 
 
-  # All objects in the R-tree
+  # All objects in the Q-tree
   @objects : Objects = Objects.new
   @objects_containers = ObjectsContainers.new
 
-  # All the leaf nodes of the R-Tree and their children
+  # All the leaf nodes of the Q-Tree and their children
   @nodes = Nodes.new
   @nodes_children = NodesChildren.new
 
@@ -81,6 +81,15 @@ class Crixel::QuadTree
 
   def initialize(@x, @y, @width, @height)
     @root = Node.new(_get_id, 0, @x, @y, @width, @height)
+  end
+
+  
+  def draw(no_items_color : Color = Color::RED, items_color : Color = Color::BLUE)
+    @root.draw(no_items_color)
+
+    @nodes.each do |_, node|
+      node.draw_body(items_color)
+    end
   end
 
   def total_nodes
@@ -181,8 +190,8 @@ class Crixel::QuadTree
       end
 
       # If we can't divide it again (we already found the best container), 
-      # or we shouldn't because we dont have the max children
-      # or are the max level deep
+      # or we shouldn't because we dont have the max children (shouldnt divide)
+      # or are the max level deep (cant divide)
       _add_to_node(object, current_node)
       return current_node
     end
@@ -201,7 +210,7 @@ class Crixel::QuadTree
     _insert_from(object, @root)
   end
 
-  # Searches the 
+  # Searches the QuadTree for all objects inside the rectangle
   def search(x, y, w, h, &block : Proc(Basic, Nil))
     to_process = [@root] of Node
 
@@ -227,6 +236,7 @@ class Crixel::QuadTree
     objects
   end
 
+  # This is all pretty bad and I'm not sure where to begin :(
   private struct CheckedPair
     getter o1 : Crixel::ID
     getter o2 : Crixel::ID
@@ -279,11 +289,4 @@ class Crixel::QuadTree
     total_matches
   end
 
-  def draw_grid(no_items_color : Color = Color::RED, items_color : Color = Color::BLUE)
-    @root.draw(no_items_color)
-
-    @nodes.each do |_, node|
-      node.draw_body(items_color)
-    end
-  end
 end
