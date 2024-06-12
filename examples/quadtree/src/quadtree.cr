@@ -12,7 +12,7 @@ Crixel::Assets::BakedFS.bake(path: "rsrc")
 class PlayState < Crixel::State
   class Ball < Crixel::Sprite
     include Crixel::Collidable
-    SPEED = 100
+    SPEED = 10
     SIZE  =  10
 
     property velocity : Crixel::Vector2 = Crixel::Vector2.new(0, 0)
@@ -45,12 +45,12 @@ class PlayState < Crixel::State
     end
   end
 
-  MAX_BALLS         = 50
+  MAX_BALLS         = 5_000
   MOUSE_EFFECT_AREA = 200
   PUSH_SPEED        = 200
-  @q = Crixel::Quad::Tree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
+  @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
   @items = [] of Ball
-
+  @items_matched : Int32 = 0
   def initialize
     super
 
@@ -73,11 +73,11 @@ class PlayState < Crixel::State
 
     # Do stuff after the objects are updated
     on_post_update do |total_time, elapsed_time|
-      # @q = Crixel::Quad::Tree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
+      @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
       @items.each { |i| @q.insert i }
-      @q.cleanup
+      # @q.cleanup
 
-      # @q.check do |c1, c2|
+      # @items_matched = @q.check do |c1, c2|
       #   b1 = c1.as(Ball)
       #   b2 = c2.as(Ball)
 
@@ -88,16 +88,16 @@ class PlayState < Crixel::State
       #   end
       # end
 
-      # @q.search(
-      #   Crixel::Mouse.position.x - MOUSE_EFFECT_AREA/2,
-      #   Crixel::Mouse.position.y - MOUSE_EFFECT_AREA/2,
-      #   MOUSE_EFFECT_AREA, MOUSE_EFFECT_AREA).each do |a|
-      #   i = a.as(Ball)
-      #   if i.center.distance(Crixel::Mouse.position) < MOUSE_EFFECT_AREA/2
-      #     i.velocity = (i.position - Crixel::Mouse.position).normalize
-      #     i.position = i.position + i.velocity * PUSH_SPEED * elapsed_time.total_seconds * (2.0 - (i.center.distance(Crixel::Mouse.position)/200))
-      #   end
-      # end
+      @q.search(
+        Crixel::Mouse.position.x - MOUSE_EFFECT_AREA/2,
+        Crixel::Mouse.position.y - MOUSE_EFFECT_AREA/2,
+        MOUSE_EFFECT_AREA, MOUSE_EFFECT_AREA) do |a|
+          i = a.as(Ball)
+          if i.center.distance(Crixel::Mouse.position) < MOUSE_EFFECT_AREA/2
+            i.velocity = (i.position - Crixel::Mouse.position).normalize
+            i.position = i.position + i.velocity * PUSH_SPEED * elapsed_time.total_seconds * (2.0 - (i.center.distance(Crixel::Mouse.position)/200))
+          end
+        end
     end
 
     # Draw stuff below this state (in the camera)
@@ -112,9 +112,9 @@ class PlayState < Crixel::State
     # Draw stuff in the HUD (not in the camera)
     on_draw_hud do |total_time, elapsed_time|
       Raylib.draw_fps(0, 0)
-      Crixel::Text.draw("#{@q.total_leafs}/#{@q.total_items}", Crixel::Vector2.new(0, Crixel.height - 25), tint: Crixel::Color::RED)
+      Crixel::Text.draw("#{@q.total_nodes}<#{@q.total_checks.to_s}<#{@q.total_rectangles}", Crixel::Vector2.new(0, Crixel.height - 25), tint: Crixel::Color::RED)
 
-      Crixel::Text.draw("#{@q.total_checks.to_s}/#{MAX_BALLS**2}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
+      Crixel::Text.draw("#{MAX_BALLS}<#{@items_matched}<#{MAX_BALLS**2}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
     end
   end
 end
