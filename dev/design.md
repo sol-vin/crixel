@@ -33,7 +33,7 @@ Design:
     - Needs to be finished
   - Tilemap
   - Collision Manager
-    - Quadtree
+    <!-- - Quadtree -->
     - Add similarly to input system
       - Add to Crixel::State via monkey patch
       - Include callback for on(Basic::Added)
@@ -74,7 +74,8 @@ Design:
       - Trails
       - Glitch
       - Outline
-  <!-- - Crixel::Sound
-    - Own data type (non Basic)
-    - use load_sound_alias to prevent changing original source.
-    - hook Crixel::Sound#on_destroyed/on_changed to -->
+  - Special Sprite types
+    - PreBakedSprite
+      - Takes a sprite sheet and turns it into a baked sprite (rotation backed)
+    - BakedSprite
+      - Bakes the rotations into the sprite

@@ -281,9 +281,9 @@ module Crixel
   end
 
   def self.draw(total_time : Time::Span, elapsed_time : Time::Span)
-    @@states.reverse_each.with_index do |state, index|
+    @@states.each.with_index do |state, index|
       # Check if we are the top state
-      if index == 0
+      if index == @@states.size-1
         @@running_state = state
         state.draw(total_time, elapsed_time)
       else

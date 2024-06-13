@@ -13,7 +13,7 @@ class PlayState < Crixel::State
   class Ball < Crixel::Basic
     include Crixel::IBody
     include Crixel::Collidable
-    SPEED = 10
+    SPEED = 100
     SIZE  = 10
 
     property velocity : Crixel::Vector2 = Crixel::Vector2.new(0, 0)
@@ -63,6 +63,7 @@ class PlayState < Crixel::State
 
   @check_time = Time::Span.new
   @search_time = Time::Span.new
+  @insert_time = Time::Span.new
 
   def initialize
     super
@@ -86,9 +87,11 @@ class PlayState < Crixel::State
 
     # Do stuff after the objects are updated
     on_post_update do |total_time, elapsed_time|
-      @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
-      @items.each { |i| @q.insert i }
-      # @q.cleanup
+      @insert_time = Time.measure do
+        @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
+        @items.each { |i| @q.insert i }
+        # @q.cleanup
+      end
 
       @check_time = Time.measure do
         @items_matched = @q.check do |c1, c2|
@@ -131,6 +134,7 @@ class PlayState < Crixel::State
     # Draw stuff in the HUD (not in the camera)
     on_draw_hud do |total_time, elapsed_time|
       Raylib.draw_fps(0, 0)
+      Crixel::Text.draw("I - #{@insert_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 40), tint: Crixel::Color::MAGENTA)
       Crixel::Text.draw("#{@q.total_nodes}<#{@q.total_checks.to_s}<#{@q.total_rectangles} - #{@search_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 25), tint: Crixel::Color::RED)
 
       Crixel::Text.draw("#{MAX_BALLS}<#{@items_matched}<#{MAX_BALLS**2} - #{@check_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)

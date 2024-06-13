@@ -8,7 +8,31 @@ require "crixel/default_rsrc"
 
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
+class PauseState < Crixel::State
+
+  @text = Crixel::Text.new("Paused!", text_size: 50)
+
+  def initialize
+    super
+
+    on_setup do
+      @camera.camera_bg_color = Crixel::Color::CLEAR
+      @text.x = Crixel.width/2.0_f32 - @text.width/2
+      @text.y = Crixel.height/2.0_f32 - @text.height/2
+
+      add(@text)
+    end
+
+    on_post_update do |total_time, elapsed_time|
+      # if Crixel::Key::Code::Enter.pressed?
+      #   Crixel.pop
+      # end
+    end
+  end
+end
+
 class PlayState < Crixel::State
+  @persist_draw = true
   enum Player
     None
     One
@@ -88,10 +112,11 @@ class PlayState < Crixel::State
       end
 
       on(Score) do |player|
-        if player == Player::One
+        case player
+        when Player::One
           @player1_score += 1
           @player1_score_text.text = @player1_score.to_s
-        elsif player == Player::Two
+        when Player::Two
           @player2_score += 1
           @player2_score_text.text = @player2_score.to_s
           @player2_score_text.x = Crixel.width - @player2_score_text.width
@@ -147,6 +172,10 @@ class PlayState < Crixel::State
 
       @trails.pop
       @trails.unshift({@ball_owner, Crixel::Line.new(@trails[0][1].x2, @trails[0][1].y2, @ball.x + @ball.width/2, @ball.y + @ball.height/2)})
+
+      if Crixel::Key::Code::Enter.pressed?
+        Crixel.push PauseState.new
+      end
     end
 
     # Draw stuff below this state (in the camera)

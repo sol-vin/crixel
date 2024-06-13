@@ -67,7 +67,6 @@ class Crixel::QuadTree
   alias Nodes = Hash(Node::ID, Node)
   alias NodesChildren = Hash(Node::ID, Array(Crixel::ID))
 
-
   # All objects in the Q-tree
   @objects : Objects = Objects.new
 
@@ -111,7 +110,7 @@ class Crixel::QuadTree
     if c = @nodes_children[node_id]?
       return c
     else
-      EMPTY_CHILDREN
+      return [] of Crixel::ID
     end
   end
 
@@ -274,5 +273,4 @@ class Crixel::QuadTree
 
     total_matches
   end
-
 end

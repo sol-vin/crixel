@@ -1,5 +1,5 @@
 class Crixel::Text < Crixel::Basic
-  def self.measure_text(font : String, text : String, height : Float32, spacing : Float32 = 0.0_f32)
+  def self.measure(font : String, text : String, height : Float32, spacing : Float32 = 0.0_f32)
     Raylib.measure_text_ex(Assets.get_rfont(font), text, height, spacing)
   end
 
@@ -33,11 +33,11 @@ class Crixel::Text < Crixel::Basic
   end
 
   def width
-    Text.measure_text(font, text, @text_size, spacing).x
+    Text.measure(font, text, @text_size, spacing).x
   end
 
   def height
-    Text.measure_text(font, text, @text_size, spacing).y
+    Text.measure(font, text, @text_size, spacing).y
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
