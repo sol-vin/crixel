@@ -44,8 +44,7 @@ module Crixel
   event Close
   event Closed
 
-  # Handles what camera should restored when a we begin and end raylib's 2d mode
-  @@camera_stack = [] of ICamera
+  class_getter camera : ICamera = Camera.new
   @@render_texture_stack = [] of Raylib::RenderTexture
 
   @@screen : Raylib::RenderTexture = Raylib::RenderTexture.new
@@ -83,45 +82,8 @@ module Crixel
     end
   end
 
-  def self.current_camera? : ICamera?
-    @@camera_stack[-1]?
-  end
-
-  def self.enabled_2d_mode?
-    @@camera_stack.size > 0
-  end
-
-  def self.start_2d_mode
-    camera = Camera.new
-    if enabled_2d_mode?
-      Raylib.end_mode_2d
-    end
-
-    @@camera_stack << camera
-
-    Raylib.begin_mode_2d(camera.to_rcamera)
-  end
-
-  def self.start_2d_mode(camera : ICamera)
-    if enabled_2d_mode?
-      Raylib.end_mode_2d
-    end
-
-    @@camera_stack << camera
-
-    Raylib.begin_mode_2d(camera.to_rcamera)
-  end
-
-  def self.stop_2d_mode
-    if @@camera_stack.pop?
-      Raylib.end_mode_2d
-      if cam = current_camera?
-        Raylib.begin_mode_2d(cam.to_rcamera)
-      else
-      end
-    else
-      raise "Crixel.stop_2d_mode called but no camera was on the stack...."
-    end
+  def self.view(camera : ICamera)
+    @@camera = camera
   end
 
   def self.play(width, height, title = "Crixel", &block : Proc(State))
@@ -196,7 +158,10 @@ module Crixel
           Mouse.update
           start_rt_mode(@@screen)
           update(@@total_time, @@elapsed_time)
+          Raylib.begin_mode_2d(@@camera.to_rcamera)
+          Raylib.clear_background(@@camera.camera_bg_color.to_raylib)
           draw(@@total_time, @@elapsed_time)
+          Raylib.end_mode_2d
           stop_rt_mode
 
           if current_rt?

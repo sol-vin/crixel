@@ -43,19 +43,19 @@ class PlayState < Crixel::State
       end
 
       add(@c)
-      view(@backup_camera)
+      Crixel.view(@backup_camera)
 
       # Zoom in with Q
       key1 = inputs.get_key(Crixel::Key::Code::Q)
 
       key1.on_down(name: "q_pressed") do |total_time, elapsed_time|
-        @camera.camera_zoom += 0.001
+        Crixel.camera.camera_zoom += 0.001
       end
 
       # ZOom out with W
       key2 = inputs.get_key(Crixel::Key::Code::W)
       key2.on_down(name: "w_pressed") do |total_time, elapsed_time|
-        @camera.camera_zoom -= 0.001
+        Crixel.camera.camera_zoom -= 0.001
       end
 
       # Play the sound
@@ -73,11 +73,11 @@ class PlayState < Crixel::State
       # Follow object with A down, back to original camera with A up
       key5 = inputs.get_key(Crixel::Key::Code::A)
       key5.on_pressed(name: "a_pressed") do |total_time, elapsed_time|
-        view(@c)
+        Crixel.view(@c)
       end
 
       key5.on_released(name: "a_released") do |total_time, elapsed_time|
-        view(@backup_camera)
+        Crixel.view(@backup_camera)
       end
 
       up = inputs.get_key(Crixel::Key::Code::Up)

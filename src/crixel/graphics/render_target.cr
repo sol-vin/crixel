@@ -50,11 +50,14 @@ class Crixel::RenderTarget < Crixel::Sprite
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     @currently_drawing = true
-    Crixel.start_2d_mode(camera)
+    Raylib.end_mode_2d
+    Raylib.begin_mode_2d(camera.to_rcamera)
     Crixel.start_rt_mode(@render_texture)
     emit Draw, self, total_time, elapsed_time
     Crixel.stop_rt_mode
-    Crixel.stop_2d_mode
+    Raylib.end_mode_2d
+    Raylib.begin_mode_2d(Crixel.camera.to_rcamera)
+
 
     @currently_drawing = false
     super

@@ -35,9 +35,6 @@ class Crixel::State
   getter? update_layer_order_dirty = false
   getter? draw_layer_order_dirty = false
 
-  # The main camera for this state.
-  getter camera : ICamera = Camera.new
-
   event Destroyed, state : self
   event Changed, state : self
   event PreSetup, state : self
@@ -48,11 +45,6 @@ class Crixel::State
   event PreDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
   single_event DrawHUD, state : self, total_time : Time::Span, elapsed_time : Time::Span
   event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
-
-  # View a camera on this state
-  def view(camera : ICamera)
-    @camera = camera
-  end
 
   private def _add(object : Basic)
     object.on_destroyed(once: true) do
@@ -77,8 +69,8 @@ class Crixel::State
     @draw_order.delete object
 
     # Reset the camera if this was one we were viewing.
-    if camera == object
-      view(Camera.new)
+    if Crixel.camera == object
+      Crixel.view(Camera.new)
     end
   end
 
@@ -145,8 +137,7 @@ class Crixel::State
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
     @drawing = true
-    Crixel.start_2d_mode(@camera)
-    Raylib.clear_background(@camera.camera_bg_color.to_raylib)
+
 
     emit PreDraw, self, total_time, elapsed_time
     @draw_order.each do |child|
@@ -155,7 +146,7 @@ class Crixel::State
       end
     end
     emit PostDraw, self, total_time, elapsed_time
-    Crixel.stop_2d_mode
+    
     draw_hud(total_time, elapsed_time)
     @drawing = false
   end

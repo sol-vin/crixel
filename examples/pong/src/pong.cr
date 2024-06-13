@@ -12,11 +12,13 @@ class PauseState < Crixel::State
 
   @text = Crixel::Text.new("Paused!", text_size: 50)
 
+  @key_released = false
+
   def initialize
     super
 
     on_setup do
-      @camera.camera_bg_color = Crixel::Color::CLEAR
+      Crixel.camera.camera_bg_color = Crixel::Color::CLEAR
       @text.x = Crixel.width/2.0_f32 - @text.width/2
       @text.y = Crixel.height/2.0_f32 - @text.height/2
 
@@ -24,8 +26,13 @@ class PauseState < Crixel::State
     end
 
     on_post_update do |total_time, elapsed_time|
+      if @key_released && Crixel::Key::Code::Enter.pressed?
+        Crixel.pop
+      elsif !@key_released && Crixel::Key::Code::Enter.up?
+        @key_released = true
+      end
       # if Crixel::Key::Code::Enter.pressed?
-      #   Crixel.pop
+      #   
       # end
     end
   end
