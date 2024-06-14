@@ -15,6 +15,7 @@ require "./crixel/camera"
 
 require "./crixel/state"
 require "./crixel/basic"
+require "./crixel/emitter"
 
 require "./crixel/assets/assets"
 

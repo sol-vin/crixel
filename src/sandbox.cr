@@ -1,6 +1,5 @@
-a = [1]
-a << 2
-a.push 3
-a.pop
+class Chest(T : Int32.class)
+  
+end
 
-puts a
+puts Chest(Int32).new

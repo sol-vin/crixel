@@ -20,11 +20,11 @@ class Crixel::Timer
   end
 
   def started?
-    !current_time.nil?
+    !@current_time.nil?
   end
 
   def ended?
-    current_time.nil?
+    @current_time.nil?
   end
 
   def start
@@ -60,25 +60,26 @@ class Crixel::Timer
   end
 
   def tick(elapsed_time : Time::Span)
-    unless paused?
-      @current_time += elapsed_time
+    if (c_t = @current_time) && !paused?
+      c_t += elapsed_time
       emit Ticked, self
-      if @current_time > @trigger_time
+      if c_t > @trigger_time
         emit Triggered, self
         if loop?
-          @current_time -= elapsed_time
+          c_t -= elapsed_time
         else
           stop
         end
       end
+      @current_time = c_t
     end
   end
 
   def percent
-    (current_time.total_seconds/trigger_time.total_seconds).clamp(0.0, 1.0)
+    (@current_time.not_nil!.total_seconds/@trigger_time.total_seconds).clamp(0.0, 1.0)
   end
 
   def inv_percent
-    1.0 - (current_time.total_seconds/trigger_time.total_seconds).clamp(0.0, 1.0)
+    1.0 - (@current_time.not_nil!.total_seconds/@trigger_time.total_seconds).clamp(0.0, 1.0)
   end
 end

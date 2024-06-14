@@ -31,14 +31,30 @@ class PauseState < Crixel::State
       elsif !@key_released && Crixel::Key::Code::Enter.up?
         @key_released = true
       end
-      # if Crixel::Key::Code::Enter.pressed?
-      #   
-      # end
     end
   end
 end
 
 class PlayState < Crixel::State
+  class FadingParticle < Crixel::Sprite
+    property velocity = Crixel::Vector2.zero
+
+    @death_timer = Crixel::Timer.new(Time::Span.new(seconds: 10))
+
+    def initialize(@x, @y, @rotation)
+      super("rsrc/ball.png", width: 2, height: 2)
+      @death_timer.on_triggered {self.destroy}
+      @death_timer.start
+    end
+
+    def update(total_time, elapsed_time)
+      @death_timer.tick(elapsed_time)
+      self.position += velocity * elapsed_time.total_seconds
+      # @velocity *= 0.0001
+      @tint.a = (UInt8::MAX * @death_timer.inv_percent).to_u8
+    end
+  end
+
   @persist_draw = true
   enum Player
     None
@@ -67,6 +83,20 @@ class PlayState < Crixel::State
 
   @player1_score_text = Crixel::Text.new("0", text_size: 20)
   @player2_score_text = Crixel::Text.new("0", text_size: 20)
+
+  @player1_hit_emitter = Crixel::Emitter.new do |x, y, rotation|
+    particle = FadingParticle.new(x, y, (-170..-10).sample.to_f32)
+    particle.tint = Crixel::Color::RED
+    particle.velocity = Crixel::Vector2.unit_y.rotate(particle.rotation * Raylib::DEG2RAD) * 5
+    particle
+  end
+
+  @player2_hit_emitter = Crixel::Emitter.new do |x, y, rotation|
+    particle = FadingParticle.new(x, y, (10..170).sample.to_f32)
+    particle.tint = Crixel::Color::BLUE
+    particle.velocity = Crixel::Vector2.unit_y.rotate(particle.rotation * Raylib::DEG2RAD) * 5
+    particle
+  end
 
   SPEED = 100
 
@@ -140,6 +170,11 @@ class PlayState < Crixel::State
       @ball.x += @ball_direction.x * @ball_speed * elapsed_time.total_seconds
       @ball.y += @ball_direction.y * @ball_speed * elapsed_time.total_seconds
 
+      @player1_hit_emitter.x = @ball.center.x
+      @player1_hit_emitter.y = @ball.center.y
+      @player2_hit_emitter.x = @ball.center.x
+      @player2_hit_emitter.y = @ball.center.y
+
       if @ball.y < 0 && @ball_direction.y < 0
         @ball_direction.y *= -1
       elsif @ball.bottom > Crixel.height && @ball_direction.y > 0
@@ -156,6 +191,7 @@ class PlayState < Crixel::State
 
         @ball_owner = Player::One
         @ball.tint = get_ball_color
+        10.times { add(@player1_hit_emitter.emit) }
       elsif @ball.intersects?(@player2) && @ball_owner != Player::Two
         @ball_speed *= 1.1_f32
         @ball_direction.x = (@player2.x + @player2.width/2 - @ball.x + @ball.width/2) * -1
@@ -166,6 +202,7 @@ class PlayState < Crixel::State
 
         @ball_owner = Player::Two
         @ball.tint = get_ball_color
+        10.times { add(@player2_hit_emitter.emit) }
       end
     end
 

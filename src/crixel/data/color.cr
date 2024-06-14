@@ -37,7 +37,7 @@ struct Crixel::Color::RGBA < Crixel::Color
   def fade(alpha : Float) : RGBA
     alpha = alpha.clamp(0.0, 1.0)
 
-    RGBA.new(@r, @g, @b, alpha * UInt8::MAX)
+    RGBA.new(@r, @g, @b, alpha * @a)
   end
 end
 
