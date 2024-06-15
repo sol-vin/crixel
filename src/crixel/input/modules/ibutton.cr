@@ -7,10 +7,10 @@ module Crixel::Input::IButton
   getter? current_state : Bool = false
   getter? simulated_press : Bool = false
 
-  event Pressed, input : self, total_time : Time::Span, elapsed_time : Time::Span
-  event Released, input : self, total_time : Time::Span, elapsed_time : Time::Span
-  event Down, input : self, total_time : Time::Span, elapsed_time : Time::Span
-  event Up, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Pressed, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Released, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Down, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Up, input : self, total_time : Time::Span, elapsed_time : Time::Span
 
   def press
     @simulated_press = true

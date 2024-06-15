@@ -10,7 +10,7 @@ module Crixel::Input::IAnalogStick
 
   getter min_moved = 0.02_f32
 
-  event Moved, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Moved, input : self, total_time : Time::Span, elapsed_time : Time::Span
 
   private def _update_analog_stick(value : Vector2, total_time : Time::Span, elapsed_time : Time::Span)
     @last_value = @current_value

@@ -3,10 +3,10 @@ module Crixel::Assets
 
   @@consumers : Array(ConsumerCallback) = [] of ConsumerCallback
 
-  event Unload
-  event PreSetup
-  event Setup
-  event PostSetup
+  single_event Unload
+  single_event PreSetup
+  single_event Setup
+  single_event PostSetup
 
   on(Crixel::Started) { setup }
   on(Crixel::Close) { unload }
@@ -56,6 +56,6 @@ module Crixel::Assets
 end
 
 class Crixel::Asset
-  event Destroyed, me : self
-  event Changed, me : self, to : self
+  single_event Destroyed, me : self
+  single_event Changed, me : self, to : self
 end

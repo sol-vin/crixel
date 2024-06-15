@@ -2,7 +2,7 @@ module Crixel::Updatable
   property? active : Bool = true
   getter update_layer = 0.0_f32
 
-  event UpdateLayerChanged, me : self
+  single_event UpdateLayerChanged, me : self
 
   def update_layer(v : Number)
     @update_layer = v.to_f32

@@ -38,12 +38,12 @@ module Crixel
 
   class_getter running_state : State = State.new
 
-  event Start
-  event Started
-  event Open
-  event FrameProcessed, total_time : Time::Span, elapsed_time : Time::Span
-  event Close
-  event Closed
+  single_event Start
+  single_event Started
+  single_event Open
+  single_event FrameProcessed, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Close
+  single_event Closed
 
   class_getter camera : ICamera = Camera.new
   @@render_texture_stack = [] of Raylib::RenderTexture

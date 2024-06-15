@@ -5,13 +5,13 @@ class Crixel::Timer
   # When the timer should go off
   property trigger_time : Time::Span = Time::Span.new(nanoseconds: 0)
 
-  event Ticked, timer : self
-  event Started, timer : self
-  event Restarted, timer : self
-  event Stopped, timer : self
-  event Triggered, timer : self
-  event Paused, timer : self
-  event Unpaused, timer : self
+  single_event Ticked, timer : self
+  single_event Started, timer : self
+  single_event Restarted, timer : self
+  single_event Stopped, timer : self
+  single_event Triggered, timer : self
+  single_event Paused, timer : self
+  single_event Unpaused, timer : self
 
   property? loop : Bool = false
   getter? paused : Bool = false

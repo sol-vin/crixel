@@ -28,16 +28,16 @@ class Crixel::State
   # Is this state currently drawing?
   getter? drawing = false
 
-  event Destroyed, state : self
-  event Changed, state : self
-  event PreSetup, state : self
-  event Setup, state : self
-  event PostSetup, state : self
-  event PreUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
-  event PostUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
-  event PreDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Destroyed, state : self
+  single_event Changed, state : self
+  single_event PreSetup, state : self
+  single_event Setup, state : self
+  single_event PostSetup, state : self
+  single_event PreUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event PostUpdate, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event PreDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
   single_event DrawHUD, state : self, total_time : Time::Span, elapsed_time : Time::Span
-  event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event PostDraw, state : self, total_time : Time::Span, elapsed_time : Time::Span
 
   private def add(object : Basic)
     object.on_destroyed(once: true) do

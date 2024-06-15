@@ -10,7 +10,7 @@ module Crixel::Input::ITrigger
 
   property press_limit = 0.5_f32
 
-  event Moved, input : self, total_time : Time::Span, elapsed_time : Time::Span
+  single_event Moved, input : self, total_time : Time::Span, elapsed_time : Time::Span
 
   private def _update_trigger(value : Float32, total_time : Time::Span, elapsed_time : Time::Span)
     @last_value = @current_value

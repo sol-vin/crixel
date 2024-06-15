@@ -4,8 +4,8 @@ class Crixel::Basic
 
   getter id : Crixel::ID
 
-  event Added, object : self, parent : State
-  event Destroyed, object : self
+  single_event Added, object : self, parent : State
+  single_event Destroyed, object : self
 
   getter? destroyed = false
 
@@ -17,8 +17,6 @@ class Crixel::Basic
     unless @destroyed
       @destroyed = true
       emit Destroyed, self
-      clear_added
-      clear_destroyed
     end
   end
 

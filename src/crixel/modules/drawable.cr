@@ -2,7 +2,7 @@ module Crixel::Drawable
   property? visible : Bool = true
   getter draw_layer = 0.0_f32
 
-  event DrawLayerChanged, me : self
+  single_event DrawLayerChanged, me : self
 
   def update_layer(v : Number)
     @draw_layer = v.to_f32

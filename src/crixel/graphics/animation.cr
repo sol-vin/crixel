@@ -30,13 +30,13 @@ class Crixel::Animation
 
   @current_time : Time::Span = Time::Span.new
 
-  event TimeAdvanced, me : self, current_time : Time::Span
-  event FrameAdvanced, me : self
-  event Played, me : self
-  event Replayed, me : self
-  event Stopped, me : self
-  event Paused, me : self
-  event Unpaused, me : self
+  single_event TimeAdvanced, me : self, current_time : Time::Span
+  single_event FrameAdvanced, me : self
+  single_event Played, me : self
+  single_event Replayed, me : self
+  single_event Stopped, me : self
+  single_event Paused, me : self
+  single_event Unpaused, me : self
 
   def play
     @playing = true
