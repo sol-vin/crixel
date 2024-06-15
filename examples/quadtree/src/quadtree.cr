@@ -108,14 +108,19 @@ class PlayState < Crixel::State
 
       @search_time = Time.measure do
         if Crixel::Mouse::Button::Code::Left.down? || Crixel::Mouse::Button::Code::Right.down?
+          uv_mouse = Crixel::Mouse.uv_position
+          uv_x = uv_mouse.x - (MOUSE_EFFECT_AREA/Crixel.width)/2
+          uv_y = uv_mouse.y - (MOUSE_EFFECT_AREA/Crixel.height)/2
+
           @q.search(
-            Crixel::Mouse.position.x - MOUSE_EFFECT_AREA/2,
-            Crixel::Mouse.position.y - MOUSE_EFFECT_AREA/2,
+            uv_x * Crixel.width,
+            uv_y * Crixel.height,
             MOUSE_EFFECT_AREA, MOUSE_EFFECT_AREA) do |a|
             i = a.as(Ball)
-            if i.center.distance(Crixel::Mouse.position) < MOUSE_EFFECT_AREA/2
+            m_pos = Crixel::Mouse.uv_position * Crixel::Vector2.new(Crixel.width, Crixel.height)
+            if i.center.distance(m_pos) < MOUSE_EFFECT_AREA/2
               i.tint = Crixel::Color::GREEN if Crixel::Mouse::Button::Code::Left.down?
-              i.velocity = (i.position - Crixel::Mouse.position).normalize if Crixel::Mouse::Button::Code::Right.down?
+              i.velocity = (i.center - m_pos).normalize if Crixel::Mouse::Button::Code::Right.down?
             end
           end
         end

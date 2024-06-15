@@ -53,6 +53,14 @@ module Crixel
   @@src : Raylib::Rectangle = Raylib::Rectangle.new
   @@dst : Raylib::Rectangle = Raylib::Rectangle.new
 
+  def self.window_width
+    Raylib.get_screen_width
+  end
+
+  def self.window_height
+    Raylib.get_screen_height
+  end
+
   def self.current_rt? : Raylib::RenderTexture?
     @@render_texture_stack[-1]?
   end

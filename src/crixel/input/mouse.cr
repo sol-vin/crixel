@@ -20,15 +20,15 @@ module Crixel::Mouse
 
   def self.uv_position : Vector2
     Vector2.new(
-      x: x/Crixel.width,
-      y: y/Crixel.height
+      x: x/Crixel.window_width,
+      y: y/Crixel.window_height
     )
   end
 
   def self.uv_delta : Vector2
     Vector2.new(
-      x: (x - last_x)/Crixel.width,
-      y: (y - last_y)/Crixel.height
+      x: (x - last_x)/Crixel.window_width,
+      y: (y - last_y)/Crixel.window_height
     )
   end
 

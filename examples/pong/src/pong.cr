@@ -39,7 +39,7 @@ class PlayState < Crixel::State
   class FadingParticle < Crixel::Sprite
     property velocity = Crixel::Vector2.zero
 
-    @death_timer = Crixel::Timer.new(Time::Span.new(seconds: 10))
+    @death_timer = Crixel::Timer.new(Time::Span.new(seconds: 2))
 
     def initialize(@x, @y, @rotation)
       super("rsrc/ball.png", width: 2, height: 2)
@@ -49,8 +49,8 @@ class PlayState < Crixel::State
 
     def update(total_time, elapsed_time)
       @death_timer.tick(elapsed_time)
-      self.position += velocity * elapsed_time.total_seconds
-      # @velocity *= 0.0001
+      self.position += velocity * elapsed_time.total_seconds * 10
+      @velocity *= 0.999
       @tint.a = (UInt8::MAX * @death_timer.inv_percent).to_u8
     end
   end
@@ -71,9 +71,9 @@ class PlayState < Crixel::State
   @ball_speed : Float32 = BASE_BALL_SPEED
   @ball_owner : Player = Player::None
 
-  TRAIL_COUNT = 300
+  # TRAIL_COUNT = 100
 
-  @trails = [] of Tuple(Player, Crixel::Line)
+  # @trails = [] of Tuple(Player, Crixel::Line)
 
   # @hit_sound : Crixel::Sound = Crixel::Sound.new("rsrc/hit.mp3")
   # @goal_sound : Crixel::Sound = Crixel::Sound.new("rsrc/goal.mp3")
@@ -130,7 +130,7 @@ class PlayState < Crixel::State
 
       add(@ball)
 
-      reset_trails
+      # reset_trails
 
       inputs.get_key(Crixel::Key::Code::W).on_down do |t, e|
         move_up(@player1, e)
@@ -161,7 +161,7 @@ class PlayState < Crixel::State
         end
 
         reset_ball
-        reset_trails
+        # reset_trails
       end
     end
 
@@ -214,8 +214,8 @@ class PlayState < Crixel::State
         emit Score, Player::Two
       end
 
-      @trails.pop
-      @trails.unshift({@ball_owner, Crixel::Line.new(@trails[0][1].x2, @trails[0][1].y2, @ball.x + @ball.width/2, @ball.y + @ball.height/2)})
+      # @trails.pop
+      # @trails.unshift({@ball_owner, Crixel::Line.new(@trails[0][1].x2, @trails[0][1].y2, @ball.x + @ball.width/2, @ball.y + @ball.height/2)})
 
       if Crixel::Key::Code::Enter.pressed?
         Crixel.push PauseState.new
@@ -224,18 +224,18 @@ class PlayState < Crixel::State
 
     # Draw stuff below this state (in the camera)
     on_pre_draw do |total_time, elapsed_time|
-      @trails.reverse.each_with_index do |item, index|
-        owner = item[0]
-        line = item[1]
-        color = Crixel::Color::WHITE
-        if owner == Player::One
-          color = Crixel::Color::RED
-        elsif owner == Player::Two
-          color = Crixel::Color::BLUE
-        end
+      # @trails.reverse.each_with_index do |item, index|
+      #   owner = item[0]
+      #   line = item[1]
+      #   color = Crixel::Color::WHITE
+      #   if owner == Player::One
+      #     color = Crixel::Color::RED
+      #   elsif owner == Player::Two
+      #     color = Crixel::Color::BLUE
+      #   end
 
-        line.draw(tint: color.fade(index/@trails.size), thickness: 4)
-      end
+      #   line.draw(tint: color.fade(index/@trails.size), thickness: 4)
+      # end
     end
 
     # Draw stuff above this state (in the camera)
@@ -246,6 +246,9 @@ class PlayState < Crixel::State
     on_draw_hud do |total_time, elapsed_time|
       @player1_score_text.draw(total_time, elapsed_time)
       @player2_score_text.draw(total_time, elapsed_time)
+      @player2_score_text.draw(total_time, elapsed_time)
+      Crixel::Text.draw("#{@update_order.size}", Crixel::Vector2.new(0, 50))
+      Raylib.draw_fps(Crixel.width/2, 0)
     end
   end
 
@@ -278,9 +281,9 @@ class PlayState < Crixel::State
     end
   end
 
-  def reset_trails
-    @trails = Array(Tuple(Player, Crixel::Line)).new(TRAIL_COUNT, {@ball_owner, Crixel::Line.new(@ball.x, @ball.y, @ball.x, @ball.y)})
-  end
+  # def reset_trails
+  #   @trails = Array(Tuple(Player, Crixel::Line)).new(TRAIL_COUNT, {@ball_owner, Crixel::Line.new(@ball.x, @ball.y, @ball.x, @ball.y)})
+  # end
 end
 
 Crixel.start_window(400, 300) # This must be done here

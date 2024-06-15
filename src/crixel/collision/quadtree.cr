@@ -80,9 +80,7 @@ class Crixel::QuadTree
     @root = Node.new(_get_id, 0, @x, @y, @width, @height)
   end
 
-  
   def draw(color : Color = Color::BLUE)
-
     @nodes.each do |_, node|
       node.draw_body(color)
     end
