@@ -58,7 +58,6 @@ class Crixel::RenderTarget < Crixel::Sprite
     Raylib.end_mode_2d
     Raylib.begin_mode_2d(Crixel.camera.to_rcamera)
 
-
     @currently_drawing = false
     super
   end

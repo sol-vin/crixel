@@ -101,6 +101,6 @@ class Crixel::Sprite < Crixel::Basic
   end
 
   def draw(total_time : Time::Span, elapsed_time : Time::Span)
-    Sprite.draw(@texture, @src_rectangle, body, rotation, origin, tint)
+    Sprite.draw(@texture, @src_rectangle, to_rectangle, rotation, origin, tint)
   end
 end

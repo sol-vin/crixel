@@ -9,7 +9,6 @@ require "crixel/default_rsrc"
 Crixel::Assets::BakedFS.bake(path: "rsrc")
 
 class PauseState < Crixel::State
-
   @text = Crixel::Text.new("Paused!", text_size: 50)
 
   @key_released = false
@@ -43,12 +42,12 @@ class PlayState < Crixel::State
 
     def initialize(@x, @y, @rotation)
       super("rsrc/ball.png", width: 2, height: 2)
-      @death_timer.on_triggered {self.destroy}
+      @death_timer.on_triggered { self.destroy }
       @death_timer.start
     end
 
     def update(total_time, elapsed_time)
-      @death_timer.tick(elapsed_time)
+      @death_timer.tick(total_time, elapsed_time)
       self.position += velocity * elapsed_time.total_seconds * 10
       @velocity *= 0.999
       @tint.a = (UInt8::MAX * @death_timer.inv_percent).to_u8
@@ -247,7 +246,7 @@ class PlayState < Crixel::State
       @player1_score_text.draw(total_time, elapsed_time)
       @player2_score_text.draw(total_time, elapsed_time)
       @player2_score_text.draw(total_time, elapsed_time)
-      Crixel::Text.draw("#{@update_order.size}", Crixel::Vector2.new(0, 50))
+      Crixel::Text.draw("#{total_time.total_seconds}/#{Raylib.get_time}", Crixel::Vector2.new(40, 0))
       Raylib.draw_fps(Crixel.width/2, 0)
     end
   end

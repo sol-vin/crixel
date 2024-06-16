@@ -7,7 +7,7 @@ module Crixel::IBody
 
   alias Points = StaticArray(Vector2, 4)
 
-  def body : Rectangle
+  def to_rectangle : Rectangle
     Rectangle.new(
       x: x,
       y: y,
@@ -16,7 +16,7 @@ module Crixel::IBody
     )
   end
 
-  def body=(other : IBody)
+  def rectangle=(other : IBody)
     @x = other.x
     @y = other.y
     @width = other.width
@@ -61,7 +61,7 @@ module Crixel::IBody
       Vector2.new(left, top),
       Vector2.new(right, top),
       Vector2.new(right, bottom),
-      Vector2.new(left, bottom)
+      Vector2.new(left, bottom),
     ]
   end
 

@@ -5,18 +5,22 @@ class Crixel::Timer
   # When the timer should go off
   property trigger_time : Time::Span = Time::Span.new(nanoseconds: 0)
 
-  single_event Ticked, timer : self
+  single_event Ticked, timer : self, total_time : Time::Span, elapsed_time : Time::Span
   single_event Started, timer : self
   single_event Restarted, timer : self
   single_event Stopped, timer : self
-  single_event Triggered, timer : self
+  single_event Triggered, timer : self, total_time : Time::Span, elapsed_time : Time::Span
   single_event Paused, timer : self
   single_event Unpaused, timer : self
 
   property? loop : Bool = false
   getter? paused : Bool = false
 
-  def initialize(@trigger_time)
+  def initialize(**args)
+    @trigger_time = Time::Span.new(**args)
+  end
+
+  def initialize(@trigger_time : Time::Span)
   end
 
   def started?
@@ -59,12 +63,12 @@ class Crixel::Timer
     end
   end
 
-  def tick(elapsed_time : Time::Span)
+  def tick(total_time : Time::Span, elapsed_time : Time::Span)
     if (c_t = @current_time) && !paused?
       c_t += elapsed_time
-      emit Ticked, self
+      emit Ticked, self, total_time, elapsed_time
       if c_t > @trigger_time
-        emit Triggered, self
+        emit Triggered, self, total_time, elapsed_time
         if loop?
           c_t -= elapsed_time
         else

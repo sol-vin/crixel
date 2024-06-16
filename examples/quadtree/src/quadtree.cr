@@ -14,7 +14,7 @@ class PlayState < Crixel::State
     include Crixel::IBody
     include Crixel::Collidable
     SPEED = 100
-    SIZE  = 10
+    SIZE  =  10
 
     property velocity : Crixel::Vector2 = Crixel::Vector2.new(0, 0)
     property tint : Crixel::Color = Crixel::Color::WHITE
@@ -65,11 +65,20 @@ class PlayState < Crixel::State
   @search_time = Time::Span.new
   @insert_time = Time::Span.new
 
+  @insert_timer : Crixel::Timer = Crixel::Timer.new(nanoseconds: 100_000_000)
+
   def initialize
     super
 
     # Setup this state
     on_setup do
+      @insert_timer.start
+      @insert_timer.on_triggered do |t_t, e_t|
+        b = Ball.new
+        b.position = Crixel::Mouse.uv_position * Crixel::Vector2.new(Crixel.width, Crixel.height)
+        @items << b
+        add(b)
+      end
       MAX_BALLS.times do |i|
         item = Ball.new
         item.x = rand(Crixel.width) - item.width/2
@@ -83,12 +92,16 @@ class PlayState < Crixel::State
     # Do stuff before objects are updated
     on_pre_update do |total_time, elapsed_time|
       @items.each { |i| i.tint = Crixel::Color::WHITE }
+      if Crixel::Key::Code::E.down?
+        @insert_timer.tick(total_time, elapsed_time)
+      end
     end
 
     # Do stuff after the objects are updated
     on_post_update do |total_time, elapsed_time|
       @insert_time = Time.measure do
         @q = Crixel::QuadTree.new(0_f32, 0_f32, Crixel.width.to_f32, Crixel.height.to_f32)
+
         @items.each { |i| @q.insert i }
         # @q.cleanup
       end
@@ -107,7 +120,7 @@ class PlayState < Crixel::State
       end
 
       @search_time = Time.measure do
-        if Crixel::Mouse::Button::Code::Left.down? || Crixel::Mouse::Button::Code::Right.down?
+        if Crixel::Mouse::Button::Code::Left.down? || Crixel::Mouse::Button::Code::Right.down? || Crixel::Mouse::Button::Code::Middle.down?
           uv_mouse = Crixel::Mouse.uv_position
           uv_x = uv_mouse.x - (MOUSE_EFFECT_AREA/Crixel.width)/2
           uv_y = uv_mouse.y - (MOUSE_EFFECT_AREA/Crixel.height)/2
@@ -121,6 +134,10 @@ class PlayState < Crixel::State
             if i.center.distance(m_pos) < MOUSE_EFFECT_AREA/2
               i.tint = Crixel::Color::GREEN if Crixel::Mouse::Button::Code::Left.down?
               i.velocity = (i.center - m_pos).normalize if Crixel::Mouse::Button::Code::Right.down?
+              if Crixel::Mouse::Button::Code::Middle.down?
+                i.destroy
+                @items.delete(i)
+              end
             end
           end
         end

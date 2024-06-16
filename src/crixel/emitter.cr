@@ -6,6 +6,7 @@ class Crixel::Emitter
   alias Y = Float32
   alias Rotation = Float32
   @emit_proc : Proc(X, Y, Rotation, Basic)
+
   def initialize(&block : Proc(X, Y, Rotation, Basic))
     @emit_proc = block
   end

@@ -1,6 +1,6 @@
 class Crixel::QuadTree
   class Node
-    include IBody # Adds #x, #y, #width, #height
+    include IBody         # Adds #x, #y, #width, #height
     alias ID = Crixel::ID # Just a UInt32
     getter id : ID
     getter depth : UInt32 = 0
@@ -89,10 +89,10 @@ class Crixel::QuadTree
   def total_nodes
     @nodes.size
   end
-   
+
   def total_rectangles
     total = 0
-    max_depth.times { |x| total += 4**x}
+    max_depth.times { |x| total += 4**x }
     total
   end
 
@@ -130,7 +130,7 @@ class Crixel::QuadTree
 
   private def _add_to_node(object : Basic, node : Node)
     @objects[object.id] = object
-    object_bounds = object.as(IBody).body
+    object_bounds = object.as(IBody).to_rectangle
 
     @total_checks += 1
     if node.intersects?(object_bounds)
@@ -148,22 +148,22 @@ class Crixel::QuadTree
 
   private def _insert_from(object : Basic, node : Node)
     current_node : Node = node
-    object_bounds = object.as(IBody).body
+    object_bounds = object.as(IBody).to_rectangle
 
     loop do
       # Drill down until we find a the smallest child that contains our object
       if current_node.divided?
-        new_node = [current_node.nw!, current_node.ne!, current_node.sw!, current_node.se!].each.find do |c| 
+        new_node = [current_node.nw!, current_node.ne!, current_node.sw!, current_node.se!].each.find do |c|
           @total_checks += 1
           c.contains? object_bounds
         end
-        
+
         if n = new_node
           current_node = n
           next
         end
       end
-      
+
       break
     end
 
@@ -177,10 +177,10 @@ class Crixel::QuadTree
       w = current_node.width/2
       h = current_node.height/2
 
-      nw = Node.new(_get_id, current_node.depth+1, current_node.x, current_node.y, w, h)
-      ne = Node.new(_get_id, current_node.depth+1, current_node.x + w, current_node.y, w, h)
-      sw = Node.new(_get_id, current_node.depth+1, current_node.x, current_node.y + h, w, h)
-      se = Node.new(_get_id, current_node.depth+1, current_node.x + w, current_node.y + h, w, h)
+      nw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y, w, h)
+      ne = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y, w, h)
+      sw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y + h, w, h)
+      se = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y + h, w, h)
 
       current_node.nw = nw
       current_node.ne = ne
@@ -192,7 +192,7 @@ class Crixel::QuadTree
       _add_node(sw)
       _add_node(se)
 
-      to_process.each { |child_id| _insert_from(@objects[child_id], current_node) } 
+      to_process.each { |child_id| _insert_from(@objects[child_id], current_node) }
       _insert_from(object, current_node)
       return
     end
@@ -205,7 +205,7 @@ class Crixel::QuadTree
       _add_to_node(object, current_node.se!)
       return
     else
-      # If we didnt divide it again (we already found the best container), 
+      # If we didnt divide it again (we already found the best container),
       # or we shouldn't because we dont have the max children (shouldnt divide)
       # or are the max level deep (cant divide)
       _add_to_node(object, current_node)
@@ -215,6 +215,7 @@ class Crixel::QuadTree
 
   # Simple incrementing ID
   @current_id = 1_u32
+
   private def _get_id
     old = @current_id
     @current_id += 1
@@ -228,12 +229,12 @@ class Crixel::QuadTree
 
   # Searches the QuadTree for all objects inside the rectangle
   def search(x, y, w, h, &block : Proc(Basic, Nil))
-    _search(@root, x, y, w, h, &block) 
+    _search(@root, x, y, w, h, &block)
   end
 
   def search(x, y, w, h)
     objects = [] of Basic
-    _search(@root, x, y, w, h) {|o| objects << o}
+    _search(@root, x, y, w, h) { |o| objects << o }
     objects
   end
 
@@ -241,10 +242,10 @@ class Crixel::QuadTree
     @total_checks += 1
     if node.intersects?(x, y, w, h)
       if node.divided?
-        _search(node.nw!, x, y, w, h, &block) 
-        _search(node.ne!, x, y, w, h, &block) 
-        _search(node.sw!, x, y, w, h, &block) 
-        _search(node.se!, x, y, w, h, &block) 
+        _search(node.nw!, x, y, w, h, &block)
+        _search(node.ne!, x, y, w, h, &block)
+        _search(node.sw!, x, y, w, h, &block)
+        _search(node.se!, x, y, w, h, &block)
       else
         _get_node_children(node).each do |c_id|
           yield @objects[c_id]
@@ -260,7 +261,7 @@ class Crixel::QuadTree
       children.each_with_index do |o1_id, index|
         o1 = @objects[o1_id]
         b1 = o1.as(IBody)
-        children[index+1...children.size].each do |o2_id|
+        children[index + 1...children.size].each do |o2_id|
           o2 = @objects[o2_id]
           b2 = o2.as(IBody)
           total_matches += 1

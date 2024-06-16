@@ -1,4 +1,3 @@
-
 struct Crixel::Frame
   property src : Rectangle
   property dst : Rectangle

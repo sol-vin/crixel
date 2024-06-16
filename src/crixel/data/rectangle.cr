@@ -7,9 +7,9 @@ struct Crixel::Rectangle
 
   def self.intersects?(a_min, a_max, b_min, b_max)
     a_min.x < b_max.x &&
-    a_max.x > b_min.x &&
-    a_min.y < b_max.y &&
-    a_max.y > b_min.y
+      a_max.x > b_min.x &&
+      a_min.y < b_max.y &&
+      a_max.y > b_min.y
   end
 
   def self.contains?(x1, y1, w1, h1, x2, y2, w2, h2)
@@ -40,8 +40,10 @@ struct Crixel::Rectangle
     @height = height.to_f32
   end
 
-  def body : IBody
-    return self
+  def to_rectangle
+    Rectangle.new(
+      @x, @y, @width, @height
+    )
   end
 
   def to_raylib : Raylib::Rectangle
