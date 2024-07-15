@@ -54,7 +54,7 @@ class Crixel::QuadTree
     end
   end
 
-  include IBody
+  include IBody # Adds x, y, width, and height
 
   getter root : Node
   getter max_depth = 10
@@ -94,6 +94,48 @@ class Crixel::QuadTree
     total = 0
     max_depth.times { |x| total += 4**x }
     total
+  end
+
+  # Inserts an object into this quadtree
+  def insert(object : Basic)
+    raise "Not collidable" unless object.is_a?(Collidable)
+    _insert_from(object, @root)
+  end
+
+  # Searches the QuadTree for all objects inside the rectangle
+  def search(x, y, w, h, &block : Proc(Basic, Nil))
+    _search(@root, x, y, w, h, &block)
+  end
+
+  def search(x, y, w, h)
+    objects = [] of Basic
+    _search(@root, x, y, w, h) { |o| objects << o }
+    objects
+  end
+
+  # Checks which objects are colliding and allows a proc to manipulate them. Only produces one call to the proc per collision pair.
+  def check(&block : Proc(Basic, Basic, Nil))
+    total_matches = 0
+
+    @nodes_children.each do |n_id, children|
+      children.each_with_index do |o1_id, index|
+        o1 = @objects[o1_id]
+        b1 = o1.as(IBody)
+        c1 = o1.as(Collidable)
+        next unless c1.collidable?
+        children[index + 1...children.size].each do |o2_id|
+          o2 = @objects[o2_id]
+          b2 = o2.as(IBody)
+          c2 = o2.as(Collidable)
+          total_matches += 1
+          next unless c2.collidable?
+          next unless c1.intersects? c2
+          yield(o1, o2) if b1.intersects?(b2)
+        end
+      end
+    end
+
+    total_matches
   end
 
   private def _node_has_children?(node_id : Node::ID)
@@ -148,68 +190,71 @@ class Crixel::QuadTree
 
   private def _insert_from(object : Basic, node : Node)
     current_node : Node = node
-    object_bounds = object.as(IBody).to_rectangle
+    if ibody = object.as?(IBody)
+      object_bounds = ibody.to_rectangle
+      loop do
+        # Drill down until we find a the smallest child that contains our object
+        if current_node.divided?
+          new_node = [current_node.nw!, current_node.ne!, current_node.sw!, current_node.se!].each.find do |c|
+            @total_checks += 1
+            c.contains? object_bounds
+          end
 
-    loop do
-      # Drill down until we find a the smallest child that contains our object
-      if current_node.divided?
-        new_node = [current_node.nw!, current_node.ne!, current_node.sw!, current_node.se!].each.find do |c|
-          @total_checks += 1
-          c.contains? object_bounds
+          if n = new_node
+            current_node = n
+            next
+          end
         end
 
-        if n = new_node
-          current_node = n
-          next
-        end
+        break
       end
 
-      break
-    end
+      child_count = _get_node_child_count(current_node)
 
-    child_count = _get_node_child_count(current_node)
+      # Check if we can divide this quad
+      if !current_node.divided? && child_count + 1 > max_children && current_node.depth + 1 < max_depth
+        to_process = _get_node_children(current_node)
+        @nodes_children.delete(current_node.id)
+        current_node.divide
+        w = current_node.width/2
+        h = current_node.height/2
 
-    # Check if we can divide this quad
-    if !current_node.divided? && child_count + 1 > max_children && current_node.depth + 1 < max_depth
-      to_process = _get_node_children(current_node)
-      @nodes_children.delete(current_node.id)
-      current_node.divide
-      w = current_node.width/2
-      h = current_node.height/2
+        nw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y, w, h)
+        ne = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y, w, h)
+        sw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y + h, w, h)
+        se = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y + h, w, h)
 
-      nw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y, w, h)
-      ne = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y, w, h)
-      sw = Node.new(_get_id, current_node.depth + 1, current_node.x, current_node.y + h, w, h)
-      se = Node.new(_get_id, current_node.depth + 1, current_node.x + w, current_node.y + h, w, h)
+        current_node.nw = nw
+        current_node.ne = ne
+        current_node.sw = sw
+        current_node.se = se
 
-      current_node.nw = nw
-      current_node.ne = ne
-      current_node.sw = sw
-      current_node.se = se
+        _add_node(nw)
+        _add_node(ne)
+        _add_node(sw)
+        _add_node(se)
 
-      _add_node(nw)
-      _add_node(ne)
-      _add_node(sw)
-      _add_node(se)
+        to_process.each { |child_id| _insert_from(@objects[child_id], current_node) }
+        _insert_from(object, current_node)
+        return
+      end
 
-      to_process.each { |child_id| _insert_from(@objects[child_id], current_node) }
-      _insert_from(object, current_node)
-      return
-    end
-
-    if current_node.divided?
-      # Node is divided, so lets find what nodes actually intersect with it
-      _add_to_node(object, current_node.nw!)
-      _add_to_node(object, current_node.ne!)
-      _add_to_node(object, current_node.sw!)
-      _add_to_node(object, current_node.se!)
-      return
+      if current_node.divided?
+        # Node is divided, so lets find what nodes actually intersect with it
+        _add_to_node(object, current_node.nw!)
+        _add_to_node(object, current_node.ne!)
+        _add_to_node(object, current_node.sw!)
+        _add_to_node(object, current_node.se!)
+        return
+      else
+        # If we didnt divide it again (we already found the best container),
+        # or we shouldn't because we dont have the max children (shouldnt divide)
+        # or are the max level deep (cant divide)
+        _add_to_node(object, current_node)
+        return
+      end
     else
-      # If we didnt divide it again (we already found the best container),
-      # or we shouldn't because we dont have the max children (shouldnt divide)
-      # or are the max level deep (cant divide)
-      _add_to_node(object, current_node)
-      return
+      raise "NO BODY!"
     end
   end
 
@@ -220,22 +265,6 @@ class Crixel::QuadTree
     old = @current_id
     @current_id += 1
     return old
-  end
-
-  # Inserts an object into this quadtree
-  def insert(object : Basic)
-    _insert_from(object, @root)
-  end
-
-  # Searches the QuadTree for all objects inside the rectangle
-  def search(x, y, w, h, &block : Proc(Basic, Nil))
-    _search(@root, x, y, w, h, &block)
-  end
-
-  def search(x, y, w, h)
-    objects = [] of Basic
-    _search(@root, x, y, w, h) { |o| objects << o }
-    objects
   end
 
   def _search(node : Node, x, y, w, h, &block : Proc(Basic, Nil))
@@ -252,24 +281,5 @@ class Crixel::QuadTree
         end
       end
     end
-  end
-
-  def check(&block : Proc(Basic, Basic, Nil))
-    total_matches = 0
-
-    @nodes_children.each do |n_id, children|
-      children.each_with_index do |o1_id, index|
-        o1 = @objects[o1_id]
-        b1 = o1.as(IBody)
-        children[index + 1...children.size].each do |o2_id|
-          o2 = @objects[o2_id]
-          b2 = o2.as(IBody)
-          total_matches += 1
-          yield(o1, o2) if b1.intersects?(b2)
-        end
-      end
-    end
-
-    total_matches
   end
 end

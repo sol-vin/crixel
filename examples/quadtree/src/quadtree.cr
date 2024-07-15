@@ -159,7 +159,7 @@ class PlayState < Crixel::State
       Crixel::Text.draw("I - #{@insert_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 40), tint: Crixel::Color::MAGENTA)
       Crixel::Text.draw("#{@q.total_nodes}<#{@q.total_checks.to_s}<#{@q.total_rectangles} - #{@search_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 25), tint: Crixel::Color::RED)
 
-      Crixel::Text.draw("#{MAX_BALLS}<#{@items_matched}<#{MAX_BALLS**2} - #{@check_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
+      Crixel::Text.draw("#{@items.size}<#{@items_matched}<#{@items.size**2} - #{@check_time.total_seconds}", Crixel::Vector2.new(0, Crixel.height - 12), tint: Crixel::Color::GREEN)
     end
   end
 end
